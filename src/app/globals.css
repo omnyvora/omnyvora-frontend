@@ -1,0 +1,433 @@
+@import "tailwindcss";
+
+/* ── Dark-mode variant ───────────────────────────────────────────────────────
+   Tailwind's dark: prefix activates when data-theme="dark" is set on any
+   ancestor, matching the Omnyvora design system's theming convention.
+   Source: ui_ux/omnyvora_design_system/colors_and_type.css — [data-theme="dark"]
+*/
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ── Self-hosted fonts ───────────────────────────────────────────────────────
+   Source: ui_ux/omnyvora_design_system/fonts/ (variable fonts only)
+   Files copied to public/fonts/ for static serving.
+*/
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-VariableFont_opsz_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-Italic-VariableFont_opsz_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── Primitive tokens — raw palette ─────────────────────────────────────────
+   Source: src/core/design/tokens/global.ts → primitives
+   Never reference these directly in components. Always use semantic tokens.
+*/
+:root {
+  /* Gray ramp — 10 steps, gray-950 → white */
+  --gray-950: #111111;
+  --gray-900: #1A1A1A;
+  --gray-800: #2A2A2A;
+  --gray-700: #444444;
+  --gray-500: #666666;
+  --gray-400: #999999;
+  --gray-200: #CCCCCC;
+  --gray-100: #E8E8E8;
+  --gray-50:  #F6F6F6;
+  --white:    #FFFFFF;
+
+  /* Status — identical in both modes */
+  --green-500: #1DB37B;  --green-50:  #DCFCE7;
+  --red-500:   #E5484D;  --red-50:    #FFE4E6;
+  --amber-500: #F5A623;  --amber-50:  #FEF3C7;
+  --info-500:  #3B82F6;  --info-50:   #DBEAFE;
+
+  /* Accent primitive families */
+  --purple-600: #534AB7;  --purple-50: #EEEDFE;  --purple-900: #1A1830;
+  --teal-600:   #0D9488;  --teal-50:   #CCFBF1;  --teal-900:   #0A2420;
+  --blue-600:   #2563EB;  --blue-50:   #DBEAFE;  --blue-900:   #0F1E40;
+  --indigo-600: #4F46E5;  --indigo-50: #EEF0FF;  --indigo-900: #161634;
+
+  /* Fonts */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type scale — size */
+  --display-lg-size: 32px;  --display-md-size: 24px;  --display-sm-size: 20px;
+  --body-lg-size:    16px;  --body-md-size:    14px;  --body-sm-size:    13px;
+  --label-lg-size:   13px;  --label-md-size:   11px;
+  --caption-size:    11px;  --code-size:       13px;
+
+  /* Type scale — weight (display is 500, not bold — tightened tracking) */
+  --display-lg-weight: 500;  --display-md-weight: 500;  --display-sm-weight: 500;
+  --body-lg-weight:    400;  --body-md-weight:    400;  --body-sm-weight:    400;
+  --label-lg-weight:   500;  --label-md-weight:   500;
+  --caption-weight:    400;  --code-weight:       400;
+
+  /* Type scale — line-height */
+  --display-lg-lh: 1.15;  --display-md-lh: 1.2;   --display-sm-lh: 1.25;
+  --body-lg-lh:    1.6;   --body-md-lh:    1.6;   --body-sm-lh:    1.5;
+  --label-lg-lh:   1.4;   --label-md-lh:   1.4;   --caption-lh:    1.5;
+
+  /* Type scale — letter-spacing (label-md uppercase is the brand signature) */
+  --display-lg-tracking: -0.5px;  --display-md-tracking: -0.4px;  --display-sm-tracking: -0.3px;
+  --label-lg-tracking:   0.01em;  --label-md-tracking:   0.04em;
+
+  /* Spacing — 4px base, 10 steps */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 20px;  --space-6: 24px;  --space-7: 32px;  --space-8: 40px;
+  --space-9: 48px;  --space-10: 64px;
+
+  /* Radius — purposeful ladder, larger surfaces get rounder corners */
+  --radius-input:   6px;
+  --radius-button:  8px;
+  --radius-icon:    10px;
+  --radius-card:    12px;
+  --radius-modal:   16px;
+  --radius-logo:    16px;
+  --radius-tooltip: 6px;
+  --radius-pill:    999px;
+
+  /* Border */
+  --border-width: 0.5px;
+
+  /* Elevation — pure black, low opacity (0.08 → 0.16) */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+  /* Motion — one easing curve (ease-out-expo), three durations */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 300ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout grid */
+  --grid-columns:  12;
+  --grid-gutter:   24px;
+  --grid-margin:   32px;
+  --content-max:   1200px;
+  --sidebar-width: 220px;
+}
+
+/* ── Semantic tokens — light mode (default) ──────────────────────────────────
+   Source: src/core/design/tokens/global.ts → light
+   To change: edit the token file, update this block.
+*/
+:root,
+[data-theme="light"] {
+  --bg-page:           var(--white);
+  --bg-surface:        var(--gray-50);
+  --bg-surface-raised: var(--white);
+  --bg-overlay:        var(--white);
+
+  --border-default: var(--gray-100);
+  --border-strong:  var(--gray-200);
+  --border-focus:   color-mix(in srgb, var(--accent-primary) 40%, transparent);
+
+  --text-primary:   var(--gray-950);
+  --text-secondary: var(--gray-500);
+  --text-tertiary:  var(--gray-400);
+  --text-disabled:  var(--gray-200);
+  --text-on-accent: var(--white);
+
+  --btn-primary-bg:    var(--gray-950);
+  --btn-primary-text:  var(--white);
+  --btn-primary-hover: var(--gray-800);
+
+  --btn-secondary-bg:       var(--white);
+  --btn-secondary-border:   var(--gray-100);
+  --btn-secondary-text:     var(--gray-700);
+  --btn-secondary-hover-bg: var(--gray-50);
+
+  --input-bg:           var(--white);
+  --input-border:       var(--gray-100);
+  --input-border-focus: var(--gray-700);
+  --input-text:         var(--gray-950);
+  --input-placeholder:  var(--gray-400);
+
+  --status-success:    var(--green-500);  --status-success-bg: var(--green-50);
+  --status-error:      var(--red-500);    --status-error-bg:   var(--red-50);
+  --status-warning:    var(--amber-500);  --status-warning-bg: var(--amber-50);
+  --status-info:       var(--info-500);   --status-info-bg:    var(--info-50);
+
+  color-scheme: light;
+}
+
+/* ── Semantic tokens — dark mode ─────────────────────────────────────────────
+   Source: src/core/design/tokens/global.ts → dark
+*/
+[data-theme="dark"] {
+  --bg-page:           var(--gray-950);
+  --bg-surface:        var(--gray-900);
+  --bg-surface-raised: var(--gray-800);
+  --bg-overlay:        var(--gray-900);
+
+  --border-default: var(--gray-800);
+  --border-strong:  var(--gray-700);
+  --border-focus:   color-mix(in srgb, var(--accent-primary) 50%, transparent);
+
+  --text-primary:   var(--gray-50);
+  --text-secondary: var(--gray-400);
+  --text-tertiary:  var(--gray-500);
+  --text-disabled:  var(--gray-700);
+  --text-on-accent: var(--white);
+
+  --btn-primary-bg:    var(--gray-50);
+  --btn-primary-text:  var(--gray-950);
+  --btn-primary-hover: var(--gray-200);
+
+  --btn-secondary-bg:       var(--gray-900);
+  --btn-secondary-border:   var(--gray-800);
+  --btn-secondary-text:     var(--gray-400);
+  --btn-secondary-hover-bg: var(--gray-800);
+
+  --input-bg:           var(--gray-950);
+  --input-border:       var(--gray-800);
+  --input-border-focus: var(--gray-400);
+  --input-text:         var(--gray-50);
+  --input-placeholder:  var(--gray-500);
+
+  --status-success:    var(--green-500);  --status-success-bg: var(--green-50);
+  --status-error:      var(--red-500);    --status-error-bg:   var(--red-50);
+  --status-warning:    var(--amber-500);  --status-warning-bg: var(--amber-50);
+  --status-info:       var(--info-500);   --status-info-bg:    var(--info-50);
+
+  color-scheme: dark;
+}
+
+/* ── Default accent — platform shell / dashboard (indigo) ────────────────────
+   Source: src/core/design/tokens/global.ts → defaultAccent
+   Account shell: authentication, account management, dashboard.
+   Applied whenever no [data-service] is present.
+*/
+:root {
+  --accent-primary: var(--indigo-600);
+  --accent-subtle:  var(--indigo-50);
+  --accent-text:    var(--indigo-600);
+}
+[data-theme="dark"] {
+  --accent-subtle: var(--indigo-900);
+  --accent-text:   color-mix(in srgb, var(--indigo-600) 60%, #fff);
+}
+
+/* ── Service: CV Builder ─────────────────────────────────────────────────────
+   Source: src/core/design/tokens/services/cv-builder.ts
+   Maps to "productivity" tool — blue-600 #2563EB
+   Applied via: data-service="cv-builder" on route layout wrapper
+*/
+[data-service="cv-builder"] {
+  --accent-primary: var(--blue-600);
+  --accent-subtle:  var(--blue-50);
+  --accent-text:    var(--blue-600);
+}
+[data-theme="dark"] [data-service="cv-builder"],
+[data-service="cv-builder"][data-theme="dark"] {
+  --accent-subtle: var(--blue-900);
+  --accent-text:   color-mix(in srgb, var(--blue-600) 60%, #fff);
+}
+
+/* ── Service: Portfolio ──────────────────────────────────────────────────────
+   Source: src/core/design/tokens/services/portfolio.ts
+   Maps to "portfolio" tool — purple-600 #534AB7
+*/
+[data-service="portfolio"] {
+  --accent-primary: var(--purple-600);
+  --accent-subtle:  var(--purple-50);
+  --accent-text:    var(--purple-600);
+}
+[data-theme="dark"] [data-service="portfolio"],
+[data-service="portfolio"][data-theme="dark"] {
+  --accent-subtle: var(--purple-900);
+  --accent-text:   color-mix(in srgb, var(--purple-600) 62%, #fff);
+}
+
+/* ── Service: Image Enhancer ─────────────────────────────────────────────────
+   Source: src/core/design/tokens/services/image-enhancer.ts
+   Maps to "photo" tool — teal-600 #0D9488
+*/
+[data-service="image-enhancer"] {
+  --accent-primary: var(--teal-600);
+  --accent-subtle:  var(--teal-50);
+  --accent-text:    var(--teal-600);
+}
+[data-theme="dark"] [data-service="image-enhancer"],
+[data-service="image-enhancer"][data-theme="dark"] {
+  --accent-subtle: var(--teal-900);
+  --accent-text:   color-mix(in srgb, var(--teal-600) 55%, #fff);
+}
+
+/* ── Tailwind v4 @theme mapping ──────────────────────────────────────────────
+   Every Tailwind color utility resolves to a design system CSS custom property.
+   Chain: bg-background → var(--color-background) → var(--bg-page) → runtime value.
+   @theme inline: does not emit CSS vars; tells Tailwind what utilities resolve to.
+   Source: mirrors every key in src/core/design/tokens/global.ts
+*/
+@theme inline {
+  /* Backgrounds */
+  --color-background:     var(--bg-page);
+  --color-surface:        var(--bg-surface);
+  --color-surface-raised: var(--bg-surface-raised);
+  --color-overlay:        var(--bg-overlay);
+
+  /* Semantic UI roles — shadcn-compatible naming */
+  --color-foreground:           var(--text-primary);
+  --color-card:                 var(--bg-surface-raised);
+  --color-card-foreground:      var(--text-primary);
+  --color-popover:              var(--bg-overlay);
+  --color-popover-foreground:   var(--text-primary);
+  --color-primary:              var(--btn-primary-bg);
+  --color-primary-foreground:   var(--btn-primary-text);
+  --color-secondary:            var(--btn-secondary-bg);
+  --color-secondary-foreground: var(--btn-secondary-text);
+  --color-muted:                var(--bg-surface);
+  --color-muted-foreground:     var(--text-secondary);
+  --color-accent:               var(--accent-primary);
+  --color-accent-foreground:    var(--text-on-accent);
+  --color-destructive:          var(--status-error);
+  --color-destructive-foreground: var(--white);
+  --color-border:               var(--border-default);
+  --color-input:                var(--input-border);
+  --color-ring:                 var(--accent-primary);
+
+  /* Text shades */
+  --color-text-primary:   var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary:  var(--text-tertiary);
+  --color-text-disabled:  var(--text-disabled);
+  --color-text-on-accent: var(--text-on-accent);
+
+  /* Status */
+  --color-success:        var(--status-success);
+  --color-success-subtle: var(--status-success-bg);
+  --color-error:          var(--status-error);
+  --color-error-subtle:   var(--status-error-bg);
+  --color-warning:        var(--status-warning);
+  --color-warning-subtle: var(--status-warning-bg);
+  --color-info:           var(--status-info);
+  --color-info-subtle:    var(--status-info-bg);
+
+  /* Accent (service-swappable — 2 tokens swap per service) */
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-subtle:  var(--accent-subtle);
+  --color-accent-text:    var(--accent-text);
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Radius */
+  --radius-input:   var(--radius-input);
+  --radius-button:  var(--radius-button);
+  --radius-icon:    var(--radius-icon);
+  --radius-card:    var(--radius-card);
+  --radius-modal:   var(--radius-modal);
+  --radius-tooltip: var(--radius-tooltip);
+  --radius-pill:    var(--radius-pill);
+  --radius-sm:      var(--radius-input);
+  --radius-md:      var(--radius-button);
+  --radius-lg:      var(--radius-card);
+  --radius-xl:      var(--radius-modal);
+  --radius-full:    var(--radius-pill);
+
+  /* Shadows */
+  --shadow-sm: var(--shadow-1);
+  --shadow-md: var(--shadow-2);
+  --shadow-lg: var(--shadow-3);
+}
+
+/* ── shadcn/ui bridge vars ───────────────────────────────────────────────────
+   shadcn components reference --background, --foreground, --primary, etc.
+   These vars point to design system semantic tokens — one indirection only.
+   No raw values here; all values resolve through the design system chain.
+*/
+:root,
+[data-theme="light"] {
+  --background:             var(--bg-page);
+  --foreground:             var(--text-primary);
+  --card:                   var(--bg-surface-raised);
+  --card-foreground:        var(--text-primary);
+  --popover:                var(--bg-overlay);
+  --popover-foreground:     var(--text-primary);
+  --primary:                var(--btn-primary-bg);
+  --primary-foreground:     var(--btn-primary-text);
+  --secondary:              var(--btn-secondary-bg);
+  --secondary-foreground:   var(--btn-secondary-text);
+  --muted:                  var(--bg-surface);
+  --muted-foreground:       var(--text-secondary);
+  --accent:                 var(--accent-primary);
+  --accent-foreground:      var(--text-on-accent);
+  --destructive:            var(--status-error);
+  --destructive-foreground: var(--white);
+  --border:                 var(--border-default);
+  --input:                  var(--input-border);
+  --ring:                   var(--accent-primary);
+  --radius:                 var(--radius-button);
+}
+
+[data-theme="dark"] {
+  --background:             var(--bg-page);
+  --foreground:             var(--text-primary);
+  --card:                   var(--bg-surface-raised);
+  --card-foreground:        var(--text-primary);
+  --popover:                var(--bg-overlay);
+  --popover-foreground:     var(--text-primary);
+  --primary:                var(--btn-primary-bg);
+  --primary-foreground:     var(--btn-primary-text);
+  --secondary:              var(--btn-secondary-bg);
+  --secondary-foreground:   var(--btn-secondary-text);
+  --muted:                  var(--bg-surface);
+  --muted-foreground:       var(--text-secondary);
+  --accent:                 var(--accent-primary);
+  --accent-foreground:      var(--text-on-accent);
+  --destructive:            var(--status-error);
+  --destructive-foreground: var(--white);
+  --border:                 var(--border-default);
+  --input:                  var(--input-border);
+  --ring:                   var(--accent-primary);
+  --radius:                 var(--radius-button);
+}
+
+/* ── Base resets ─────────────────────────────────────────────────────────────
+   Hairline 0.5px borders — a deliberate refined detail from the design system.
+   Hard rule: interactive states change only color/opacity/border, never size.
+*/
+*,
+*::before,
+*::after {
+  border-color: var(--border-default);
+  border-width: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--body-md-size);
+  line-height: var(--body-md-lh);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

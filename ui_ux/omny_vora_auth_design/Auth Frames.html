@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-tool="productivity">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Omnyvora — Auth Frames</title>
+<link rel="stylesheet" href="ds/colors_and_type.css">
+<link rel="stylesheet" href="ds/components.css">
+<style>
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg-page); font-family: var(--font-sans); }
+  #root { height: 100vh; }
+  a { text-decoration: none; }
+  * { box-sizing: border-box; }
+  @keyframes authspin { to { transform: rotate(360deg); } }
+  /* design-canvas hides scrollbars inside cards; keep inputs crisp */
+  .input, .btn { font-family: var(--font-sans); }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="auth-icons.jsx"></script>
+<script type="text/babel" src="auth-ui.jsx"></script>
+<script type="text/babel" src="auth-screens.jsx"></script>
+<script type="text/babel" src="auth-reset.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel">
+function AuthCanvas() {
+  return (
+    <DesignCanvas>
+
+      {/* ============================ LOGIN ============================ */}
+      <DCSection id="login" title="01 · Login" subtitle="Sign in — mobile (390) + desktop (1280), with field & button states">
+        <DCArtboard id="login-m" label="Mobile · Default" width={390} height={844}>
+          <LoginScreen layout="mobile" />
+        </DCArtboard>
+        <DCArtboard id="login-d" label="Desktop · Default" width={1280} height={720}>
+          <LoginScreen layout="desktop" />
+        </DCArtboard>
+        <DCArtboard id="login-email-err" label="State · Email error" width={480} height={620}>
+          <LoginScreen layout="desktop" emailError="Please enter a valid email address" />
+        </DCArtboard>
+        <DCArtboard id="login-pw-err" label="State · Incorrect password" width={480} height={620}>
+          <LoginScreen layout="desktop" passwordError="Incorrect password" />
+        </DCArtboard>
+        <DCArtboard id="login-loading" label="State · Submitting" width={480} height={620}>
+          <LoginScreen layout="desktop" loading />
+        </DCArtboard>
+      </DCSection>
+
+      {/* ============================ REGISTER ============================ */}
+      <DCSection id="register" title="02 · Register" subtitle="Create account with inline OTP — mobile + desktop, plus OTP & error states">
+        <DCArtboard id="reg-m" label="Mobile · Default" width={390} height={980}>
+          <RegisterScreen layout="mobile" />
+        </DCArtboard>
+        <DCArtboard id="reg-d" label="Desktop · Default" width={1280} height={900}>
+          <RegisterScreen layout="desktop" />
+        </DCArtboard>
+        <DCArtboard id="reg-otp-filled" label="OTP · Filled" width={500} height={820}>
+          <RegisterScreen layout="desktop" otpValue="481920" />
+        </DCArtboard>
+        <DCArtboard id="reg-otp-error" label="OTP · Error" width={500} height={820}>
+          <RegisterScreen layout="desktop" otpState="error" otpValue="481920" />
+        </DCArtboard>
+        <DCArtboard id="reg-otp-success" label="OTP · Success" width={500} height={820}>
+          <RegisterScreen layout="desktop" otpState="success" otpValue="481920" />
+        </DCArtboard>
+        <DCArtboard id="reg-email-err" label="State · Email exists" width={500} height={820}>
+          <RegisterScreen layout="desktop" emailError="An account with this email already exists" />
+        </DCArtboard>
+        <DCArtboard id="reg-pw-err" label="State · Password rule" width={500} height={820}>
+          <RegisterScreen layout="desktop" passwordError="Password must be at least 8 characters" />
+        </DCArtboard>
+        <DCArtboard id="reg-loading" label="State · Submitting" width={500} height={820}>
+          <RegisterScreen layout="desktop" loading />
+        </DCArtboard>
+      </DCSection>
+
+      {/* ============================ SEND OTP ============================ */}
+      <DCSection id="sendotp" title="03 · Send OTP" subtitle="Focused verify page — full-page, modal overlay, success & error states">
+        <DCArtboard id="sendotp-m" label="Mobile · Default" width={390} height={760}>
+          <SendOtpScreen layout="mobile" />
+        </DCArtboard>
+        <DCArtboard id="sendotp-d" label="Desktop · Default" width={1280} height={700}>
+          <SendOtpScreen layout="desktop" />
+        </DCArtboard>
+        <DCArtboard id="sendotp-modal" label="Modal · Dialog overlay" width={1280} height={700}>
+          <SendOtpModal />
+        </DCArtboard>
+        <DCArtboard id="sendotp-success" label="State · Code sent" width={480} height={560}>
+          <SendOtpScreen layout="desktop" variant="success" />
+        </DCArtboard>
+        <DCArtboard id="sendotp-reset" label="Variant · For password reset" width={480} height={620}>
+          <SendOtpScreen layout="desktop" purpose="Password reset" />
+        </DCArtboard>
+        <DCArtboard id="sendotp-err1" label="State · Not registered" width={480} height={620}>
+          <SendOtpScreen layout="desktop" error="This email is not registered" />
+        </DCArtboard>
+        <DCArtboard id="sendotp-err2" label="State · Rate limited" width={480} height={620}>
+          <SendOtpScreen layout="desktop" error="Too many requests. Try again later." />
+        </DCArtboard>
+      </DCSection>
+
+      {/* ============================ RESET PASSWORD ============================ */}
+      <DCSection id="reset" title="04 · Reset password" subtitle="Three-step flow with step indicator — interactive desktop, each step, and terminal state">
+        <DCArtboard id="reset-m" label="Mobile · Interactive flow" width={390} height={840}>
+          <ResetPasswordScreen layout="mobile" />
+        </DCArtboard>
+        <DCArtboard id="reset-d" label="Desktop · Interactive flow" width={1280} height={760}>
+          <ResetPasswordScreen layout="desktop" />
+        </DCArtboard>
+        <DCArtboard id="reset-s1" label="Step 1 · Request OTP" width={580} height={560}>
+          <ResetPasswordScreen layout="desktop" forceStep={0} />
+        </DCArtboard>
+        <DCArtboard id="reset-s2" label="Step 2 · Verify OTP" width={580} height={640}>
+          <ResetPasswordScreen layout="desktop" forceStep={1} otpValue="481920" />
+        </DCArtboard>
+        <DCArtboard id="reset-s3" label="Step 3 · New password" width={580} height={700}>
+          <ResetPasswordScreen layout="desktop" forceStep={2} />
+        </DCArtboard>
+        <DCArtboard id="reset-otp-err" label="Step 2 · Invalid code" width={580} height={640}>
+          <ResetPasswordScreen layout="desktop" forceStep={1} otpState="error" otpValue="481920" />
+        </DCArtboard>
+        <DCArtboard id="reset-success" label="Terminal · Success" width={580} height={560}>
+          <ResetPasswordScreen layout="desktop" forceSuccess />
+        </DCArtboard>
+      </DCSection>
+
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<AuthCanvas />);
+</script>
+</body>
+</html>

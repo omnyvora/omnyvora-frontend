@@ -1,0 +1,330 @@
+/* ============================================================================
+   OMNYVORA DESIGN SYSTEM — Foundations
+   colors_and_type.css  ·  v1.0
+   ----------------------------------------------------------------------------
+   Three-layer token architecture:
+     1. PRIMITIVES  (--gray-950, --purple-600 …)  never used directly
+     2. SEMANTIC    (--text-primary, --btn-primary-bg …)  components use these
+     3. THEME       (--accent-primary, --accent-subtle)   swapped per tool
+   Switch light/dark with  [data-theme="dark"]  on a wrapper or <html>.
+   Switch tool theme with   [data-tool="portfolio|photo|productivity"].
+   ========================================================================== */
+
+/* ----------------------------------------------------------------------------
+   FONTS  (self-hosted, variable)
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter-VariableFont_opsz_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("fonts/Inter-Italic-VariableFont_opsz_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ============================================================================
+   1 · PRIMITIVE TOKENS  — the raw palette. Never reference in components.
+   ========================================================================== */
+:root {
+  /* Grays */
+  --gray-950: #111111;
+  --gray-900: #1A1A1A;
+  --gray-800: #2A2A2A;
+  --gray-700: #444444;
+  --gray-500: #666666;
+  --gray-400: #999999;
+  --gray-200: #CCCCCC;
+  --gray-100: #E8E8E8;
+  --gray-50:  #F6F6F6;
+  --white:    #FFFFFF;
+
+  /* Status (identical in both modes) */
+  --green-500: #1DB37B;
+  --green-50:  #DCFCE7;
+  --red-500:   #E5484D;
+  --red-50:    #FFE4E6;
+  --amber-500: #F5A623;
+  --amber-50:  #FEF3C7;
+  --info-500:  #3B82F6;
+  --info-50:   #DBEAFE;
+
+  /* Accent families (only one tool loaded at a time) */
+  --purple-600: #534AB7;  --purple-50: #EEEDFE;  --purple-900: #1A1830;
+  --teal-600:   #0D9488;  --teal-50:   #CCFBF1;  --teal-900:   #0A2420;
+  --blue-600:   #2563EB;  --blue-50:   #DBEAFE;  --blue-900:   #0F1E40;
+  /* Account-shell accent — indigo. Trust / security / stability for
+     authentication, account management, and the user dashboard. */
+  --indigo-600: #4F46E5;  --indigo-50: #EEF0FF;  --indigo-900: #161634;
+
+  /* --------------------------------------------------------------------------
+     TYPE SCALE  (size · weight · line-height · tracking)
+     ------------------------------------------------------------------------ */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --display-lg-size: 32px; --display-lg-weight: 500; --display-lg-lh: 1.15; --display-lg-tracking: -0.5px;
+  --display-md-size: 24px; --display-md-weight: 500; --display-md-lh: 1.2;  --display-md-tracking: -0.4px;
+  --display-sm-size: 20px; --display-sm-weight: 500; --display-sm-lh: 1.25; --display-sm-tracking: -0.3px;
+  --body-lg-size: 16px;    --body-lg-weight: 400;    --body-lg-lh: 1.6;
+  --body-md-size: 14px;    --body-md-weight: 400;    --body-md-lh: 1.6;
+  --body-sm-size: 13px;    --body-sm-weight: 400;    --body-sm-lh: 1.5;
+  --label-lg-size: 13px;   --label-lg-weight: 500;   --label-lg-lh: 1.4;   --label-lg-tracking: 0.01em;
+  --label-md-size: 11px;   --label-md-weight: 500;   --label-md-lh: 1.4;   --label-md-tracking: 0.04em;
+  --caption-size: 11px;    --caption-weight: 400;    --caption-lh: 1.5;
+  --code-size: 13px;       --code-weight: 400;
+
+  /* --------------------------------------------------------------------------
+     SPACING  (4px base)
+     ------------------------------------------------------------------------ */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* --------------------------------------------------------------------------
+     RADIUS
+     ------------------------------------------------------------------------ */
+  --radius-input: 6px;
+  --radius-button: 8px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
+  --radius-icon: 10px;
+  --radius-pill: 999px;
+  --radius-logo: 16px;
+  --radius-tooltip: 6px;
+
+  /* --------------------------------------------------------------------------
+     BORDER
+     ------------------------------------------------------------------------ */
+  --border-width: 0.5px;
+
+  /* --------------------------------------------------------------------------
+     ELEVATION
+     ------------------------------------------------------------------------ */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-2: 0 4px 16px rgba(0,0,0,0.12);
+  --shadow-3: 0 8px 32px rgba(0,0,0,0.16);
+
+  /* --------------------------------------------------------------------------
+     MOTION
+     ------------------------------------------------------------------------ */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 300ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --------------------------------------------------------------------------
+     LAYOUT GRID
+     ------------------------------------------------------------------------ */
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-margin: 32px;
+  --content-max: 1200px;
+  --sidebar-width: 220px;
+}
+
+/* ============================================================================
+   2 · SEMANTIC TOKENS — LIGHT MODE (default)
+   Components reference ONLY these.
+   ========================================================================== */
+:root,
+[data-theme="light"] {
+  --bg-page:            var(--white);
+  --bg-surface:         var(--gray-50);
+  --bg-surface-raised:  var(--white);   /* pair with --shadow-1 */
+  --bg-overlay:         var(--white);   /* pair with --shadow-3 */
+
+  --border-default:     var(--gray-100);
+  --border-strong:      var(--gray-200);
+  --border-focus:       color-mix(in srgb, var(--accent-primary) 40%, transparent);
+
+  --text-primary:       var(--gray-950);
+  --text-secondary:     var(--gray-500);
+  --text-tertiary:      var(--gray-400);
+  --text-disabled:      var(--gray-200);
+  --text-on-accent:     var(--white);
+
+  --btn-primary-bg:     var(--gray-950);
+  --btn-primary-text:   var(--white);
+  --btn-primary-hover:  var(--gray-800);
+
+  --btn-secondary-bg:        var(--white);
+  --btn-secondary-border:    var(--gray-100);
+  --btn-secondary-text:      var(--gray-700);
+  --btn-secondary-hover-bg:  var(--gray-50);
+
+  --input-bg:           var(--white);
+  --input-border:       var(--gray-100);
+  --input-border-focus: var(--gray-700);
+  --input-text:         var(--gray-950);
+  --input-placeholder:  var(--gray-400);
+
+  --status-success:     var(--green-500);
+  --status-success-bg:  var(--green-50);
+  --status-error:       var(--red-500);
+  --status-error-bg:    var(--red-50);
+  --status-warning:     var(--amber-500);
+  --status-warning-bg:  var(--amber-50);
+  --status-info:        var(--info-500);
+  --status-info-bg:     var(--info-50);
+
+  /* accent-text resolves per tool below */
+  color-scheme: light;
+}
+
+/* ============================================================================
+   2 · SEMANTIC TOKENS — DARK MODE (inverted hierarchy)
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-page:            var(--gray-950);
+  --bg-surface:         var(--gray-900);
+  --bg-surface-raised:  var(--gray-800);
+  --bg-overlay:         var(--gray-900);  /* pair with --shadow-3 */
+
+  --border-default:     var(--gray-800);
+  --border-strong:      var(--gray-700);
+  --border-focus:       color-mix(in srgb, var(--accent-primary) 50%, transparent);
+
+  --text-primary:       var(--gray-50);
+  --text-secondary:     var(--gray-400);
+  --text-tertiary:      var(--gray-500);
+  --text-disabled:      var(--gray-700);
+  --text-on-accent:     var(--white);
+
+  --btn-primary-bg:     var(--gray-50);
+  --btn-primary-text:   var(--gray-950);
+  --btn-primary-hover:  var(--gray-200);
+
+  --btn-secondary-bg:        var(--gray-900);
+  --btn-secondary-border:    var(--gray-800);
+  --btn-secondary-text:      var(--gray-400);
+  --btn-secondary-hover-bg:  var(--gray-800);
+
+  --input-bg:           var(--gray-950);
+  --input-border:       var(--gray-800);
+  --input-border-focus: var(--gray-400);
+  --input-text:         var(--gray-50);
+  --input-placeholder:  var(--gray-500);
+
+  --status-success:     var(--green-500);
+  --status-success-bg:  var(--green-50);
+  --status-error:       var(--red-500);
+  --status-error-bg:    var(--red-50);
+  --status-warning:     var(--amber-500);
+  --status-warning-bg:  var(--amber-50);
+  --status-info:        var(--info-500);
+  --status-info-bg:     var(--info-50);
+
+  color-scheme: dark;
+}
+
+/* ============================================================================
+   3 · THEME TOKENS — PER-TOOL ACCENT
+   Swap a tool by setting [data-tool] on the same element as [data-theme]
+   (or anywhere up the tree). ONLY these tokens change between tools.
+   Default tool = portfolio (purple).
+   ========================================================================== */
+:root,
+[data-tool="portfolio"] {
+  --accent-primary: var(--purple-600);
+  --accent-subtle:  var(--purple-50);
+  --accent-text:    var(--purple-600);
+}
+[data-theme="dark"][data-tool="portfolio"],
+[data-theme="dark"] [data-tool="portfolio"],
+[data-tool="portfolio"][data-theme="dark"] {
+  --accent-subtle: var(--purple-900);
+}
+
+[data-tool="photo"] {
+  --accent-primary: var(--teal-600);
+  --accent-subtle:  var(--teal-50);
+  --accent-text:    var(--teal-600);
+}
+[data-theme="dark"] [data-tool="photo"],
+[data-theme="dark"][data-tool="photo"] {
+  --accent-subtle: var(--teal-900);
+}
+
+[data-tool="productivity"] {
+  --accent-primary: var(--blue-600);
+  --accent-subtle:  var(--blue-50);
+  --accent-text:    var(--blue-600);
+}
+[data-theme="dark"] [data-tool="productivity"],
+[data-theme="dark"][data-tool="productivity"] {
+  --accent-subtle: var(--blue-900);
+}
+
+/* Account shell — authentication, account management, dashboard.
+   Indigo: trust, security, stability. The platform's neutral home base. */
+[data-tool="account"] {
+  --accent-primary: var(--indigo-600);
+  --accent-subtle:  var(--indigo-50);
+  --accent-text:    var(--indigo-600);
+}
+[data-theme="dark"] [data-tool="account"],
+[data-theme="dark"][data-tool="account"] {
+  --accent-subtle: var(--indigo-900);
+}
+
+/* Dark mode lightens accent-text for legibility on dark surfaces */
+[data-theme="dark"][data-tool="portfolio"],
+[data-theme="dark"] [data-tool="portfolio"] {
+  --accent-text: color-mix(in srgb, var(--purple-600) 62%, #fff);
+}
+[data-theme="dark"][data-tool="photo"],
+[data-theme="dark"] [data-tool="photo"] {
+  --accent-text: color-mix(in srgb, var(--teal-600) 55%, #fff);
+}
+[data-theme="dark"][data-tool="productivity"],
+[data-theme="dark"] [data-tool="productivity"] {
+  --accent-text: color-mix(in srgb, var(--blue-600) 60%, #fff);
+}
+[data-theme="dark"][data-tool="account"],
+[data-theme="dark"] [data-tool="account"] {
+  --accent-text: color-mix(in srgb, var(--indigo-600) 60%, #fff);
+}
+
+/* ============================================================================
+   TYPOGRAPHY HELPER CLASSES  (semantic application of the scale)
+   ========================================================================== */
+.ds-display-lg { font: var(--display-lg-weight) var(--display-lg-size)/var(--display-lg-lh) var(--font-sans); letter-spacing: var(--display-lg-tracking); }
+.ds-display-md { font: var(--display-md-weight) var(--display-md-size)/var(--display-md-lh) var(--font-sans); letter-spacing: var(--display-md-tracking); }
+.ds-display-sm { font: var(--display-sm-weight) var(--display-sm-size)/var(--display-sm-lh) var(--font-sans); letter-spacing: var(--display-sm-tracking); }
+.ds-body-lg    { font: var(--body-lg-weight) var(--body-lg-size)/var(--body-lg-lh) var(--font-sans); }
+.ds-body-md    { font: var(--body-md-weight) var(--body-md-size)/var(--body-md-lh) var(--font-sans); }
+.ds-body-sm    { font: var(--body-sm-weight) var(--body-sm-size)/var(--body-sm-lh) var(--font-sans); }
+.ds-label-lg   { font: var(--label-lg-weight) var(--label-lg-size)/var(--label-lg-lh) var(--font-sans); letter-spacing: var(--label-lg-tracking); }
+.ds-label-md   { font: var(--label-md-weight) var(--label-md-size)/var(--label-md-lh) var(--font-sans); letter-spacing: var(--label-md-tracking); text-transform: uppercase; }
+.ds-caption    { font: var(--caption-weight) var(--caption-size)/var(--caption-lh) var(--font-sans); }
+.ds-code       { font: var(--code-weight) var(--code-size) var(--font-mono); }

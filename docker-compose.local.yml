@@ -1,0 +1,24 @@
+# docker-compose.local.yml
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: deps           # deps stage has pnpm + node_modules; source is volume-mounted
+    container_name: ov_frontend
+    command: pnpm dev
+    env_file:
+      - .env.local
+    volumes:
+      - .:/app:delegated
+      - /app/node_modules    # anonymous volume — preserves container's installed node_modules
+      - /app/.next           # anonymous volume — preserves Next.js incremental cache
+    ports:
+      - "3000:3000"
+    networks:
+      - ov_network
+
+networks:
+  ov_network:
+    driver: bridge

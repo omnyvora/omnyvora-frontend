@@ -1,0 +1,40 @@
+# ===== Git =====
+.git
+.gitignore
+.github
+
+# ===== Node =====
+node_modules
+.pnpm-store
+
+# ===== Next.js =====
+.next
+out
+
+# ===== Environment =====
+.env
+.env.*
+!.env.example
+
+# ===== Tests & Docs =====
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+coverage/
+
+# ===== IDEs =====
+.vscode/
+.idea/
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+
+# ===== Developer Files (internal only) =====
+developers_files/
+.claude/

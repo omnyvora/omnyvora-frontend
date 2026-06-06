@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!-- @dsCard group="UI Kit — Omnyvora App" name="Omnyvora App — UI kit" subtitle="Interactive app shell · auth → themed dashboard · 2-token tool switch" viewport="1000x560" -->
+<html lang="en" data-theme="light" data-tool="portfolio">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Omnyvora — App UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="../../components.css">
+<style>
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg-page); }
+  #root { height: 100vh; }
+  a { text-decoration: none; }
+  @keyframes omFade { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes omPop { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+  @keyframes omToastIn { from { opacity: 0; transform: translateX(12px) } to { opacity: 1; transform: none } }
+  ::-webkit-scrollbar { width: 10px; height: 10px }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; border: 3px solid var(--bg-page) }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="AuthScreen.jsx"></script>
+<script type="text/babel" src="AppShell.jsx"></script>
+<script type="text/babel" src="Dashboard.jsx"></script>
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+function App() {
+  const [authed, setAuthed] = useState(false);
+  const [email, setEmail] = useState('');
+  const [theme, setTheme] = useState('light');
+  const [tool, setTool] = useState('portfolio');
+  const [nav, setNav] = useState('overview');
+  const [modal, setModal] = useState(false);
+  const [unread, setUnread] = useState(2);
+  const [toasts, setToasts] = useState([]);
+
+  // keep <html> attributes in sync so tokens resolve globally
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-tool', tool);
+  }, [theme, tool]);
+
+  const pushToast = useCallback((t) => {
+    const id = Date.now() + Math.random();
+    setToasts(ts => [...ts, { id, ...t }]);
+    setTimeout(() => setToasts(ts => ts.filter(x => x.id !== id)), 3600);
+  }, []);
+  const dismiss = useCallback(id => setToasts(ts => ts.filter(x => x.id !== id)), []);
+
+  if (!authed) {
+    return <AuthScreen theme={theme} tool={tool} onAuthed={(e) => { setEmail(e); setAuthed(true); pushToast({ tone: 'success', title: 'Welcome to Omnyvora', msg: 'Signed in successfully.' }); }} />;
+  }
+
+  const title = nav === 'settings' ? 'Settings' : nav === 'starred' ? 'Starred' : nav === 'projects' ? 'Projects' : TOOL_META[tool].label;
+
+  return (
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+      <Sidebar theme={theme} tool={tool} setTool={(t) => { setTool(t); setNav('overview'); }} nav={nav} setNav={setNav} />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, background: 'var(--bg-page)' }}>
+        <TopBar title={title} email={email} theme={theme} setTheme={setTheme}
+          unread={unread} onNotify={() => { setUnread(0); pushToast({ tone: 'info', title: 'All caught up', msg: 'No new notifications.' }); }}
+          onLogout={() => { setAuthed(false); setNav('overview'); }} />
+        <main style={{ flex: 1, overflowY: 'auto' }}>
+          <Dashboard tool={tool} nav={nav}
+            onNewProject={() => setModal(true)}
+            onDeleteProject={(name) => pushToast({ tone: 'error', title: 'Project deleted', msg: name + ' was removed.' })} />
+        </main>
+      </div>
+      {modal && <NewProjectModal tool={tool} onClose={() => setModal(false)}
+        onCreate={(name) => { setModal(false); pushToast({ tone: 'success', title: 'Project created', msg: name + ' is ready.' }); }} />}
+      <ToastStack toasts={toasts} dismiss={dismiss} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
