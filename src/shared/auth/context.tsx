@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import apiClient, { tokenStore } from "@/core/api/axios";
+import apiClient, { tokenStore, refreshTokenStore } from "@/core/api/axios";
 import { isApiSuccess } from "@/core/api/response";
 import { UserSchema, type User } from "./types";
 
@@ -29,9 +29,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      await apiClient.post("/v1/auth/logout/");
+      const refresh = refreshTokenStore.get();
+      if (refresh) await apiClient.post("/v1/auth/logout/", { refresh });
     } finally {
       tokenStore.clear();
+      refreshTokenStore.clear();
       setUser(null);
       router.replace("/login");
     }

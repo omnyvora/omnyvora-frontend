@@ -1,12 +1,19 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-// In-memory token store — intentionally not persisted to localStorage (XSS risk).
+// In-memory token stores — intentionally not persisted to localStorage (XSS risk).
 let accessToken: string | null = null;
+let refreshToken: string | null = null;
 
 export const tokenStore = {
   get: () => accessToken,
   set: (token: string) => { accessToken = token; },
   clear: () => { accessToken = null; },
+};
+
+export const refreshTokenStore = {
+  get: () => refreshToken,
+  set: (token: string) => { refreshToken = token; },
+  clear: () => { refreshToken = null; },
 };
 
 const apiClient = axios.create({
@@ -53,7 +60,7 @@ apiClient.interceptors.response.use(
     try {
       const { data } = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL ?? ""}/v1/auth/token/refresh/`,
-        {},
+        { refresh: refreshTokenStore.get() },
         { withCredentials: true }
       );
 
@@ -66,6 +73,7 @@ apiClient.interceptors.response.use(
       return apiClient(original);
     } catch {
       tokenStore.clear();
+      refreshTokenStore.clear();
       refreshQueue = [];
       // Redirect handled by the auth context, not here.
       window.dispatchEvent(new Event("auth:logout"));
