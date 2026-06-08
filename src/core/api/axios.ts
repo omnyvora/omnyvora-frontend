@@ -43,6 +43,12 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // No refresh token in memory — no session exists, no point attempting a refresh.
+    // Reject silently so the bootstrap catch block can handle it without triggering logout.
+    if (!refreshTokenStore.get()) {
+      return Promise.reject(error);
+    }
+
     original._retried = true;
 
     if (isRefreshing) {

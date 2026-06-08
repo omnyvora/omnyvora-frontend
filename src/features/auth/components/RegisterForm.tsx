@@ -17,7 +17,7 @@ import {
 import { useRegister, useRequestOtp } from "../hooks";
 import { RegisterRequestSchema, type RegisterRequest } from "../types";
 import { STRINGS, AUTH_ROUTES, OTP_PURPOSE, OTP_CHANNEL, OTP_RESEND_COOLDOWN_SECS } from "../constants";
-import { AuthLayout, AuthHeader, OrDivider, FooterLink } from "./AuthLayout";
+import { AuthLayout, AuthHeader, OrDivider, FooterLink, GoogleButton } from "./AuthLayout";
 import { OtpInput } from "./OtpInput";
 
 function useCountdown(start: number) {
@@ -350,15 +350,7 @@ export function RegisterForm() {
 
       <div className="flex flex-col gap-[var(--space-5)]">
         <OrDivider />
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full"
-          disabled
-          title="Coming soon"
-        >
-          {STRINGS.register.google}
-        </Button>
+        <GoogleButton label={STRINGS.register.google} disabled />
       </div>
     </AuthLayout>
   );

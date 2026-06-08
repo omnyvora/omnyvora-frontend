@@ -18,7 +18,7 @@ import {
 import { useLogin } from "../hooks";
 import { LoginRequestSchema, type LoginRequest } from "../types";
 import { STRINGS, AUTH_ROUTES } from "../constants";
-import { AuthLayout, AuthHeader, OrDivider, FooterLink } from "./AuthLayout";
+import { AuthLayout, AuthHeader, OrDivider, FooterLink, GoogleButton } from "./AuthLayout";
 
 export function LoginForm() {
   const [showPw, setShowPw] = useState(false);
@@ -154,15 +154,7 @@ export function LoginForm() {
 
       <div className="flex flex-col gap-[var(--space-5)]">
         <OrDivider />
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full"
-          disabled
-          title="Coming soon"
-        >
-          {STRINGS.login.google}
-        </Button>
+        <GoogleButton label={STRINGS.login.google} disabled />
       </div>
     </AuthLayout>
   );

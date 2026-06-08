@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // data-theme="light" activates the design system's light semantic tokens.
     // Toggle to "dark" here (or via client-side JS) to activate dark mode.
     <html lang="en" data-theme="light" suppressHydrationWarning>
-      <body>{children}</body>
+      <body><Providers>{children}</Providers></body>
     </html>
   );
 }

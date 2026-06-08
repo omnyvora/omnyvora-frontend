@@ -91,7 +91,7 @@ export function OtpInput({
               ? "border-[var(--status-error)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-error)_22%,transparent)]"
               : focusIdx === i
                 ? "border-[var(--accent-primary)] shadow-[0_0_0_3px_var(--border-focus)]"
-                : "border-[var(--input-border)]",
+                : "border-[var(--border-strong)]",
           )}
         />
       ))}
