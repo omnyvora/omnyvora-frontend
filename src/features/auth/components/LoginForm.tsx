@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
 import { Button }   from "@/shared/components/ui/button";
 import { Input }    from "@/shared/components/ui/input";
-import { Label }    from "@/shared/components/ui/label";
 import {
   Form,
   FormControl,
@@ -19,10 +19,20 @@ import { useLogin } from "../hooks";
 import { LoginRequestSchema, type LoginRequest } from "../types";
 import { STRINGS, AUTH_ROUTES } from "../constants";
 import { AuthLayout, AuthHeader, OrDivider, FooterLink, GoogleButton } from "./AuthLayout";
+import { safeRedirectPath } from "@/core/utils/redirect";
 
 export function LoginForm() {
   const [showPw, setShowPw] = useState(false);
-  const login = useLogin();
+  const searchParams = useSearchParams();
+  const nextParam  = searchParams.get("next");
+  const redirectTo = safeRedirectPath(nextParam);
+  const login = useLogin(redirectTo);
+
+  // Preserve ?next= when the user switches to the register page so that after
+  // registration they still land on the page they originally tried to access.
+  const registerHref = nextParam
+    ? `${AUTH_ROUTES.register}?next=${encodeURIComponent(nextParam)}`
+    : AUTH_ROUTES.register;
 
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginRequestSchema),
@@ -39,7 +49,7 @@ export function LoginForm() {
         <FooterLink
           prompt={STRINGS.login.footer}
           label={STRINGS.login.register}
-          href={AUTH_ROUTES.register}
+          href={registerHref}
         />
       }
     >

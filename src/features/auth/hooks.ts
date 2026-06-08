@@ -1,5 +1,6 @@
 "use client";
 
+import { flushSync } from "react-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { tokenStore, refreshTokenStore } from "@/core/api/axios";
@@ -58,7 +59,7 @@ export function useRequestOtp() {
 
 // ── Register ──────────────────────────────────────────────────────────────────
 
-export function useRegister() {
+export function useRegister(redirectTo: string = AUTH_ROUTES.dashboard) {
   const { setTokenAndUser } = useAuth();
   const router = useRouter();
 
@@ -69,8 +70,11 @@ export function useRegister() {
       return hydrateSession(res.data.access, res.data.refresh);
     },
     onSuccess: ({ access, user }) => {
-      setTokenAndUser(access, user);
-      router.replace(AUTH_ROUTES.dashboard);
+      // flushSync forces React to commit the auth state update synchronously
+      // before router.replace fires. Without this, AuthGuard renders with
+      // isAuthenticated=false and redirects back to login (race condition).
+      flushSync(() => setTokenAndUser(access, user));
+      router.replace(redirectTo);
     },
     onError: () => {
       tokenStore.clear();
@@ -81,7 +85,7 @@ export function useRegister() {
 
 // ── Login ─────────────────────────────────────────────────────────────────────
 
-export function useLogin() {
+export function useLogin(redirectTo: string = AUTH_ROUTES.dashboard) {
   const { setTokenAndUser } = useAuth();
   const router = useRouter();
 
@@ -92,8 +96,8 @@ export function useLogin() {
       return hydrateSession(res.data.access, res.data.refresh);
     },
     onSuccess: ({ access, user }) => {
-      setTokenAndUser(access, user);
-      router.replace(AUTH_ROUTES.dashboard);
+      flushSync(() => setTokenAndUser(access, user));
+      router.replace(redirectTo);
     },
     onError: () => {
       tokenStore.clear();

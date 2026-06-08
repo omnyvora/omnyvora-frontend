@@ -5,7 +5,7 @@ import type { User } from "@/shared/auth/types";
 // id comes back as a number from the backend; User expects a string.
 export function verifyResponseToUser(data: VerifyUserResponse): User {
   return {
-    id:         String(data.id),
+    id:         data.id,
     email:      data.email,
     first_name: data.first_name,
     last_name:  data.last_name,

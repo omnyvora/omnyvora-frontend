@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Mail, Lock, RefreshCw, Clock, Loader2, CheckCircle } from "lucide-react";
@@ -15,10 +16,11 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { useRegister, useRequestOtp } from "../hooks";
-import { RegisterRequestSchema, type RegisterRequest } from "../types";
+import { RegisterFormSchema, type RegisterFormValues } from "../types";
 import { STRINGS, AUTH_ROUTES, OTP_PURPOSE, OTP_CHANNEL, OTP_RESEND_COOLDOWN_SECS } from "../constants";
 import { AuthLayout, AuthHeader, OrDivider, FooterLink, GoogleButton } from "./AuthLayout";
 import { OtpInput } from "./OtpInput";
+import { safeRedirectPath } from "@/core/utils/redirect";
 
 function useCountdown(start: number) {
   const [secs, setSecs] = useState(start);
@@ -62,18 +64,28 @@ export function RegisterForm() {
   const [otpSent, setOtpSent]   = useState(false);
   const [pwScore, setPwScore]   = useState<0 | 1 | 2 | 3 | 4>(0);
 
+  const searchParams = useSearchParams();
+  const nextParam  = searchParams.get("next");
+  const redirectTo = safeRedirectPath(nextParam);
+
+  // Preserve ?next= when the user navigates back to the login page.
+  const loginHref = nextParam
+    ? `${AUTH_ROUTES.login}?next=${encodeURIComponent(nextParam)}`
+    : AUTH_ROUTES.login;
+
   const { secs, canResend, startCountdown } = useCountdown(OTP_RESEND_COOLDOWN_SECS);
-  const register   = useRegister();
+  const register   = useRegister(redirectTo);
   const requestOtp = useRequestOtp();
 
-  const form = useForm<RegisterRequest>({
-    resolver: zodResolver(RegisterRequestSchema),
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
-      first_name: "",
-      last_name:  "",
-      email:      "",
-      password:   "",
-      otp:        "",
+      first_name:       "",
+      last_name:        "",
+      email:            "",
+      password:         "",
+      confirm_password: "",
+      otp:              "",
     },
   });
 
@@ -99,8 +111,8 @@ export function RegisterForm() {
     );
   }
 
-  function onSubmit(values: RegisterRequest) {
-    register.mutate(values);
+  function onSubmit({ confirm_password: _, ...apiPayload }: RegisterFormValues) {
+    register.mutate(apiPayload);
   }
 
   const strength = STRENGTH_META[pwScore];
@@ -112,7 +124,7 @@ export function RegisterForm() {
         <FooterLink
           prompt={STRINGS.register.footer}
           label={STRINGS.register.signIn}
-          href={AUTH_ROUTES.login}
+          href={loginHref}
         />
       }
     >
@@ -277,6 +289,35 @@ export function RegisterForm() {
                         </span>
                       </div>
                     )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Confirm password */}
+          <FormField
+            control={form.control}
+            name="confirm_password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Confirm password <span className="text-[var(--status-error)]" aria-hidden="true">*</span>
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Lock
+                      size={16}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none"
+                    />
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Re-enter your password"
+                      autoComplete="new-password"
+                      className="pl-9"
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />

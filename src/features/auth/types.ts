@@ -27,6 +27,22 @@ export const RegisterRequestSchema = z.object({
 });
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
 
+// UI-only schema — confirm_password is validated here and stripped before the API call.
+export const RegisterFormSchema = z
+  .object({
+    first_name:       z.string().min(1, "First name is required"),
+    last_name:        z.string().min(1, "Last name is required"),
+    email:            z.string().email("Invalid email address"),
+    password:         z.string().min(8, "Password must be at least 8 characters"),
+    confirm_password: z.string().min(1, "Please confirm your password"),
+    otp:              z.string().length(OTP_LENGTH, `OTP must be ${OTP_LENGTH} digits`),
+  })
+  .refine((d) => d.password === d.confirm_password, {
+    message: "Passwords do not match",
+    path:    ["confirm_password"],
+  });
+export type RegisterFormValues = z.infer<typeof RegisterFormSchema>;
+
 export const RegisterResponseSchema = z.object({
   email:   z.string().email(),
   access:  z.string(),

@@ -68,33 +68,47 @@ export function OtpInput({
       className="flex gap-[var(--space-2)] justify-center"
       onPaste={handlePaste}
     >
-      {digits.map((d, i) => (
-        <input
-          key={i}
-          ref={(el) => { refs.current[i] = el; }}
-          value={d}
-          inputMode="numeric"
-          maxLength={1}
-          autoFocus={autoFocus && i === 0}
-          aria-label={`Digit ${i + 1}`}
-          onChange={(e) => update(i, e.target.value)}
-          onKeyDown={(e) => handleKey(i, e)}
-          onFocus={() => setFocusIdx(i)}
-          onBlur={() => setFocusIdx(-1)}
-          className={cn(
-            "w-12 h-12 text-center p-0 text-xl font-medium outline-none",
-            "bg-[var(--input-bg)] text-[var(--input-text)]",
-            "rounded-[var(--radius-input)]",
-            "border transition-[border-color,box-shadow] duration-[var(--duration-fast)]",
-            "caret-[var(--accent-primary)]",
-            hasError
-              ? "border-[var(--status-error)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--status-error)_22%,transparent)]"
-              : focusIdx === i
-                ? "border-[var(--accent-primary)] shadow-[0_0_0_3px_var(--border-focus)]"
-                : "border-[var(--border-strong)]",
-          )}
-        />
-      ))}
+      {digits.map((d, i) => {
+        const isFocused = focusIdx === i;
+        const borderColor = hasError
+          ? "var(--status-error)"
+          : isFocused
+            ? "var(--accent-primary)"
+            : "var(--border-strong)";
+        const boxShadow = hasError
+          ? "0 0 0 3px color-mix(in srgb, var(--status-error) 22%, transparent)"
+          : isFocused
+            ? "0 0 0 3px var(--border-focus)"
+            : "none";
+
+        return (
+          <input
+            key={i}
+            ref={(el) => { refs.current[i] = el; }}
+            value={d}
+            inputMode="numeric"
+            maxLength={1}
+            autoFocus={autoFocus && i === 0}
+            aria-label={`Digit ${i + 1}`}
+            onChange={(e) => update(i, e.target.value)}
+            onKeyDown={(e) => handleKey(i, e)}
+            onFocus={() => setFocusIdx(i)}
+            onBlur={() => setFocusIdx(-1)}
+            className={cn(
+              "w-12 h-12 text-center p-0 text-xl font-medium outline-none",
+              "bg-[var(--input-bg)] text-[var(--input-text)]",
+              "rounded-[var(--radius-input)]",
+              "transition-[border-color,box-shadow] duration-[var(--duration-fast)]",
+              "caret-[var(--accent-primary)]",
+            )}
+            style={{
+              border: "1px solid",
+              borderColor,
+              boxShadow,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
