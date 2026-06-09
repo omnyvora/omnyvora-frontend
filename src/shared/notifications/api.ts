@@ -1,8 +1,8 @@
 import apiClient from "@/core/api/axios";
 import type { ApiResponse } from "@/core/api/response";
-import type { Notification } from "./types";
+import type { NotificationPage } from "./types";
 
-export async function fetchNotifications(): Promise<ApiResponse<Notification[]>> {
+export async function fetchNotifications(): Promise<ApiResponse<NotificationPage>> {
   const res = await apiClient.get("/v1/notifications/");
   return res.data;
 }
@@ -17,7 +17,7 @@ export async function markAllRead(): Promise<ApiResponse<null>> {
   return res.data;
 }
 
-export async function markOneRead(id: string): Promise<ApiResponse<null>> {
+export async function markOneRead(id: number): Promise<ApiResponse<null>> {
   const res = await apiClient.patch(`/v1/notifications/${id}/read/`);
   return res.data;
 }

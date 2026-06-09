@@ -12,7 +12,7 @@ import apiClient from "@/core/api/axios";
 import { resolveServiceUrl } from "@/core/api/services";
 import { toServicesUI } from "@/features/catalog/transformers";
 import type { PlatformService } from "@/features/catalog/types";
-import type { Notification } from "@/shared/notifications/types";
+import type { Notification, NotificationPage } from "@/shared/notifications/types";
 
 const CATALOG_URL = resolveServiceUrl("catalog");
 
@@ -38,7 +38,7 @@ export function useDashboardNotifications() {
       const res = await apiClient.get("/v1/notifications/");
       const data = res.data;
       if (!isApiSuccess(data)) throw new Error(data.message);
-      return data.data as Notification[];
+      return (data.data as NotificationPage).results;
     },
     staleTime: 60_000,
   });

@@ -19,7 +19,7 @@ export function useNotifications() {
     queryFn: async (): Promise<Notification[]> => {
       const res = await fetchNotifications();
       if (!isApiSuccess(res)) throw new Error(res.message);
-      return res.data;
+      return res.data.results;
     },
     staleTime: 60_000,
   });
@@ -55,7 +55,7 @@ export function useMarkAllRead() {
 export function useMarkOneRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (id: number) => {
       const res = await markOneRead(id);
       if (!isApiSuccess(res)) throw new Error(res.message);
       return id;
