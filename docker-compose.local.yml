@@ -16,11 +16,11 @@ services:
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
     volumes:
-      - .:/app
+      - .:/app:delegated
       - /app/node_modules    # anonymous volume — preserves container's installed node_modules
       - /app/.next           # anonymous volume — preserves Next.js incremental cache
     ports:
-      - "3000:3000"
+      - "3030:3000"
     networks:
       - ov_network
 

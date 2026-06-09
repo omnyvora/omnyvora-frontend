@@ -28,8 +28,8 @@ import { AUTH_ROUTES } from "./constants";
 
 // ── Shared helper ─────────────────────────────────────────────────────────────
 
-// Fetches the full user profile after a successful auth action that returns tokens.
-// Stores both tokens in memory and resolves the complete User object.
+// Stores tokens and resolves the full User object via /verify/.
+// Access token goes to memory; refresh token goes to localStorage for reload persistence.
 async function hydrateSession(access: string, refresh: string) {
   tokenStore.set(access);
   refreshTokenStore.set(refresh);
@@ -43,7 +43,7 @@ async function hydrateSession(access: string, refresh: string) {
   const userParsed = UserSchema.safeParse(verifyResponseToUser(parsed.data));
   if (!userParsed.success) throw new Error("User shape mismatch");
 
-  return { access, refresh, user: userParsed.data };
+  return { access, user: userParsed.data };
 }
 
 // ── OTP ───────────────────────────────────────────────────────────────────────

@@ -6,7 +6,7 @@ export const ProfileSchema = z.object({
   first_name: z.string(),
   last_name:  z.string(),
   phone:      z.string().nullable(),
-  dob:        z.string().nullable(),
+  date_of_birth: z.string().nullable(),
   bio:        z.string().nullable(),
   avatar:     z.string().url().nullable(),
   created_at: z.string(),

@@ -62,10 +62,7 @@ export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export const LoginResponseSchema = z.object({
   access:  z.string(),
   refresh: z.string(),
-  user:    z.object({
-    id:    z.number(),
-    email: z.string().email(),
-  }),
+  user:    z.object({ id: z.number(), email: z.string().email() }),
 });
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
@@ -94,7 +91,8 @@ export const TokenRefreshRequestSchema = z.object({
 export type TokenRefreshRequest = z.infer<typeof TokenRefreshRequestSchema>;
 
 export const TokenRefreshResponseSchema = z.object({
-  access: z.string(),
+  access:  z.string(),
+  refresh: z.string().optional(), // present when ROTATE_REFRESH_TOKENS=True
 });
 export type TokenRefreshResponse = z.infer<typeof TokenRefreshResponseSchema>;
 

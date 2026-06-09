@@ -3,53 +3,74 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ShieldCheck, Lock, AlertTriangle, Eye, EyeOff, Mail, Calendar } from "lucide-react";
+import { ShieldCheck, Lock, AlertTriangle, Eye, EyeOff, Mail, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/shared/auth/context";
 import { useChangePassword } from "@/features/auth/hooks";
 import { PasswordChangeFormSchema, type PasswordChangeFormValues } from "@/features/auth/types";
 import { Page, PageHead, SubNav } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
+import { ChangeEmailModal } from "../components/ChangeEmailModal";
 
 // ── AccountGeneral ────────────────────────────────────────────────────────────
 
 function AccountGeneral() {
   const { user } = useAuth();
-
-  function fmtDate(iso: string) {
-    return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-  }
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   return (
-    <div className="card" style={{ maxWidth: 640 }}>
-      <div className="card__header">
-        <div className="ds-display-sm">General</div>
-      </div>
-      <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        {/* Email */}
-        <div className="field">
-          <label className="label">Email</label>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, height: 38, padding: "0 12px", background: "var(--bg-surface)", border: "0.5px solid var(--border-default)", borderRadius: "var(--radius-input)" }}>
-            <Mail size={16} style={{ color: "var(--text-tertiary)", flex: "none" }} />
-            <span style={{ flex: 1, color: "var(--text-secondary)", font: "400 14px var(--font-sans)" }}>{user?.email}</span>
-          </div>
-          <div className="ds-caption" style={{ color: "var(--text-tertiary)" }}>
-            Contact support to change your email address.
-          </div>
+    <>
+      <div className="card" style={{ maxWidth: 640 }}>
+        <div className="card__header">
+          <div className="ds-display-sm">General</div>
         </div>
+        <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* Email */}
+          <div className="field">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <label className="label" style={{ marginBottom: 0 }}>Email</label>
+              <button
+                type="button"
+                onClick={() => setEmailModalOpen(true)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  font: "500 12px var(--font-sans)",
+                  color: "var(--accent-text)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                <Pencil size={13} />
+                Edit
+              </button>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, height: 38, padding: "0 12px", background: "var(--bg-surface)", border: "0.5px solid var(--border-default)", borderRadius: "var(--radius-input)" }}>
+              <Mail size={16} style={{ color: "var(--text-tertiary)", flex: "none" }} />
+              <span style={{ flex: 1, color: "var(--text-secondary)", font: "400 14px var(--font-sans)" }}>{user?.email}</span>
+            </div>
+          </div>
 
-        {/* Account status */}
-        <div className="field">
-          <label className="label">Account status</label>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, height: 38 }}>
-            <span className="badge badge--success badge--md">Active</span>
-            <span className="ds-body-sm" style={{ color: "var(--text-secondary)" }}>
-              Your account is in good standing.
-            </span>
+          {/* Account status */}
+          <div className="field">
+            <label className="label">Account status</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, height: 38 }}>
+              <span className="badge badge--success badge--md">Active</span>
+              <span className="ds-body-sm" style={{ color: "var(--text-secondary)" }}>
+                Your account is in good standing.
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {emailModalOpen && (
+        <ChangeEmailModal onClose={() => setEmailModalOpen(false)} />
+      )}
+    </>
   );
 }
 

@@ -16,7 +16,7 @@ export function toProfileUI(p: Profile): ProfileUI {
     lastName:  p.last_name,
     fullName:  `${p.first_name} ${p.last_name}`.trim(),
     phone:     p.phone ?? "",
-    dob:       p.dob ?? "",
+    dob:       p.date_of_birth ?? "",
     bio:       p.bio ?? "",
     avatar:    p.avatar,
   };
@@ -27,7 +27,7 @@ export function toUpdateRequest(values: UpdateProfileFormValues) {
     first_name: values.first_name,
     last_name:  values.last_name,
     phone:      values.phone ?? "",
-    dob:        values.dob ?? "",
+    date_of_birth: values.dob ?? "",
     bio:        values.bio ?? "",
   };
 }
