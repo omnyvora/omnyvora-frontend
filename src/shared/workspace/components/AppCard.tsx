@@ -20,7 +20,10 @@ interface AppCardProps {
 }
 
 function ServiceIcon({ name, size }: { name: string; size: number }) {
-  const pascal = name.charAt(0).toUpperCase() + name.slice(1);
+  const pascal = name
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join("");
   const LucideIcon = (Icons as Record<string, unknown>)[pascal] as
     | React.ComponentType<{ size: number; strokeWidth: number }>
     | undefined;
