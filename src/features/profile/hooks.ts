@@ -2,7 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isApiSuccess } from "@/core/api/response";
-import { fetchMyProfile, updateMyProfile } from "./api";
+import { compressImage, AVATAR_COMPRESSION_CONFIG } from "@/core/utils/image";
+import { fetchMyProfile, updateMyProfile, uploadAvatar } from "./api";
 import { toProfileUI, toUpdateRequest } from "./transformers";
 import type { UpdateProfileFormValues } from "./types";
 
@@ -24,6 +25,21 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: async (values: UpdateProfileFormValues) => {
       const res = await updateMyProfile(toUpdateRequest(values));
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return toProfileUI(res.data);
+    },
+    onSuccess: (updated) => {
+      qc.setQueryData(PROFILE_QUERY_KEY, updated);
+    },
+  });
+}
+
+export function useUploadAvatar() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const compressed = await compressImage(file, AVATAR_COMPRESSION_CONFIG);
+      const res = await uploadAvatar(compressed);
       if (!isApiSuccess(res)) throw new Error(res.message);
       return toProfileUI(res.data);
     },

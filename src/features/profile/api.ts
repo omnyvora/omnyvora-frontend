@@ -16,3 +16,15 @@ export async function updateMyProfile(
   const res = await apiClient.patch(`${PROFILES_URL}/profiles/me/`, payload);
   return res.data;
 }
+
+export async function uploadAvatar(file: File): Promise<ApiResponse<Profile>> {
+  const form = new FormData();
+  // Derive extension from MIME type — browser-image-compression can strip it when converting formats via WebWorker
+  const ext = file.type.split("/")[1] ?? "jpeg";
+  form.append("avatar", file, `avatar.${ext}`);
+  // Unset Content-Type so the browser sets multipart/form-data with the correct boundary
+  const res = await apiClient.patch(`${PROFILES_URL}/profiles/me/`, form, {
+    headers: { "Content-Type": undefined },
+  });
+  return res.data;
+}
