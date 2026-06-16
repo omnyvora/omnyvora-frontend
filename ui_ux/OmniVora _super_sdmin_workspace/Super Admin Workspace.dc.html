@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="assets/omnyvora/colors_and_type.css">
+<link rel="stylesheet" href="assets/omnyvora/components.css">
+<style>
+  html,body{margin:0;padding:0;background:#fff;}
+  *{box-sizing:border-box;}
+  [data-tool="admin"]{--accent-primary:#059669;--accent-subtle:#ECFDF5;--accent-text:#059669;}
+  .om-scroll::-webkit-scrollbar{width:10px;height:10px;}
+  .om-scroll::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:999px;border:3px solid #fff;}
+  .om-navitem:hover{background:var(--bg-surface) !important;}
+  @keyframes omFade{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+
+<div data-theme="light" data-tool="admin" style="position:relative;display:flex;height:100vh;width:100%;overflow:hidden;background:var(--bg-page);font-family:var(--font-sans);color:var(--text-primary);">
+
+  <!-- floating collapse/expand toggle on the sidebar edge -->
+  <button onClick="{{ toggleCollapse }}" title="{{ toggleTitle }}" style="{{ edgeToggleStyle }}" style-hover="background:var(--bg-surface);">
+    {{ collapseEl }}
+  </button>
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside style="{{ sidebarStyle }}">
+    <!-- logo -->
+    <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 4px 18px;">
+        <img src="assets/omnyvora/logo-mark-black.png" style="width:26px;height:26px;object-fit:contain;flex:none;" alt="">
+        <span style="font:600 16px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">Omnyvora</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ collapsed }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;justify-content:center;padding:6px 0 18px;">
+        <img src="assets/omnyvora/logo-mark-black.png" style="width:26px;height:26px;object-fit:contain;" alt="">
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+      <div class="label" style="padding:8px 10px 8px;color:var(--text-tertiary);">Admin menu</div>
+    </sc-if>
+
+    <!-- nav -->
+    <div style="display:flex;flex-direction:column;gap:3px;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="5">
+        <div class="om-navitem" onClick="{{ item.onClick }}" style="{{ item.itemStyle }}" title="{{ item.label }}">
+          {{ item.iconEl }}
+          <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+            <span>{{ item.label }}</span>
+          </sc-if>
+          <sc-if value="{{ item.active }}" hint-placeholder-val="{{ false }}">
+            
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- footer -->
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:4px;">
+      <div style="height:0.5px;background:var(--border-default);margin:10px 4px 12px;"></div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:2px 6px;">
+        <span class="avatar avatar--md" style="font-weight:600;">HA</span>
+        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+          <div style="min-width:0;flex:1;">
+            <div style="font:600 13px var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Hassan Ahmed</div>
+            <div style="font:400 11px var(--font-sans);color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><span>hassan.ahmed</span><span>@</span><span>omnyvora.io</span></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 6px 4px;">
+          <span style="display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 10px;border-radius:999px;background:#ECFDF5;color:#059669;font:600 11px var(--font-sans);letter-spacing:0.04em;text-transform:uppercase;">
+            {{ shieldEl }} Super Admin
+          </span>
+        </div>
+      </sc-if>
+
+      <div class="om-navitem" style="{{ footerItemStyle }}" title="Notifications">
+        {{ bellEl }}
+        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+          <span>Notifications</span>
+          <span style="margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--status-error);color:#fff;font:600 11px var(--font-sans);">5</span>
+        </sc-if>
+      </div>
+
+      <div class="om-navitem" style="{{ footerItemStyle }}" title="Log out">
+        {{ logoutEl }}
+        <sc-if value="{{ showLabels }}" hint-placeholder-val="{{ true }}">
+          <span>Log out</span>
+        </sc-if>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="om-scroll" style="flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;background:var(--bg-page);">
+    <div style="padding:28px 44px 64px;max-width:1340px;margin:0 auto;">
+
+      <!-- ========== DASHBOARD ========== -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:28px;">
+          <div>
+            <div style="font:500 32px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);">Admin Dashboard</div>
+            <div style="font:400 14px var(--font-sans);color:var(--text-secondary);margin-top:4px;">Tuesday, June 16, 2026</div>
+          </div>
+
+          <!-- KPI row -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+              <div class="card card--raised" style="padding:20px;display:flex;flex-direction:column;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                  <div class="stat__label">{{ k.label }}</div>
+                  <div style="width:38px;height:38px;border-radius:var(--radius-icon);background:var(--accent-subtle);color:var(--accent-text);display:flex;align-items:center;justify-content:center;flex:none;">{{ k.iconEl }}</div>
+                </div>
+                <div style="font:600 30px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);margin-top:14px;">{{ k.value }}</div>
+                <div style="font:400 12px var(--font-sans);color:var(--text-tertiary);margin-top:4px;">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- charts row -->
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;">
+            <!-- user growth -->
+            <div class="card card--raised">
+              <div style="padding:18px 20px 6px;display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                  <div style="font:500 16px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">User Growth</div>
+                  <div style="font:400 12px var(--font-sans);color:var(--text-tertiary);margin-top:2px;">30-day daily active users</div>
+                </div>
+                <span class="badge badge--accent">+12.4%</span>
+              </div>
+              <div style="padding:8px 16px 18px;">
+                <svg viewBox="0 0 640 220" preserveAspectRatio="none" style="width:100%;height:220px;display:block;">
+                  <defs>
+                    <linearGradient id="omArea" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#059669" stop-opacity="0.20"></stop>
+                      <stop offset="100%" stop-color="#059669" stop-opacity="0.01"></stop>
+                    </linearGradient>
+                  </defs>
+                  <line x1="0" y1="40" x2="640" y2="40" stroke="var(--border-default)" stroke-width="1" stroke-dasharray="3 4"></line>
+                  <line x1="0" y1="110" x2="640" y2="110" stroke="var(--border-default)" stroke-width="1" stroke-dasharray="3 4"></line>
+                  <line x1="0" y1="180" x2="640" y2="180" stroke="var(--border-default)" stroke-width="1" stroke-dasharray="3 4"></line>
+                  <path d="{{ areaPath }}" fill="url(#omArea)"></path>
+                  <path d="{{ linePath }}" fill="none" stroke="#059669" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"></path>
+                </svg>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;padding:0 2px;">
+                  <sc-for list="{{ growthAxis }}" as="d" hint-placeholder-count="5">
+                    <span style="font:400 11px var(--font-sans);color:var(--text-tertiary);">{{ d }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <!-- service usage -->
+            <div class="card card--raised">
+              <div style="padding:18px 20px 6px;">
+                <div style="font:500 16px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">Service Usage</div>
+                <div style="font:400 12px var(--font-sans);color:var(--text-tertiary);margin-top:2px;">Active users per service</div>
+              </div>
+              <div style="padding:14px 20px 20px;display:flex;flex-direction:column;gap:15px;">
+                <sc-for list="{{ usage }}" as="u" hint-placeholder-count="6">
+                  <div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+                      <span style="font:500 13px var(--font-sans);color:var(--text-primary);">{{ u.name }}</span>
+                      <span style="font:500 12px var(--font-mono);color:var(--text-secondary);">{{ u.label }}</span>
+                    </div>
+                    <div style="height:9px;background:var(--bg-surface);border-radius:999px;overflow:hidden;">
+                      <div style="{{ u.barStyle }}"></div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <!-- registrations + stat cards -->
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:start;">
+            <!-- registrations table -->
+            <div class="card card--raised">
+              <div style="padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border-default);">
+                <div style="font:500 16px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">Recent Registrations</div>
+                <span onClick="{{ goUsers }}" style="font:500 13px var(--font-sans);color:var(--accent-text);cursor:pointer;display:inline-flex;align-items:center;gap:4px;">View all {{ arrowEl }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1.6fr 1.6fr 0.9fr 0.9fr;padding:10px 20px;border-bottom:0.5px solid var(--border-default);">
+                <span class="label">User</span><span class="label">Email</span><span class="label">Joined</span><span class="label">Status</span>
+              </div>
+              <sc-for list="{{ registrations }}" as="r" hint-placeholder-count="6">
+                <div style="display:grid;grid-template-columns:1.6fr 1.6fr 0.9fr 0.9fr;padding:12px 20px;align-items:center;border-bottom:0.5px solid var(--border-default);">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                    <span class="avatar avatar--sm" style="font-weight:600;">{{ r.initials }}</span>
+                    <span style="font:500 13px var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.name }}</span>
+                  </div>
+                  <span style="font:400 13px var(--font-sans);color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.email }}</span>
+                  <span style="font:400 13px var(--font-sans);color:var(--text-tertiary);">{{ r.joined }}</span>
+                  <span><span class="{{ r.badgeClass }}">{{ r.status }}</span></span>
+                </div>
+              </sc-for>
+            </div>
+
+            <!-- stacked stat cards -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+                <div class="card card--raised" style="padding:18px 20px;display:flex;align-items:center;gap:16px;">
+                  <div style="width:44px;height:44px;border-radius:var(--radius-icon);display:flex;align-items:center;justify-content:center;flex:none;background:{{ a.bg }};color:{{ a.fg }};">{{ a.iconEl }}</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font:500 14px var(--font-sans);color:var(--text-primary);">{{ a.label }}</div>
+                    <div style="font:400 12px var(--font-sans);color:var(--text-tertiary);margin-top:2px;">{{ a.sub }}</div>
+                  </div>
+                  <span style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;padding:0 9px;border-radius:999px;font:600 15px var(--font-sans);background:{{ a.bg }};color:{{ a.fg }};">{{ a.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ========== SERVICES ========== -->
+      <sc-if value="{{ isServices }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:28px;">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;">
+            <div>
+              <div style="font:500 32px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);">Services</div>
+              <div style="font:400 14px var(--font-sans);color:var(--text-secondary);margin-top:4px;">6 services · manage availability and access across the platform</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+            <sc-for list="{{ services }}" as="s" hint-placeholder-count="6">
+              <div class="card card--raised" style="padding:22px;display:flex;flex-direction:column;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                  <div style="width:46px;height:46px;border-radius:var(--radius-icon);display:flex;align-items:center;justify-content:center;flex:none;background:{{ s.bg }};color:{{ s.fg }};">{{ s.iconEl }}</div>
+                  <span class="{{ s.badgeClass }}">{{ s.statusLabel }}</span>
+                </div>
+                <div style="font:600 16px var(--font-sans);color:var(--text-primary);margin-top:16px;">{{ s.name }}</div>
+                <div style="font:500 12px var(--font-mono);color:var(--text-tertiary);margin-top:4px;">{{ s.users }} users</div>
+                <div style="font:400 13px var(--font-sans);line-height:1.55;color:var(--text-secondary);margin-top:10px;flex:1;">{{ s.desc }}</div>
+                <button class="btn btn--secondary btn--sm" style="margin-top:18px;align-self:flex-start;">Manage {{ arrowEl }}</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ========== USERS ========== -->
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div>
+            <div style="font:500 32px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);">Users</div>
+            <div style="font:400 14px var(--font-sans);color:var(--text-secondary);margin-top:4px;">12,483 accounts · select a user to view details</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1.15fr;gap:20px;align-items:start;">
+            <!-- list -->
+            <div class="card card--raised">
+              <div style="padding:14px 16px;border-bottom:0.5px solid var(--border-default);">
+                <div class="input-wrap">
+                  <span class="input-icon input-icon--lead">{{ searchEl }}</span>
+                  <input class="input input--has-lead" placeholder="Search users…" value="{{ q }}" onInput="{{ onSearch }}">
+                </div>
+              </div>
+              <div style="max-height:560px;overflow-y:auto;" class="om-scroll">
+                <sc-for list="{{ filteredUsers }}" as="u" hint-placeholder-count="8">
+                  <div onClick="{{ u.onClick }}" style="{{ u.rowStyle }}">
+                    <span class="avatar avatar--md" style="font-weight:600;">{{ u.initials }}</span>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font:500 13px var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ u.name }}</div>
+                      <div style="font:400 12px var(--font-sans);color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ u.email }}</div>
+                    </div>
+                    <span style="width:8px;height:8px;border-radius:4px;flex:none;background:{{ u.dot }};"></span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- detail -->
+            <div class="card card--raised">
+              <div style="padding:24px;display:flex;align-items:center;gap:16px;border-bottom:0.5px solid var(--border-default);">
+                <span class="avatar avatar--xl" style="font-weight:600;">{{ selUser.initials }}</span>
+                <div style="flex:1;min-width:0;">
+                  <div style="font:500 20px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">{{ selUser.name }}</div>
+                  <div style="font:400 13px var(--font-sans);color:var(--text-secondary);margin-top:2px;">{{ selUser.email }}</div>
+                  <div style="margin-top:10px;display:flex;gap:8px;">
+                    <span class="{{ selUser.badgeClass }}">{{ selUser.status }}</span>
+                    <span class="badge badge--neutral">{{ selUser.role }}</span>
+                  </div>
+                </div>
+                <button class="btn btn--secondary btn--sm">Edit</button>
+              </div>
+              <div style="padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;border-bottom:0.5px solid var(--border-default);">
+                <sc-for list="{{ selUser.fields }}" as="f" hint-placeholder-count="4">
+                  <div>
+                    <div class="label" style="color:var(--text-tertiary);">{{ f.k }}</div>
+                    <div style="font:500 13px var(--font-sans);color:var(--text-primary);margin-top:5px;">{{ f.v }}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="padding:20px 24px;">
+                <div class="label" style="color:var(--text-tertiary);margin-bottom:12px;">Recent activity</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                  <sc-for list="{{ selUser.activity }}" as="ac" hint-placeholder-count="4">
+                    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border-default);align-items:center;">
+                      <span style="width:30px;height:30px;border-radius:8px;background:var(--bg-surface);color:var(--text-tertiary);display:flex;align-items:center;justify-content:center;flex:none;">{{ ac.iconEl }}</span>
+                      <span style="flex:1;font:400 13px var(--font-sans);color:var(--text-secondary);">{{ ac.text }}</span>
+                      <span style="font:400 12px var(--font-mono);color:var(--text-tertiary);">{{ ac.time }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ========== LOGS ========== -->
+      <sc-if value="{{ isLogs }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div>
+            <div style="font:500 32px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);">Logs</div>
+            <div style="font:400 14px var(--font-sans);color:var(--text-secondary);margin-top:4px;">System event stream · click a row to expand the traceback</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{ logFilters }}" as="f" hint-placeholder-count="4">
+              <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+            </sc-for>
+          </div>
+          <div class="card card--raised">
+            <div style="display:grid;grid-template-columns:90px 1.1fr 1.7fr 1fr 24px;padding:12px 20px;border-bottom:0.5px solid var(--border-default);">
+              <span class="label">Level</span><span class="label">Actor</span><span class="label">Endpoint</span><span class="label">Timestamp</span><span></span>
+            </div>
+            <sc-for list="{{ filteredLogs }}" as="l" hint-placeholder-count="7">
+              <div style="border-bottom:0.5px solid var(--border-default);">
+                <div onClick="{{ l.onClick }}" style="display:grid;grid-template-columns:90px 1.1fr 1.7fr 1fr 24px;padding:13px 20px;align-items:center;cursor:pointer;">
+                  <span><span class="{{ l.badgeClass }}">{{ l.level }}</span></span>
+                  <span style="font:400 13px var(--font-sans);color:var(--text-secondary);">{{ l.actor }}</span>
+                  <span style="font:500 12px var(--font-mono);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ l.endpoint }}</span>
+                  <span style="font:400 12px var(--font-mono);color:var(--text-tertiary);">{{ l.time }}</span>
+                  <span style="color:var(--text-tertiary);display:flex;justify-content:flex-end;">{{ l.chevronEl }}</span>
+                </div>
+                <sc-if value="{{ l.expanded }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 20px 16px;">
+                    <pre style="margin:0;background:var(--gray-950);color:#e6e6e6;border-radius:var(--radius-card);padding:16px 18px;font:400 12px/1.6 var(--font-mono);overflow-x:auto;white-space:pre;">{{ l.trace }}</pre>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ========== SETTINGS ========== -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px;">
+          <div>
+            <div style="font:500 32px var(--font-sans);letter-spacing:-0.5px;color:var(--text-primary);">Settings</div>
+            <div style="font:400 14px var(--font-sans);color:var(--text-secondary);margin-top:4px;">Platform configuration · {{ settingsSubtitle }}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;">
+            <!-- sub-nav -->
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <sc-for list="{{ settingsTabs }}" as="t" hint-placeholder-count="4">
+                <div onClick="{{ t.onClick }}" style="{{ t.style }}">
+                  {{ t.iconEl }}<span>{{ t.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <!-- panel -->
+            <div class="card card--raised">
+              <div style="padding:18px 22px;border-bottom:0.5px solid var(--border-default);">
+                <div style="font:500 17px var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);">{{ settingsTitle }}</div>
+                <div style="font:400 13px var(--font-sans);color:var(--text-tertiary);margin-top:3px;">{{ settingsDesc }}</div>
+              </div>
+              <div style="padding:8px 22px;">
+                <sc-for list="{{ settingsRows }}" as="row" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:0.5px solid var(--border-default);">
+                    <div style="flex:1;">
+                      <div style="font:500 14px var(--font-sans);color:var(--text-primary);">{{ row.title }}</div>
+                      <div style="font:400 13px var(--font-sans);color:var(--text-secondary);margin-top:3px;">{{ row.desc }}</div>
+                    </div>
+                    {{ row.control }}
+                  </div>
+                </sc-for>
+              </div>
+              <div style="padding:16px 22px;display:flex;justify-content:flex-end;gap:10px;">
+                <button class="btn btn--secondary btn--sm">Cancel</button>
+                <button class="btn btn--accent btn--sm">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { nav: 'dashboard', collapsed: false, selUser: 0, expLog: null, setTab: 'platform', q: '', logFilter: 'all' };
+
+  ICON = {
+    grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    server:'<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    terminal:'<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+    settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+    bell:'<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+    logout:'<path d="m16 17 5-5-5-5"/><path d="M21 12H9"/><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>',
+    chevronLeft:'<path d="m15 18-6-6 6-6"/>',
+    chevronRight:'<path d="m9 18 6-6-6-6"/>',
+    chevronDown:'<path d="m6 9 6 6 6-6"/>',
+    search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    user:'<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+    activity:'<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+    trendingUp:'<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+    flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+    arrowRight:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+    shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+    layers:'<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.84z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>',
+    image:'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+    zap:'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+    hardDrive:'<line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/>',
+    calendar:'<rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>',
+    barChart:'<line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/>',
+    lock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    mail:'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    login:'<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/>',
+    edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+    upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  };
+
+  icon(name, size = 18, stroke = 2, color) {
+    return React.createElement('svg', {
+      key: name + size, width: size, height: size, viewBox: '0 0 24 24', fill: 'none',
+      stroke: color || 'currentColor', strokeWidth: stroke, strokeLinecap: 'round',
+      strokeLinejoin: 'round', style: { flex: 'none' },
+      dangerouslySetInnerHTML: { __html: this.ICON[name] || '' }
+    });
+  }
+
+  go(nav) { this.setState({ nav }); }
+
+  buildPaths(values, w, h, pad) {
+    const min = Math.min(...values), max = Math.max(...values);
+    const n = values.length;
+    const X = i => (i / (n - 1)) * w;
+    const Y = v => h - ((v - min) / (max - min)) * (h - pad * 2) - pad;
+    const pts = values.map((v, i) => `${X(i).toFixed(1)} ${Y(v).toFixed(1)}`);
+    const line = 'M' + pts.join(' L ');
+    const area = line + ` L ${w} ${h} L 0 ${h} Z`;
+    return { line, area };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const accentSub = 'var(--accent-subtle)', accentTxt = 'var(--accent-text)';
+
+    // ---- NAV ----
+    const NAV = [['dashboard', 'Dashboard', 'grid'], ['services', 'Services', 'server'], ['users', 'Users', 'users'], ['logs', 'Logs', 'terminal'], ['settings', 'Settings', 'settings']];
+    const navItems = NAV.map(([id, label, ic]) => {
+      const active = s.nav === id;
+      return {
+        id, label, active,
+        iconEl: this.icon(ic, 18, 2, active ? 'var(--accent-text)' : 'currentColor'),
+        onClick: () => this.go(id),
+        itemStyle: { display: 'flex', alignItems: 'center', justifyContent: this.state.collapsed ? 'center' : 'flex-start', gap: '12px', height: '40px', padding: this.state.collapsed ? '0' : '0 12px', borderRadius: '10px', cursor: 'pointer', background: active ? accentSub : 'transparent', color: active ? accentTxt : 'var(--text-secondary)', fontWeight: active ? 600 : 500, fontSize: '14px', fontFamily: 'var(--font-sans)', transition: 'background 120ms, color 120ms' },
+      };
+    });
+
+    const collapsed = s.collapsed;
+    const sidebarStyle = { width: collapsed ? '72px' : '230px', flex: 'none', background: 'var(--bg-surface)', borderRight: '0.5px solid var(--border-default)', display: 'flex', flexDirection: 'column', padding: '18px 14px', transition: 'width 180ms cubic-bezier(0.16,1,0.3,1)', overflow: 'hidden' };
+
+    // ---- KPIs ----
+    const kpis = [
+      { label: 'Total Users', value: '12,483', sub: 'all time', iconEl: this.icon('user', 19) },
+      { label: 'Active Today', value: '1,247', sub: 'last 24h', iconEl: this.icon('activity', 19) },
+      { label: 'New This Week', value: '340', sub: 'registrations', iconEl: this.icon('trendingUp', 19) },
+      { label: 'Services Running', value: '6', sub: 'live', iconEl: this.icon('server', 19) },
+    ];
+
+    // ---- GROWTH CHART ----
+    const growth = [905, 942, 918, 985, 1006, 988, 1041, 1072, 1031, 1095, 1118, 1082, 1149, 1176, 1142, 1188, 1212, 1179, 1231, 1206, 1252, 1271, 1239, 1289, 1262, 1301, 1322, 1287, 1311, 1340];
+    const p = this.buildPaths(growth, 640, 200, 14);
+    const growthAxis = ['May 18', 'May 25', 'Jun 1', 'Jun 8', 'Jun 16'];
+
+    // ---- SERVICE USAGE ----
+    const usageRaw = [['Productivity', 5210], ['Portfolio', 4820], ['Photo', 3640], ['Drive', 2980], ['Calendar', 1870], ['Analytics', 1240]];
+    const uMax = Math.max(...usageRaw.map(u => u[1]));
+    const usage = usageRaw.map(([name, v]) => ({
+      name, value: v, label: v.toLocaleString(),
+      barStyle: { height: '100%', width: ((v / uMax) * 100).toFixed(1) + '%', background: 'var(--accent-primary)', borderRadius: '999px' },
+    }));
+
+    // ---- REGISTRATIONS ----
+    const regBadge = st => st === 'Active' ? 'badge badge--success' : 'badge badge--warning';
+    const registrations = [
+      ['Aisha Rahman', 'AR', 'aisha.rahman@omnyvora.io', 'Jun 16', 'Active'],
+      ['Daniel Okafor', 'DO', 'daniel.okafor@gmail.com', 'Jun 15', 'Pending'],
+      ['Mei Lin', 'ML', 'mei.lin@omnyvora.io', 'Jun 15', 'Active'],
+      ['Carlos Mendes', 'CM', 'c.mendes@proton.me', 'Jun 14', 'Active'],
+      ['Sofia Bianchi', 'SB', 'sofia.b@omnyvora.io', 'Jun 14', 'Pending'],
+      ['Liam Walsh', 'LW', 'liam.walsh@outlook.com', 'Jun 13', 'Active'],
+    ].map(([name, initials, email, joined, status]) => ({ name, initials, email, joined, status, badgeClass: regBadge(status) }));
+
+    // ---- ALERTS ----
+    const alerts = [
+      { label: 'Unread System Alerts', sub: 'requires attention', value: '3', iconEl: this.icon('bell', 20), bg: 'var(--status-error-bg)', fg: '#a3262a' },
+      { label: 'Pending User Reports', sub: 'awaiting review', value: '7', iconEl: this.icon('flag', 20), bg: 'var(--status-warning-bg)', fg: '#92600c' },
+      { label: 'Services Available', sub: 'across platform', value: '6', iconEl: this.icon('grid', 20), bg: 'var(--accent-subtle)', fg: 'var(--accent-text)' },
+    ];
+
+    // ---- SERVICES ----
+    const svcBadge = st => st === 'Live' ? 'badge badge--success' : (st === 'Beta' ? 'badge badge--info' : 'badge badge--neutral');
+    const services = [
+      ['Portfolio', 'layers', '#EEEDFE', '#534AB7', '4,820', 'Build and showcase your work in a polished public profile.', 'Live'],
+      ['Photo', 'image', '#CCFBF1', '#0D9488', '3,640', 'Organize every shoot into albums and share with anyone.', 'Live'],
+      ['Productivity', 'zap', '#DBEAFE', '#2563EB', '5,210', 'Plan tasks, run sprints, and track your focus time.', 'Live'],
+      ['Drive', 'hardDrive', '#F1F1F4', '#444444', '2,980', 'Store, sync, and share files across every Omnyvora tool.', 'Beta'],
+      ['Calendar', 'calendar', '#FEF3C7', '#92600c', '1,870', 'One schedule that spans tasks, shoots, and deadlines.', 'Beta'],
+      ['Analytics', 'barChart', '#DCFCE7', '#0b6e4a', '1,240', 'Track views, engagement, and trends across your projects.', 'Disabled'],
+    ].map(([name, ic, bg, fg, users, desc, statusLabel]) => ({ name, bg, fg, users, desc, statusLabel, badgeClass: svcBadge(statusLabel), iconEl: this.icon(ic, 22) }));
+
+    // ---- USERS ----
+    const USERS = [
+      ['Aisha Rahman', 'AR', 'aisha.rahman@omnyvora.io', 'Member', 'Active', 'Jun 16, 2026', '2m ago', 'usr_9f2a4c', 'Pro'],
+      ['Daniel Okafor', 'DO', 'daniel.okafor@gmail.com', 'Member', 'Pending', 'Jun 15, 2026', '1h ago', 'usr_3b81de', 'Free'],
+      ['Mei Lin', 'ML', 'mei.lin@omnyvora.io', 'Admin', 'Active', 'Jun 15, 2026', '12m ago', 'usr_77c0a1', 'Pro'],
+      ['Carlos Mendes', 'CM', 'c.mendes@proton.me', 'Member', 'Active', 'Jun 14, 2026', '3h ago', 'usr_5e29bb', 'Free'],
+      ['Sofia Bianchi', 'SB', 'sofia.b@omnyvora.io', 'Member', 'Pending', 'Jun 14, 2026', '5h ago', 'usr_a14f08', 'Pro'],
+      ['Liam Walsh', 'LW', 'liam.walsh@outlook.com', 'Member', 'Active', 'Jun 13, 2026', '1d ago', 'usr_c63d72', 'Free'],
+      ['Elena Park', 'EP', 'elena.park@omnyvora.io', 'Member', 'Active', 'Jun 12, 2026', '2d ago', 'usr_18ba9f', 'Pro'],
+      ['Noah Bergström', 'NB', 'noah.berg@omnyvora.io', 'Admin', 'Active', 'Jun 11, 2026', '4d ago', 'usr_42ef36', 'Pro'],
+    ];
+    const dotFor = st => st === 'Active' ? 'var(--status-success)' : 'var(--status-warning)';
+    const ub = st => st === 'Active' ? 'badge badge--success' : 'badge badge--warning';
+    const q = (s.q || '').toLowerCase();
+    const filteredUsers = USERS.map((u, i) => ({ i, u })).filter(({ u }) => !q || u[0].toLowerCase().includes(q) || u[2].toLowerCase().includes(q)).map(({ i, u }) => ({
+      i, name: u[0], initials: u[1], email: u[2], dot: dotFor(u[4]),
+      onClick: () => this.setState({ selUser: i }),
+      rowStyle: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', cursor: 'pointer', borderBottom: '0.5px solid var(--border-default)', background: i === s.selUser ? 'var(--accent-subtle)' : 'transparent', transition: 'background 120ms' },
+    }));
+    const su = USERS[s.selUser] || USERS[0];
+    const selUser = {
+      name: su[0], initials: su[1], email: su[2], role: su[3], status: su[4], badgeClass: ub(su[4]),
+      fields: [
+        { k: 'User ID', v: su[7] }, { k: 'Plan', v: su[8] },
+        { k: 'Joined', v: su[5] }, { k: 'Last active', v: su[6] },
+      ],
+      activity: [
+        { iconEl: this.icon('login', 15), text: 'Signed in from Chrome · macOS', time: su[6] },
+        { iconEl: this.icon('upload', 15), text: 'Uploaded 12 files to Drive', time: '1d ago' },
+        { iconEl: this.icon('edit', 15), text: 'Updated profile details', time: '3d ago' },
+        { iconEl: this.icon('shield', 15), text: 'Completed OTP verification', time: su[5] },
+      ],
+    };
+
+    // ---- LOGS ----
+    const tb = (a, b) => a + '\n' + b;
+    const LOGS = [
+      ['ERROR', 'system', 'POST /v1/otp/verify', '2026-06-16 09:51:42', 'Traceback (most recent call last):\n  File "apps/auth/services.py", line 142, in verify_otp\n    raise OTPExpired(code_id)\nauth.exceptions.OTPExpired: code 8f2a expired at 09:50:58'],
+      ['INFO', 'aisha.rahman', 'POST /v1/auth/login', '2026-06-16 09:51:10', ''],
+      ['WARN', 'system', 'GET /v1/notifications', '2026-06-16 09:48:33', 'WARNING celery.worker: task notifications.fanout exceeded soft limit (4.2s > 4.0s)'],
+      ['INFO', 'mei.lin', 'GET /v1/profiles/me', '2026-06-16 09:45:02', ''],
+      ['ERROR', 'daniel.okafor', 'POST /v1/services/photo/upload', '2026-06-16 09:40:17', 'Traceback (most recent call last):\n  File "apps/photo/views.py", line 88, in upload\n    storage.put(blob)\nstorage.exceptions.QuotaExceeded: account usage 80.4GB > 80GB limit'],
+      ['WARN', 'hassan.ahmed', 'DELETE /v1/profiles/8821', '2026-06-16 09:32:55', 'WARNING auth.audit: privileged delete by super_admin on profile 8821'],
+      ['INFO', 'system', 'GET /v1/services', '2026-06-16 09:30:01', ''],
+    ];
+    const lvlBadge = l => l === 'ERROR' ? 'badge badge--error' : (l === 'WARN' ? 'badge badge--warning' : 'badge badge--info');
+    const FILT = [['all', 'All'], ['error', 'Error'], ['warn', 'Warn'], ['info', 'Info']];
+    const logFilters = FILT.map(([id, label]) => {
+      const active = s.logFilter === id;
+      return { id, label, onClick: () => this.setState({ logFilter: id }), style: { height: '32px', padding: '0 14px', borderRadius: '999px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: '13px', fontWeight: 500, border: '0.5px solid ' + (active ? 'transparent' : 'var(--border-default)'), background: active ? 'var(--accent-primary)' : 'var(--bg-surface-raised)', color: active ? '#fff' : 'var(--text-secondary)', transition: 'all 120ms' } };
+    });
+    const filteredLogs = LOGS.map((l, i) => ({ i, l })).filter(({ l }) => s.logFilter === 'all' || l[0].toLowerCase() === s.logFilter).map(({ i, l }) => {
+      const expanded = s.expLog === i;
+      const hasTrace = !!l[4];
+      return {
+        i, level: l[0], actor: l[1], endpoint: l[2], time: l[3], trace: l[4] || '', expanded: expanded && hasTrace,
+        badgeClass: lvlBadge(l[0]),
+        chevronEl: hasTrace ? this.icon(expanded ? 'chevronDown' : 'chevronRight', 16) : null,
+        onClick: () => this.setState({ expLog: expanded ? null : i }),
+      };
+    });
+
+    // ---- SETTINGS ----
+    const STABS = [['platform', 'Platform', 'settings'], ['auth', 'Auth & OTP', 'lock'], ['services', 'Services', 'server'], ['notifications', 'Notifications', 'bell']];
+    const settingsTabs = STABS.map(([id, label, ic]) => {
+      const active = s.setTab === id;
+      return { id, label, onClick: () => this.setState({ setTab: id }), iconEl: this.icon(ic, 16, 2, active ? 'var(--accent-text)' : 'currentColor'),
+        style: { display: 'flex', alignItems: 'center', gap: '10px', height: '38px', padding: '0 12px', borderRadius: '9px', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: active ? 600 : 500, background: active ? 'var(--accent-subtle)' : 'transparent', color: active ? 'var(--accent-text)' : 'var(--text-secondary)', transition: 'all 120ms' } };
+    });
+    const sw = on => React.createElement('label', { className: 'switch' },
+      React.createElement('input', { type: 'checkbox', defaultChecked: on }),
+      React.createElement('span', { className: 'track' }), React.createElement('span', { className: 'thumb' }));
+    const pill = txt => React.createElement('span', { className: 'badge badge--neutral', style: { fontFamily: 'var(--font-mono)' } }, txt);
+    const SETTINGS = {
+      platform: { title: 'Platform', desc: 'Core configuration for the Omnyvora instance.', rows: [
+        { title: 'Maintenance mode', desc: 'Take the platform offline for all non-admin users.', control: sw(false) },
+        { title: 'Allow new sign-ups', desc: 'Permit account registration from the public site.', control: sw(true) },
+        { title: 'Default region', desc: 'Primary data residency for new accounts.', control: pill('eu-central-1') },
+        { title: 'Session timeout', desc: 'Idle duration before users are signed out.', control: pill('30 min') },
+      ]},
+      auth: { title: 'Auth & OTP', desc: 'Authentication, sessions, and one-time passcodes.', rows: [
+        { title: 'Require OTP on login', desc: 'Send a one-time passcode for every sign-in.', control: sw(true) },
+        { title: 'OTP delivery', desc: 'Channel used to deliver verification codes.', control: pill('email') },
+        { title: 'Code lifetime', desc: 'How long an OTP stays valid before expiry.', control: pill('5 min') },
+        { title: 'Allow password reset', desc: 'Let users reset their own password via email.', control: sw(true) },
+      ]},
+      services: { title: 'Services', desc: 'Toggle availability of platform tools.', rows: [
+        { title: 'Portfolio', desc: 'Public profile and project showcase.', control: sw(true) },
+        { title: 'Photo', desc: 'Album organization and sharing.', control: sw(true) },
+        { title: 'Drive', desc: 'File storage and sync. Currently in beta.', control: sw(true) },
+        { title: 'Analytics', desc: 'Engagement tracking. Disabled platform-wide.', control: sw(false) },
+      ]},
+      notifications: { title: 'Notifications', desc: 'System and admin alert preferences.', rows: [
+        { title: 'Email admin alerts', desc: 'Email super admins on critical system events.', control: sw(true) },
+        { title: 'Weekly digest', desc: 'A Monday summary of platform activity.', control: sw(false) },
+        { title: 'Failed login alerts', desc: 'Notify on repeated failed sign-in attempts.', control: sw(true) },
+        { title: 'Quota warnings', desc: 'Alert when a service nears its storage limit.', control: sw(true) },
+      ]},
+    };
+    const sset = SETTINGS[s.setTab];
+
+    return {
+      sidebarStyle, navItems, showLabels: !collapsed, collapsed,
+      toggleTitle: collapsed ? 'Expand sidebar' : 'Collapse sidebar',
+      edgeToggleStyle: { position: 'absolute', top: '26px', left: (collapsed ? 72 : 230) - 14 + 'px', zIndex: 20, width: '28px', height: '28px', borderRadius: '999px', border: '0.5px solid var(--border-default)', background: 'var(--bg-surface-raised)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-2)', transition: 'left 180ms cubic-bezier(0.16,1,0.3,1), background 120ms' },
+      footerItemStyle: { display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: '12px', height: '38px', padding: collapsed ? '0' : '0 12px', borderRadius: '9px', cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 500, fontSize: '14px', fontFamily: 'var(--font-sans)' },
+      toggleCollapse: () => this.setState({ collapsed: !s.collapsed }),
+      collapseEl: this.icon(collapsed ? 'chevronRight' : 'chevronLeft', 15),
+      shieldEl: this.icon('shield', 12, 2.2), bellEl: this.icon('bell', 18), logoutEl: this.icon('logout', 18),
+      searchEl: this.icon('search', 15), arrowEl: this.icon('arrowRight', 14),
+      goUsers: () => this.go('users'),
+      isDashboard: s.nav === 'dashboard', isServices: s.nav === 'services', isUsers: s.nav === 'users', isLogs: s.nav === 'logs', isSettings: s.nav === 'settings',
+      kpis, areaPath: p.area, linePath: p.line, growthAxis, usage,
+      registrations, alerts, services,
+      filteredUsers, selUser, q: s.q, onSearch: e => this.setState({ q: e.target.value }),
+      logFilters, filteredLogs,
+      settingsTabs, settingsTitle: sset.title, settingsDesc: sset.desc, settingsRows: sset.rows,
+      settingsSubtitle: sset.title.toLowerCase(),
+    };
+  }
+}
+</script>
+</body>
+</html>
