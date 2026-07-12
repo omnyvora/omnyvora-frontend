@@ -67,6 +67,7 @@
   --purple-600: #534AB7;  --purple-50: #EEEDFE;  --purple-900: #1A1830;
   --teal-600:   #0D9488;  --teal-50:   #CCFBF1;  --teal-900:   #0A2420;
   --blue-600:   #2563EB;  --blue-50:   #DBEAFE;  --blue-900:   #0F1E40;
+  --green-600:  #059669;  --green-900: #0A2818;
   --indigo-600: #4F46E5;  --indigo-50: #EEF0FF;  --indigo-900: #161634;
 
   /* Fonts */
@@ -277,6 +278,23 @@
 [data-service="image-enhancer"][data-theme="dark"] {
   --accent-subtle: var(--teal-900);
   --accent-text:   color-mix(in srgb, var(--teal-600) 55%, #fff);
+}
+
+/* ── Admin console ───────────────────────────────────────────────────────────
+   Not a product "service" — reuses the same scoping mechanism as the tool
+   accents above for the super-admin workspace shell. Green #059669 per the
+   admin design mockup.
+   Applied via: data-service="admin" on app/admin/layout.tsx's wrapper
+*/
+[data-service="admin"] {
+  --accent-primary: var(--green-600);
+  --accent-subtle:  var(--green-50);
+  --accent-text:    var(--green-600);
+}
+[data-theme="dark"] [data-service="admin"],
+[data-service="admin"][data-theme="dark"] {
+  --accent-subtle: var(--green-900);
+  --accent-text:   color-mix(in srgb, var(--green-600) 60%, #fff);
 }
 
 /* ── Tailwind v4 @theme mapping ──────────────────────────────────────────────

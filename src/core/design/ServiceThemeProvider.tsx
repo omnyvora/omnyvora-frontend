@@ -4,7 +4,9 @@
 // Only --accent-primary and --accent-subtle swap per service — everything else is global.
 // className="contents" makes this wrapper invisible to flexbox/grid — layout is not affected.
 
-export type ServiceName = "cv-builder" | "portfolio" | "image-enhancer";
+// "admin" isn't a product service — it reuses this same scoping mechanism
+// for the super-admin workspace's green accent.
+export type ServiceName = "cv-builder" | "portfolio" | "image-enhancer" | "admin";
 
 interface Props {
   service: ServiceName;
