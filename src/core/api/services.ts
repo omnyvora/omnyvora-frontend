@@ -12,6 +12,8 @@ const serviceEntries = {
   notifications: { baseUrl: null as string | null, version: "v1" },
   catalog:       { baseUrl: null as string | null, version: "v1" },
   activity:      { baseUrl: null as string | null, version: "v1" },
+  logs:          { baseUrl: null as string | null, version: "v1" },
+  admin:         { baseUrl: null as string | null, version: "v1" },
   // Future services with their own domains:
   // cvBuilder: { baseUrl: process.env.NEXT_PUBLIC_CV_BUILDER_API_URL ?? null, version: "v1" },
 };
