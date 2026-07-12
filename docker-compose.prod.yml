@@ -1,5 +1,4 @@
-# docker-compose.prod.yml
-
+name: omnyvora_frontend_production
 services:
   frontend:
     image: softvence/omnyvora_frontend:${IMAGE_TAG:-latest}
