@@ -12,9 +12,15 @@ import apiClient from "@/core/api/axios";
 import { resolveServiceUrl } from "@/core/api/services";
 import { toServicesUI } from "@/features/catalog/transformers";
 import type { PlatformService } from "@/features/catalog/types";
+import { toProfileUI } from "@/features/profile/transformers";
+import type { Profile } from "@/features/profile/types";
+import { toActivityListUI } from "@/features/activity/transformers";
+import type { UserActivityPage } from "@/features/activity/types";
 import type { Notification, NotificationPage } from "@/shared/notifications/types";
 
-const CATALOG_URL = resolveServiceUrl("catalog");
+const CATALOG_URL  = resolveServiceUrl("catalog");
+const PROFILES_URL = resolveServiceUrl("profiles");
+const ACTIVITY_URL = resolveServiceUrl("activity");
 
 // Shares the same query key as usePlatformServices() — TanStack deduplicates.
 export function useDashboardServices() {
@@ -56,5 +62,33 @@ export function useDashboardUnreadCount() {
     },
     staleTime: 30_000,
     refetchInterval: 60_000,
+  });
+}
+
+// Shares the same query key as useMyProfile() — TanStack deduplicates.
+export function useDashboardProfile() {
+  return useQuery({
+    queryKey: ["profile", "me"],
+    queryFn: async () => {
+      const res = await apiClient.get(`${PROFILES_URL}/profiles/me/`);
+      const data = res.data;
+      if (!isApiSuccess(data)) throw new Error(data.message);
+      return toProfileUI(data.data as Profile);
+    },
+    staleTime: 60_000,
+  });
+}
+
+// Shares the same query key as useRecentActivity() — TanStack deduplicates.
+export function useDashboardActivity() {
+  return useQuery({
+    queryKey: ["activity"],
+    queryFn: async () => {
+      const res = await apiClient.get(`${ACTIVITY_URL}/activity/`);
+      const data = res.data;
+      if (!isApiSuccess(data)) throw new Error(data.message);
+      return toActivityListUI((data.data as UserActivityPage).results);
+    },
+    staleTime: 60_000,
   });
 }

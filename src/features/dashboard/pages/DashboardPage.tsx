@@ -1,18 +1,24 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Grid2X2, Bell, User } from "lucide-react";
+import { Grid2X2, Bell } from "lucide-react";
 import { useAuth } from "@/shared/auth/context";
 import { useNotificationsDrawer } from "@/shared/notifications/store";
 import { Page, SectionRow } from "@/shared/workspace/components/ui";
-import { MiniStat } from "@/shared/workspace/components/StatCard";
+import { RingStat } from "@/shared/workspace/components/StatCard";
 import { AppCard } from "@/shared/workspace/components/AppCard";
 import { NotifItem } from "@/shared/notifications/NotifItem";
+import type { Notification } from "@/shared/notifications/types";
+import { ActivityItem } from "@/shared/workspace/components/ActivityItem";
+import type { ActivityItemUI } from "@/features/activity/transformers";
 import {
   useDashboardServices,
   useDashboardNotifications,
   useDashboardUnreadCount,
+  useDashboardProfile,
+  useDashboardActivity,
 } from "../hooks";
+import { getProfileCompletionHint } from "../utils";
 
 function WelcomeBanner({ firstName }: { firstName: string }) {
   const today = new Date().toLocaleDateString("en-US", {
@@ -33,92 +39,173 @@ function WelcomeBanner({ firstName }: { firstName: string }) {
   );
 }
 
+interface RecentNotificationsProps {
+  notifications: Notification[];
+  isLoading:     boolean;
+  onOpen:        () => void;
+}
+
+function RecentNotifications({ notifications, isLoading, onOpen }: RecentNotificationsProps) {
+  const recent = notifications.slice(0, 4);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      <SectionRow title="Recent notifications" linkLabel="View all" onLink={onOpen} />
+      <div className="card">
+        {isLoading ? (
+          <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+            {[1, 2].map((i) => (
+              <div key={i} className="skel" style={{ height: 52 }} />
+            ))}
+          </div>
+        ) : recent.length > 0 ? (
+          recent.map((n, i) => (
+            <div
+              key={n.id}
+              style={{ borderBottom: i < recent.length - 1 ? "0.5px solid var(--border-default)" : "none" }}
+            >
+              <NotifItem notification={n} compact onClick={onOpen} />
+            </div>
+          ))
+        ) : (
+          <div style={{ padding: "20px", color: "var(--text-tertiary)", font: "400 14px var(--font-sans)", textAlign: "center" }}>
+            No notifications yet.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface RecentActivityProps {
+  activity:  ActivityItemUI[];
+  isLoading: boolean;
+  onViewAll: () => void;
+}
+
+function RecentActivity({ activity, isLoading, onViewAll }: RecentActivityProps) {
+  const recent = activity.slice(0, 4);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <SectionRow title="Recent activity" linkLabel="View all" onLink={onViewAll} />
+      <div className="card">
+        {isLoading ? (
+          <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+            {[1, 2].map((i) => (
+              <div key={i} className="skel" style={{ height: 52 }} />
+            ))}
+          </div>
+        ) : recent.length > 0 ? (
+          recent.map((a, i) => (
+            <div
+              key={a.id}
+              style={{ borderBottom: i < recent.length - 1 ? "0.5px solid var(--border-default)" : "none" }}
+            >
+              <ActivityItem activity={a} compact />
+            </div>
+          ))
+        ) : (
+          <div style={{ padding: "20px", color: "var(--text-tertiary)", font: "400 14px var(--font-sans)", textAlign: "center" }}>
+            No activity yet.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface AppsAlertsCardProps {
+  appsCount: number;
+  unreadCount: number;
+}
+
+function AppsAlertsCard({ appsCount, unreadCount }: AppsAlertsCardProps) {
+  return (
+    <div className="card">
+      <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderBottom: "0.5px solid var(--border-default)" }}>
+        <div style={{ width: 38, height: 38, borderRadius: "var(--radius-icon)", background: "var(--accent-subtle)", color: "var(--accent-text)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Grid2X2 size={19} strokeWidth={1.85} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ font: "600 20px var(--font-sans)", color: "var(--text-primary)" }}>{appsCount}</div>
+          <div className="label" style={{ color: "var(--text-tertiary)", marginTop: 2 }}>Apps available</div>
+        </div>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px" }}>
+        <div style={{ width: 38, height: 38, borderRadius: "var(--radius-icon)", background: "var(--red-50)", color: "var(--status-error)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Bell size={19} strokeWidth={1.85} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ font: "600 20px var(--font-sans)", color: "var(--text-primary)" }}>{unreadCount}</div>
+          <div className="label" style={{ color: "var(--text-tertiary)", marginTop: 2 }}>Unread alerts</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function DashboardPage() {
   const router      = useRouter();
   const { user }    = useAuth();
   const openDrawer  = useNotificationsDrawer((s) => s.open);
 
-  const { data: services = [],      isLoading: loadingServices }   = useDashboardServices();
-  const { data: notifications = [], isLoading: loadingNotifs }     = useDashboardNotifications();
-  const { data: unreadCount = 0 }                                  = useDashboardUnreadCount();
-
-  const recentNotifications = notifications.slice(0, 4);
+  const { data: services = [],      isLoading: loadingServices } = useDashboardServices();
+  const { data: notifications = [], isLoading: loadingNotifs }   = useDashboardNotifications();
+  const { data: unreadCount = 0 }                                = useDashboardUnreadCount();
+  const { data: profile, isLoading: loadingProfile }             = useDashboardProfile();
+  const { data: activity = [],      isLoading: loadingActivity } = useDashboardActivity();
 
   return (
     <Page>
       <WelcomeBanner firstName={user?.first_name ?? ""} />
 
-      {/* Stats row */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "var(--grid-gutter)" }}>
-        {loadingServices ? (
-          <>
-            <div className="skel" style={{ height: 80 }} />
-            <div className="skel" style={{ height: 80 }} />
-            <div className="skel" style={{ height: 80 }} />
-          </>
-        ) : (
-          <>
-            <MiniStat icon={Grid2X2} value={services.length}  label="Applications available" />
-            <MiniStat icon={Bell}    value={unreadCount}       label="Unread notifications"  bg="var(--red-50)"   fg="var(--status-error)" />
-            <MiniStat icon={User}    value="—"                 label="Profile completion"    bg="var(--green-50)" fg="#0b7a52" />
-          </>
-        )}
-      </div>
-
-      {/* Applications grid */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <SectionRow
-          title="Your applications"
-          linkLabel="View all"
-          href="/applications"
-        />
-        {loadingServices ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="skel" style={{ height: 160 }} />
-            ))}
-          </div>
-        ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-            {services.map((s) => (
-              <AppCard
-                key={s.id}
-                service={s}
-                onOpen={(svc) => router.push(`/${svc.slug}`)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Recent notifications */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <SectionRow
-          title="Recent notifications"
-          linkLabel="View all"
-          onLink={openDrawer}
-        />
-        <div className="card">
-          {loadingNotifs ? (
-            <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) 340px", gap: 28, alignItems: "start" }}>
+        {/* Main column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <SectionRow title="Your applications" linkLabel="View all" href="/applications" />
+          {loadingServices ? (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
               {[1, 2].map((i) => (
-                <div key={i} className="skel" style={{ height: 52 }} />
+                <div key={i} className="skel" style={{ height: 160 }} />
               ))}
             </div>
-          ) : recentNotifications.length > 0 ? (
-            recentNotifications.map((n, i) => (
-              <div
-                key={n.id}
-                style={{ borderBottom: i < recentNotifications.length - 1 ? "0.5px solid var(--border-default)" : "none" }}
-              >
-                <NotifItem notification={n} compact onClick={openDrawer} />
-              </div>
-            ))
           ) : (
-            <div style={{ padding: "20px", color: "var(--text-tertiary)", font: "400 14px var(--font-sans)", textAlign: "center" }}>
-              No notifications yet.
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
+              {services.map((s) => (
+                <AppCard
+                  key={s.id}
+                  service={s}
+                  onOpen={(svc) => router.push(`/${svc.slug}`)}
+                />
+              ))}
             </div>
           )}
+
+          <RecentActivity
+            activity={activity}
+            isLoading={loadingActivity}
+            onViewAll={() => router.push("/activity")}
+          />
+        </div>
+
+        {/* Right rail */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, position: "sticky", top: 36 }}>
+          {loadingProfile || !profile ? (
+            <div className="skel" style={{ height: 92 }} />
+          ) : (
+            <RingStat
+              percent={profile.completionPercentage}
+              label="Profile completion"
+              sub={getProfileCompletionHint(profile)}
+            />
+          )}
+
+          <AppsAlertsCard appsCount={services.length} unreadCount={unreadCount} />
+
+          <RecentNotifications
+            notifications={notifications}
+            isLoading={loadingNotifs}
+            onOpen={openDrawer}
+          />
         </div>
       </div>
     </Page>

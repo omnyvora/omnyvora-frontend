@@ -11,6 +11,8 @@ export const ProfileSchema = z.object({
   avatar:     z.string().url().nullable(),
   created_at: z.string(),
   updated_at: z.string(),
+  completion_percentage: z.number(),
+  next_incomplete_field: z.enum(["avatar", "phone", "date_of_birth", "bio"]).nullable(),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;

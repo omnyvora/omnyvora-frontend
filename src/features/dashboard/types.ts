@@ -1,8 +1,3 @@
-// Dashboard composes data from catalog and notifications.
-// Types here represent what the DashboardPage needs.
-
-export interface DashboardStats {
-  totalServices:     number;
-  unreadCount:       number;
-  profileCompletion: number;
-}
+// Dashboard composes data from catalog, profile, and notifications —
+// it owns no data shapes of its own, so this file is intentionally empty.
+export {};

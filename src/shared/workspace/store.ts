@@ -10,7 +10,7 @@ interface WorkspaceStore {
 export const useWorkspaceStore = create<WorkspaceStore>()(
   persist(
     (set) => ({
-      sidebarCollapsed: false,
+      sidebarCollapsed: true,
       toggleSidebar:    () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
       setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
     }),

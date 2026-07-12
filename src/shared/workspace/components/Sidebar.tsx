@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Grid2X2,
+  History,
   User,
   ShieldCheck,
   Bell,
@@ -20,6 +21,7 @@ import { useWorkspaceStore } from "../store";
 const NAV = [
   { id: "dashboard",    label: "Dashboard",    icon: LayoutDashboard, href: "/dashboard" },
   { id: "applications", label: "Applications", icon: Grid2X2,         href: "/applications" },
+  { id: "activity",     label: "Activity",     icon: History,         href: "/activity" },
   { id: "profile",      label: "Profile",      icon: User,            href: "/profile" },
   { id: "account",      label: "Account",      icon: ShieldCheck,     href: "/account" },
 ];

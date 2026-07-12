@@ -8,6 +8,8 @@ export interface ProfileUI {
   dob:       string;
   bio:       string;
   avatar:    string | null;
+  completionPercentage: number;
+  nextIncompleteField:  Profile["next_incomplete_field"];
 }
 
 export function toProfileUI(p: Profile): ProfileUI {
@@ -19,6 +21,8 @@ export function toProfileUI(p: Profile): ProfileUI {
     dob:       p.date_of_birth ?? "",
     bio:       p.bio ?? "",
     avatar:    p.avatar,
+    completionPercentage: p.completion_percentage,
+    nextIncompleteField:  p.next_incomplete_field,
   };
 }
 
