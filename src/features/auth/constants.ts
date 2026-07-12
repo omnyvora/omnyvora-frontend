@@ -4,6 +4,7 @@ export const AUTH_ROUTES = {
   forgotPassword:  "/forgot-password",
   resetPassword:   "/reset-password",
   dashboard:       "/dashboard",
+  adminDashboard:  "/admin",
 } as const;
 
 export const OTP_LENGTH = 6;

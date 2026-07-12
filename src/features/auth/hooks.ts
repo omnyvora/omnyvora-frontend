@@ -57,9 +57,17 @@ export function useRequestOtp() {
   });
 }
 
+// ── Redirect helper ───────────────────────────────────────────────────────────
+
+// Absent an explicit ?next= target, route by role — superadmins land in the
+// admin console, everyone else in the regular workspace.
+function defaultRouteFor(user: { role: string }): string {
+  return user.role === "superadmin" ? AUTH_ROUTES.adminDashboard : AUTH_ROUTES.dashboard;
+}
+
 // ── Register ──────────────────────────────────────────────────────────────────
 
-export function useRegister(redirectTo: string = AUTH_ROUTES.dashboard) {
+export function useRegister(explicitRedirectTo?: string) {
   const { setTokenAndUser } = useAuth();
   const router = useRouter();
 
@@ -74,7 +82,7 @@ export function useRegister(redirectTo: string = AUTH_ROUTES.dashboard) {
       // before router.replace fires. Without this, AuthGuard renders with
       // isAuthenticated=false and redirects back to login (race condition).
       flushSync(() => setTokenAndUser(access, user));
-      router.replace(redirectTo);
+      router.replace(explicitRedirectTo ?? defaultRouteFor(user));
     },
     onError: () => {
       tokenStore.clear();
@@ -85,7 +93,7 @@ export function useRegister(redirectTo: string = AUTH_ROUTES.dashboard) {
 
 // ── Login ─────────────────────────────────────────────────────────────────────
 
-export function useLogin(redirectTo: string = AUTH_ROUTES.dashboard) {
+export function useLogin(explicitRedirectTo?: string) {
   const { setTokenAndUser } = useAuth();
   const router = useRouter();
 
@@ -97,7 +105,7 @@ export function useLogin(redirectTo: string = AUTH_ROUTES.dashboard) {
     },
     onSuccess: ({ access, user }) => {
       flushSync(() => setTokenAndUser(access, user));
-      router.replace(redirectTo);
+      router.replace(explicitRedirectTo ?? defaultRouteFor(user));
     },
     onError: () => {
       tokenStore.clear();

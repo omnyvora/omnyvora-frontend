@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { OTP_LENGTH, OTP_PURPOSE, OTP_CHANNEL } from "./constants";
+import { UserRoleSchema } from "@/shared/auth/types";
 
 // ── OTP ──────────────────────────────────────────────────────────────────────
 
@@ -62,7 +63,7 @@ export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export const LoginResponseSchema = z.object({
   access:  z.string(),
   refresh: z.string(),
-  user:    z.object({ id: z.number(), email: z.string().email() }),
+  user:    z.object({ id: z.number(), email: z.string().email(), role: UserRoleSchema }),
 });
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 
@@ -80,6 +81,7 @@ export const VerifyUserResponseSchema = z.object({
   email:      z.string().email(),
   first_name: z.string(),
   last_name:  z.string(),
+  role:       UserRoleSchema,
 });
 export type VerifyUserResponse = z.infer<typeof VerifyUserResponseSchema>;
 

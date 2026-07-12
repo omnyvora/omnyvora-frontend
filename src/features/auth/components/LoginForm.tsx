@@ -25,8 +25,10 @@ export function LoginForm() {
   const [showPw, setShowPw] = useState(false);
   const searchParams = useSearchParams();
   const nextParam  = searchParams.get("next");
-  const redirectTo = safeRedirectPath(nextParam);
-  const login = useLogin(redirectTo);
+  // Only override the post-login destination when a real ?next= was present —
+  // otherwise let useLogin pick the role-based default (admin vs. workspace).
+  const explicitRedirect = nextParam ? safeRedirectPath(nextParam) : undefined;
+  const login = useLogin(explicitRedirect);
 
   // Preserve ?next= when the user switches to the register page so that after
   // registration they still land on the page they originally tried to access.

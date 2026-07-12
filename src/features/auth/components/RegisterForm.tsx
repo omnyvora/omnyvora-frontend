@@ -66,7 +66,9 @@ export function RegisterForm() {
 
   const searchParams = useSearchParams();
   const nextParam  = searchParams.get("next");
-  const redirectTo = safeRedirectPath(nextParam);
+  // Only override the post-registration destination when a real ?next= was
+  // present — otherwise let useRegister pick the role-based default.
+  const explicitRedirect = nextParam ? safeRedirectPath(nextParam) : undefined;
 
   // Preserve ?next= when the user navigates back to the login page.
   const loginHref = nextParam
@@ -74,7 +76,7 @@ export function RegisterForm() {
     : AUTH_ROUTES.login;
 
   const { secs, canResend, startCountdown } = useCountdown(OTP_RESEND_COOLDOWN_SECS);
-  const register   = useRegister(redirectTo);
+  const register   = useRegister(explicitRedirect);
   const requestOtp = useRequestOtp();
 
   const form = useForm<RegisterFormValues>({

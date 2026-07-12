@@ -8,15 +8,16 @@ import { safeRedirectPath } from "@/core/utils/redirect";
 // Wraps public auth pages (login, register). If the user is already authenticated,
 // redirects to ?next= (if present and safe) or to /dashboard.
 export function GuestGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
       const params = new URLSearchParams(window.location.search);
-      router.replace(safeRedirectPath(params.get("next")));
+      const fallback = user?.role === "superadmin" ? "/admin" : "/dashboard";
+      router.replace(safeRedirectPath(params.get("next"), fallback));
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, user, router]);
 
   if (isLoading) return null;
   if (isAuthenticated) return null;
