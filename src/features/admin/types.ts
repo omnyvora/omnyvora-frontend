@@ -73,3 +73,17 @@ export const AdminUserDetailSchema = z.object({
 });
 
 export type AdminUserDetail = z.infer<typeof AdminUserDetailSchema>;
+
+// ── Services ─────────────────────────────────────────────────────────────────
+
+export const AdminServiceSchema = z.object({
+  id:         z.number(),
+  slug:       z.string(),
+  name:       z.string(),
+  is_active:  z.boolean(),
+  user_count: z.number(),
+});
+
+export type AdminService = z.infer<typeof AdminServiceSchema>;
+
+export const AdminServiceListSchema = z.array(AdminServiceSchema);

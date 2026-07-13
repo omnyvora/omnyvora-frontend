@@ -1,4 +1,4 @@
-import type { SystemLog, AdminUser, AdminUserDetail } from "./types";
+import type { SystemLog, AdminUser, AdminUserDetail, AdminService } from "./types";
 
 export interface LogRowUI {
   id:        number;
@@ -94,4 +94,28 @@ export function toAdminUserDetailUI(detail: AdminUserDetail): AdminUserDetailUI 
       occurredAt: a.occurred_at,
     })),
   };
+}
+
+// ── Services ─────────────────────────────────────────────────────────────────
+
+export interface AdminServiceUI {
+  id:        number;
+  slug:      string;
+  name:      string;
+  isActive:  boolean;
+  userCount: number;
+}
+
+export function toAdminServiceUI(service: AdminService): AdminServiceUI {
+  return {
+    id:        service.id,
+    slug:      service.slug,
+    name:      service.name,
+    isActive:  service.is_active,
+    userCount: service.user_count,
+  };
+}
+
+export function toAdminServiceListUI(services: AdminService[]): AdminServiceUI[] {
+  return services.map(toAdminServiceUI);
 }
