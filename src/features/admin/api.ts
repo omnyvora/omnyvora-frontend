@@ -8,6 +8,8 @@ import type {
   AdminUserDetail,
   AdminService,
   AdminDashboardSummary,
+  AdminSettings,
+  AdminSettingsFormValues,
 } from "./types";
 
 const LOGS_URL    = resolveServiceUrl("logs");
@@ -52,5 +54,17 @@ export async function toggleServiceActive(
 
 export async function fetchAdminDashboard(): Promise<ApiResponse<AdminDashboardSummary>> {
   const res = await apiClient.get(`${ADMIN_URL}/admin/dashboard/`);
+  return res.data;
+}
+
+export async function fetchAdminSettings(): Promise<ApiResponse<AdminSettings>> {
+  const res = await apiClient.get(`${ADMIN_URL}/admin/settings/`);
+  return res.data;
+}
+
+export async function updateAdminSettings(
+  payload: Partial<AdminSettingsFormValues>,
+): Promise<ApiResponse<AdminSettings>> {
+  const res = await apiClient.patch(`${ADMIN_URL}/admin/settings/`, payload);
   return res.data;
 }

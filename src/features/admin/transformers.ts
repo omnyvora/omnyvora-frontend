@@ -4,6 +4,8 @@ import type {
   AdminUserDetail,
   AdminService,
   AdminDashboardSummary,
+  AdminSettings,
+  AdminSettingsFormValues,
 } from "./types";
 
 export interface LogRowUI {
@@ -177,5 +179,26 @@ export function toAdminDashboardUI(summary: AdminDashboardSummary): AdminDashboa
     })),
     unreadSystemAlerts: summary.unread_system_alerts,
     securityAlerts:     summary.security_alerts,
+  };
+}
+
+// ── Settings ─────────────────────────────────────────────────────────────────
+
+// Field names already match the form 1:1 — this just drops the read-only
+// updated_at so the object is safe to feed straight into form.reset().
+export function toAdminSettingsFormValues(settings: AdminSettings): AdminSettingsFormValues {
+  return {
+    maintenance_mode:          settings.maintenance_mode,
+    allow_signups:             settings.allow_signups,
+    default_region:            settings.default_region,
+    session_timeout_minutes:   settings.session_timeout_minutes,
+    require_otp_on_login:      settings.require_otp_on_login,
+    otp_delivery_channel:      settings.otp_delivery_channel,
+    otp_code_lifetime_minutes: settings.otp_code_lifetime_minutes,
+    allow_password_reset:      settings.allow_password_reset,
+    email_admin_alerts:        settings.email_admin_alerts,
+    weekly_digest:             settings.weekly_digest,
+    failed_login_alerts:       settings.failed_login_alerts,
+    quota_warnings:            settings.quota_warnings,
   };
 }

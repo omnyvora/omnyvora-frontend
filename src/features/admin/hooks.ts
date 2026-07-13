@@ -9,6 +9,8 @@ import {
   fetchAdminServices,
   toggleServiceActive,
   fetchAdminDashboard,
+  fetchAdminSettings,
+  updateAdminSettings,
 } from "./api";
 import {
   toLogRowsUI,
@@ -16,8 +18,11 @@ import {
   toAdminUserDetailUI,
   toAdminServiceListUI,
   toAdminDashboardUI,
+  toAdminSettingsFormValues,
 } from "./transformers";
-import type { LogLevelFilter } from "./types";
+import type { LogLevelFilter, AdminSettingsFormValues } from "./types";
+
+const ADMIN_SETTINGS_QUERY_KEY = ["admin", "settings"] as const;
 
 const ADMIN_SERVICES_QUERY_KEY = ["admin", "services"] as const;
 
@@ -78,6 +83,31 @@ export function useAdminDashboard() {
       return toAdminDashboardUI(res.data);
     },
     staleTime: 30_000,
+  });
+}
+
+export function useAdminSettings() {
+  return useQuery({
+    queryKey: ADMIN_SETTINGS_QUERY_KEY,
+    queryFn: async () => {
+      const res = await fetchAdminSettings();
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return toAdminSettingsFormValues(res.data);
+    },
+  });
+}
+
+export function useUpdateAdminSettings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: Partial<AdminSettingsFormValues>) => {
+      const res = await updateAdminSettings(payload);
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return toAdminSettingsFormValues(res.data);
+    },
+    onSuccess: (updated) => {
+      qc.setQueryData(ADMIN_SETTINGS_QUERY_KEY, updated);
+    },
   });
 }
 

@@ -117,3 +117,33 @@ export const AdminDashboardSummarySchema = z.object({
 });
 
 export type AdminDashboardSummary = z.infer<typeof AdminDashboardSummarySchema>;
+
+// ── Settings ─────────────────────────────────────────────────────────────────
+
+export const OTP_DELIVERY_CHANNELS = ["all", "email", "phone"] as const;
+
+export const AdminSettingsFormSchema = z.object({
+  maintenance_mode:          z.boolean(),
+  allow_signups:             z.boolean(),
+  default_region:            z.string().min(1, "Required"),
+  session_timeout_minutes:   z.coerce.number().int().min(1, "Must be at least 1 minute"),
+  require_otp_on_login:      z.boolean(),
+  otp_delivery_channel:      z.enum(OTP_DELIVERY_CHANNELS),
+  otp_code_lifetime_minutes: z.coerce.number().int().min(1, "Must be at least 1 minute"),
+  allow_password_reset:      z.boolean(),
+  email_admin_alerts:        z.boolean(),
+  weekly_digest:             z.boolean(),
+  failed_login_alerts:       z.boolean(),
+  quota_warnings:            z.boolean(),
+});
+
+export type AdminSettingsFormValues = z.infer<typeof AdminSettingsFormSchema>;
+
+export const AdminSettingsSchema = AdminSettingsFormSchema.extend({
+  updated_at: z.string(),
+});
+
+export type AdminSettings = z.infer<typeof AdminSettingsSchema>;
+
+export const SETTINGS_TABS = ["platform", "auth", "services", "notifications"] as const;
+export type SettingsTab = (typeof SETTINGS_TABS)[number];

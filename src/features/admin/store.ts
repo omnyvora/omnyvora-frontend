@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import type { LogLevelFilter } from "./types";
+import type { LogLevelFilter, SettingsTab } from "./types";
 
-// Client-only UI state for the admin console — grows as later steps add
-// the Settings tab.
+// Client-only UI state for the admin console.
 interface AdminStore {
   logLevelFilter:    LogLevelFilter;
   setLogLevelFilter: (level: LogLevelFilter) => void;
@@ -13,6 +12,9 @@ interface AdminStore {
   setUserSearchQuery: (q: string) => void;
   selectedUserId:     number | null;
   setSelectedUserId:  (id: number | null) => void;
+
+  settingsTab:    SettingsTab;
+  setSettingsTab: (tab: SettingsTab) => void;
 }
 
 export const useAdminStore = create<AdminStore>((set) => ({
@@ -25,4 +27,7 @@ export const useAdminStore = create<AdminStore>((set) => ({
   setUserSearchQuery: (q) => set({ userSearchQuery: q }),
   selectedUserId:     null,
   setSelectedUserId:  (id) => set({ selectedUserId: id }),
+
+  settingsTab:    "platform",
+  setSettingsTab: (tab) => set({ settingsTab: tab }),
 }));
