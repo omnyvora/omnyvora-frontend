@@ -87,3 +87,33 @@ export const AdminServiceSchema = z.object({
 export type AdminService = z.infer<typeof AdminServiceSchema>;
 
 export const AdminServiceListSchema = z.array(AdminServiceSchema);
+
+// ── Dashboard ────────────────────────────────────────────────────────────────
+
+export const AdminGrowthPointSchema = z.object({
+  date:  z.string(),
+  count: z.number(),
+});
+
+export const AdminRecentRegistrationSchema = z.object({
+  id:          z.number(),
+  email:       z.string().email(),
+  first_name:  z.string(),
+  last_name:   z.string(),
+  is_active:   z.boolean(),
+  date_joined: z.string(),
+});
+
+export const AdminDashboardSummarySchema = z.object({
+  total_users:          z.number(),
+  active_today:         z.number(),
+  new_this_week:        z.number(),
+  services_running:     z.number(),
+  user_growth:          z.array(AdminGrowthPointSchema),
+  service_usage:        z.array(AdminServiceSchema),
+  recent_registrations: z.array(AdminRecentRegistrationSchema),
+  unread_system_alerts: z.number(),
+  security_alerts:      z.number(),
+});
+
+export type AdminDashboardSummary = z.infer<typeof AdminDashboardSummarySchema>;

@@ -7,6 +7,7 @@ import type {
   AdminUserPage,
   AdminUserDetail,
   AdminService,
+  AdminDashboardSummary,
 } from "./types";
 
 const LOGS_URL    = resolveServiceUrl("logs");
@@ -46,5 +47,10 @@ export async function toggleServiceActive(
   const res = await apiClient.patch(`${CATALOG_URL}/catalog/services/${slug}/`, {
     is_active: isActive,
   });
+  return res.data;
+}
+
+export async function fetchAdminDashboard(): Promise<ApiResponse<AdminDashboardSummary>> {
+  const res = await apiClient.get(`${ADMIN_URL}/admin/dashboard/`);
   return res.data;
 }

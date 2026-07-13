@@ -1,4 +1,10 @@
-import type { SystemLog, AdminUser, AdminUserDetail, AdminService } from "./types";
+import type {
+  SystemLog,
+  AdminUser,
+  AdminUserDetail,
+  AdminService,
+  AdminDashboardSummary,
+} from "./types";
 
 export interface LogRowUI {
   id:        number;
@@ -41,12 +47,17 @@ export interface AdminUserListItemUI {
   dateJoined: string;
 }
 
+function initialsOf(firstName: string, lastName: string, email: string): string {
+  return (
+    [firstName[0], lastName[0]].filter(Boolean).join("").toUpperCase() ||
+    email[0]?.toUpperCase() ||
+    "?"
+  );
+}
+
 export function toAdminUserListItemUI(user: AdminUser): AdminUserListItemUI {
   const fullName = `${user.first_name} ${user.last_name}`.trim() || user.email;
-  const initials =
-    [user.first_name[0], user.last_name[0]].filter(Boolean).join("").toUpperCase() ||
-    user.email[0]?.toUpperCase() ||
-    "?";
+  const initials = initialsOf(user.first_name, user.last_name, user.email);
   return {
     id:         user.id,
     fullName,
@@ -118,4 +129,53 @@ export function toAdminServiceUI(service: AdminService): AdminServiceUI {
 
 export function toAdminServiceListUI(services: AdminService[]): AdminServiceUI[] {
   return services.map(toAdminServiceUI);
+}
+
+// ── Dashboard ────────────────────────────────────────────────────────────────
+
+export interface AdminRegistrationUI {
+  id:         number;
+  fullName:   string;
+  initials:   string;
+  email:      string;
+  isActive:   boolean;
+  dateJoined: string;
+}
+
+export interface AdminGrowthPointUI {
+  date:  string;
+  count: number;
+}
+
+export interface AdminDashboardUI {
+  totalUsers:          number;
+  activeToday:         number;
+  newThisWeek:         number;
+  servicesRunning:     number;
+  userGrowth:          AdminGrowthPointUI[];
+  serviceUsage:        AdminServiceUI[];
+  recentRegistrations: AdminRegistrationUI[];
+  unreadSystemAlerts:  number;
+  securityAlerts:      number;
+}
+
+export function toAdminDashboardUI(summary: AdminDashboardSummary): AdminDashboardUI {
+  return {
+    totalUsers:      summary.total_users,
+    activeToday:     summary.active_today,
+    newThisWeek:     summary.new_this_week,
+    servicesRunning: summary.services_running,
+    userGrowth:      summary.user_growth.map((p) => ({ date: p.date, count: p.count })),
+    serviceUsage:    toAdminServiceListUI(summary.service_usage),
+    recentRegistrations: summary.recent_registrations.map((r) => ({
+      id:         r.id,
+      fullName:   `${r.first_name} ${r.last_name}`.trim() || r.email,
+      initials:   initialsOf(r.first_name, r.last_name, r.email),
+      email:      r.email,
+      isActive:   r.is_active,
+      dateJoined: r.date_joined,
+    })),
+    unreadSystemAlerts: summary.unread_system_alerts,
+    securityAlerts:     summary.security_alerts,
+  };
 }

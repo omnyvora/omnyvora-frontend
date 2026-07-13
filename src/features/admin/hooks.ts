@@ -8,12 +8,14 @@ import {
   fetchAdminUserDetail,
   fetchAdminServices,
   toggleServiceActive,
+  fetchAdminDashboard,
 } from "./api";
 import {
   toLogRowsUI,
   toAdminUserListUI,
   toAdminUserDetailUI,
   toAdminServiceListUI,
+  toAdminDashboardUI,
 } from "./transformers";
 import type { LogLevelFilter } from "./types";
 
@@ -62,6 +64,18 @@ export function useAdminServices() {
       const res = await fetchAdminServices();
       if (!isApiSuccess(res)) throw new Error(res.message);
       return toAdminServiceListUI(res.data);
+    },
+    staleTime: 30_000,
+  });
+}
+
+export function useAdminDashboard() {
+  return useQuery({
+    queryKey: ["admin", "dashboard"],
+    queryFn: async () => {
+      const res = await fetchAdminDashboard();
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return toAdminDashboardUI(res.data);
     },
     staleTime: 30_000,
   });
