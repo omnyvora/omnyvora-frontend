@@ -81,12 +81,39 @@ export const AdminServiceSchema = z.object({
   slug:       z.string(),
   name:       z.string(),
   is_active:  z.boolean(),
+  user_path:  z.string(),
+  admin_path: z.string(),
   user_count: z.number(),
 });
 
 export type AdminService = z.infer<typeof AdminServiceSchema>;
 
 export const AdminServiceListSchema = z.array(AdminServiceSchema);
+
+// Mirrors shared.catalog's hex-colour validator (core `_HEX_RE`) so bad values
+// are caught client-side before hitting the API.
+const HEX_COLOR_RE = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+const hexColor = () => z.string().regex(HEX_COLOR_RE, "Must be a valid hex colour (e.g. #2563EB)");
+
+export const PlatformServiceFormSchema = z.object({
+  slug: z.string()
+    .min(1, "Required")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Lowercase letters, numbers, and hyphens only"),
+  name:        z.string().min(1, "Required"),
+  description: z.string().min(1, "Required"),
+  icon:        z.string().min(1, "Required"),
+  category:    z.string().min(1, "Required"),
+  user_path:   z.string().min(1, "Required"),
+  admin_path:  z.string().min(1, "Required"),
+  accent_primary:     hexColor(),
+  accent_subtle:      hexColor(),
+  accent_subtle_dark: hexColor(),
+  accent_text:        hexColor(),
+  is_active:  z.boolean(),
+  sort_order: z.number().int().min(0, "Must be 0 or greater"),
+});
+
+export type PlatformServiceFormValues = z.infer<typeof PlatformServiceFormSchema>;
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
 

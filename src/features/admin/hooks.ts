@@ -8,6 +8,10 @@ import {
   fetchAdminUserDetail,
   fetchAdminServices,
   toggleServiceActive,
+  fetchPlatformServiceDetail,
+  createPlatformService,
+  updatePlatformService,
+  deletePlatformService,
   fetchAdminDashboard,
   fetchAdminSettings,
   updateAdminSettings,
@@ -20,7 +24,7 @@ import {
   toAdminDashboardUI,
   toAdminSettingsFormValues,
 } from "./transformers";
-import type { LogLevelFilter, AdminSettingsFormValues } from "./types";
+import type { LogLevelFilter, AdminSettingsFormValues, PlatformServiceFormValues } from "./types";
 
 const ADMIN_SETTINGS_QUERY_KEY = ["admin", "settings"] as const;
 
@@ -121,6 +125,62 @@ export function useToggleService() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });
       // Also used by the public catalog/dashboard app grids.
+      qc.invalidateQueries({ queryKey: ["platform-services"] });
+    },
+  });
+}
+
+export function usePlatformServiceDetail(slug: string | null) {
+  return useQuery({
+    queryKey: ["admin", "services", "detail", slug],
+    queryFn: async () => {
+      const res = await fetchPlatformServiceDetail(slug as string);
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return res.data;
+    },
+    enabled: slug !== null,
+  });
+}
+
+export function useCreatePlatformService() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: PlatformServiceFormValues) => {
+      const res = await createPlatformService(payload);
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });
+      qc.invalidateQueries({ queryKey: ["platform-services"] });
+    },
+  });
+}
+
+export function useUpdatePlatformService() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ slug, data }: { slug: string; data: Omit<PlatformServiceFormValues, "slug"> }) => {
+      const res = await updatePlatformService(slug, data);
+      if (!isApiSuccess(res)) throw new Error(res.message);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });
+      qc.invalidateQueries({ queryKey: ["platform-services"] });
+    },
+  });
+}
+
+export function useDeletePlatformService() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      const res = await deletePlatformService(slug);
+      if (!isApiSuccess(res)) throw new Error(res.message);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });
       qc.invalidateQueries({ queryKey: ["platform-services"] });
     },
   });

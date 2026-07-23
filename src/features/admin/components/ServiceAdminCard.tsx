@@ -1,14 +1,18 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import type { AdminServiceUI } from "../transformers";
 
 interface ServiceAdminCardProps {
   service:   AdminServiceUI;
   onToggle:  (isActive: boolean) => void;
+  onOpen?:   () => void;
+  onEdit?:   () => void;
+  onDelete?: () => void;
   disabled?: boolean;
 }
 
-export function ServiceAdminCard({ service, onToggle, disabled = false }: ServiceAdminCardProps) {
+export function ServiceAdminCard({ service, onToggle, onOpen, onEdit, onDelete, disabled = false }: ServiceAdminCardProps) {
   return (
     <div
       className="card card--raised"
@@ -23,9 +27,39 @@ export function ServiceAdminCard({ service, onToggle, disabled = false }: Servic
             {service.userCount.toLocaleString()} users
           </div>
         </div>
-        <span className={`badge ${service.isActive ? "badge--success" : "badge--neutral"}`}>
-          {service.isActive ? "Active" : "Inactive"}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span className={`badge ${service.isActive ? "badge--success" : "badge--neutral"}`}>
+            {service.isActive ? "Active" : "Inactive"}
+          </span>
+          {onEdit && (
+            <button
+              type="button"
+              aria-label="Edit service"
+              onClick={onEdit}
+              style={{
+                width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center",
+                borderRadius: "var(--radius-icon)", border: "none", background: "transparent",
+                cursor: "pointer", color: "var(--text-tertiary)",
+              }}
+            >
+              <Pencil size={14} />
+            </button>
+          )}
+          {onDelete && (
+            <button
+              type="button"
+              aria-label="Delete service"
+              onClick={onDelete}
+              style={{
+                width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center",
+                borderRadius: "var(--radius-icon)", border: "none", background: "transparent",
+                cursor: "pointer", color: "var(--status-error)",
+              }}
+            >
+              <Trash2 size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -43,6 +77,12 @@ export function ServiceAdminCard({ service, onToggle, disabled = false }: Servic
           <span className="thumb" />
         </label>
       </div>
+
+      {onOpen && (
+        <button type="button" className="btn btn--secondary btn--sm" onClick={onOpen}>
+          Open app
+        </button>
+      )}
     </div>
   );
 }

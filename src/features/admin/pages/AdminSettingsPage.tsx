@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ function ToggleControl({ checked, onChange }: { checked: boolean; onChange: (v: 
 }
 
 export function AdminSettingsPage() {
+  const router = useRouter();
   const settingsTab = useAdminStore((s) => s.settingsTab);
   const setSettingsTab = useAdminStore((s) => s.setSettingsTab);
 
@@ -90,6 +92,7 @@ export function AdminSettingsPage() {
                     service={service}
                     disabled={toggleService.isPending}
                     onToggle={(isActive) => toggleService.mutate({ slug: service.slug, isActive })}
+                    onOpen={() => router.push(service.adminPath)}
                   />
                 ))}
               </div>

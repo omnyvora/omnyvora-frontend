@@ -116,6 +116,8 @@ export interface AdminServiceUI {
   slug:      string;
   name:      string;
   isActive:  boolean;
+  userPath:  string;
+  adminPath: string;
   userCount: number;
 }
 
@@ -124,6 +126,8 @@ export function toAdminServiceUI(service: AdminService): AdminServiceUI {
     id:        service.id,
     slug:      service.slug,
     name:      service.name,
+    userPath:  service.user_path,
+    adminPath: service.admin_path,
     isActive:  service.is_active,
     userCount: service.user_count,
   };
