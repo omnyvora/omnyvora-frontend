@@ -38,92 +38,34 @@ function PublicProfile({ onToast }) {
   );
 }
 
-function ProjectCard({ p, onDelete }) {
-  return (
-    <div className="row-hover" style={{ display: 'flex', gap: 16, padding: 18, border: '0.5px solid var(--border-default)', borderRadius: 'var(--radius-card)', background: 'var(--bg-surface-raised)' }}>
-      <div style={{ width: 40, height: 40, flex: 'none', borderRadius: 'var(--radius-icon)', background: 'var(--accent-subtle)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Icon name="folder" size={19} stroke={1.85} />
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ font: '600 14px var(--font-sans)', color: 'var(--text-primary)' }}>{p.title}</div>
-          <Badge tone="neutral">{p.period}</Badge>
-        </div>
-        <div className="ds-body-sm" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>{p.role}</div>
-        <div className="ds-body-sm" style={{ color: 'var(--text-secondary)', marginTop: 8 }}>{p.desc}</div>
-        {p.link && (
-          <div style={{ marginTop: 10, display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--accent-text)', font: '400 13px var(--font-mono)' }}>
-            <Icon name="link" size={13} />{p.link}
-          </div>
-        )}
-      </div>
-      <div style={{ display: 'flex', gap: 4, flex: 'none' }}>
-        <button className="btn btn--ghost btn--sm" style={{ width: 32, padding: 0 }} title="Edit"><Icon name="pencil" size={15} /></button>
-        <button className="btn btn--ghost btn--sm" style={{ width: 32, padding: 0 }} title="Remove" onClick={() => onDelete(p.id)}><Icon name="trash" size={15} /></button>
-      </div>
-    </div>
-  );
-}
-
-function IdentityProjects({ onToast }) {
-  const [items, setItems] = React.useState(IDENTITY.projects);
-  if (!items.length) return <EmptyState icon="folder" title="No projects added yet" desc="Add your projects here. Shared across all Omnyvora services." actionLabel="Add project" onAction={() => onToast({ tone: 'info', title: 'Add project', msg: 'This flow is a placeholder in the preview.' })} />;
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="secondary" size="sm" leading="plus" onClick={() => onToast({ tone: 'info', title: 'Add project', msg: 'This flow is a placeholder in the preview.' })}>Add project</Button>
-      </div>
-      {items.map(p => <ProjectCard key={p.id} p={p} onDelete={id => { setItems(its => its.filter(x => x.id !== id)); onToast({ tone: 'error', title: 'Project removed' }); }} />)}
-    </div>
-  );
-}
-
-function IdentitySkills({ onToast }) {
-  const [skills, setSkills] = React.useState(IDENTITY.skills);
-  if (!skills.length) return <EmptyState icon="star" title="No skills added yet" desc="Add your skills here. Shared across all Omnyvora services." actionLabel="Add skill" onAction={() => onToast({ tone: 'info', title: 'Add skill', msg: 'This flow is a placeholder in the preview.' })} />;
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="secondary" size="sm" leading="plus" onClick={() => onToast({ tone: 'info', title: 'Add skill', msg: 'This flow is a placeholder in the preview.' })}>Add skill</Button>
-      </div>
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        {skills.map(s => (
-          <span key={s} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, height: 34, padding: '0 6px 0 14px', borderRadius: 'var(--radius-pill)',
-            background: 'var(--bg-surface-raised)', border: '0.5px solid var(--border-default)', color: 'var(--text-primary)', font: '400 13px var(--font-sans)' }}>
-            {s}
-            <button onClick={() => setSkills(ss => ss.filter(x => x !== s))} title="Remove"
-              style={{ width: 22, height: 22, borderRadius: '50%', border: 'none', background: 'transparent', color: 'var(--text-tertiary)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="x" size={13} />
-            </button>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Identity({ onToast }) {
-  const [tab, setTab] = React.useState('projects');
+function Identity({ onToast, onConfirm }) {
+  const [tab, setTab] = React.useState('overview');
   const tabs = [
+    { id: 'overview', label: 'Overview', icon: 'layoutGrid' },
     { id: 'projects', label: 'Projects', icon: 'folder', count: IDENTITY.projects.length },
-    { id: 'education', label: 'Education', icon: 'graduation', count: IDENTITY.education.length },
     { id: 'experience', label: 'Experience', icon: 'briefcase', count: IDENTITY.experience.length },
+    { id: 'education', label: 'Education', icon: 'graduation', count: IDENTITY.education.length },
+    { id: 'certifications', label: 'Certifications', icon: 'award', count: IDENTITY.certifications.length },
     { id: 'skills', label: 'Skills', icon: 'star', count: IDENTITY.skills.length },
+    { id: 'social', label: 'Social links', icon: 'share', count: IDENTITY.socialLinks.length },
   ];
   return (
-    <div className="card" style={{ maxWidth: 820 }}>
-      <div style={{ padding: '6px 20px 0' }}><Tabs items={tabs} value={tab} onChange={setTab} /></div>
+    <div className="card" style={{ maxWidth: 920 }}>
+      <div style={{ padding: '6px 20px 0', overflowX: 'auto' }}><Tabs items={tabs} value={tab} onChange={setTab} /></div>
       <div style={{ padding: 24 }}>
-        {tab === 'projects' && <IdentityProjects onToast={onToast} />}
-        {tab === 'education' && <EmptyState icon="graduation" title="No education added yet" desc="Add your education here. Shared across all Omnyvora services." actionLabel="Add education" onAction={() => onToast({ tone: 'info', title: 'Add education', msg: 'This flow is a placeholder in the preview.' })} />}
-        {tab === 'experience' && <EmptyState icon="briefcase" title="No experience added yet" desc="Add your experience here. Shared across all Omnyvora services." actionLabel="Add experience" onAction={() => onToast({ tone: 'info', title: 'Add experience', msg: 'This flow is a placeholder in the preview.' })} />}
-        {tab === 'skills' && <IdentitySkills onToast={onToast} />}
+        {tab === 'overview' && <IdentityOverview onNavigate={setTab} />}
+        {tab === 'projects' && <IdentityProjects onToast={onToast} onConfirm={onConfirm} />}
+        {tab === 'experience' && <IdentityExperience onToast={onToast} onConfirm={onConfirm} />}
+        {tab === 'education' && <IdentityEducation onToast={onToast} onConfirm={onConfirm} />}
+        {tab === 'certifications' && <IdentityCertifications onToast={onToast} onConfirm={onConfirm} />}
+        {tab === 'skills' && <IdentitySkills onToast={onToast} onConfirm={onConfirm} />}
+        {tab === 'social' && <IdentitySocial onToast={onToast} onConfirm={onConfirm} />}
       </div>
     </div>
   );
 }
 
-function Profile({ onToast }) {
+function Profile({ onToast, onConfirm }) {
   const [sub, setSub] = React.useState('public');
   return (
     <Page>
@@ -134,7 +76,7 @@ function Profile({ onToast }) {
           { id: 'identity', label: 'Identity', icon: 'star' },
         ]} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          {sub === 'public' ? <PublicProfile onToast={onToast} /> : <Identity onToast={onToast} />}
+          {sub === 'public' ? <PublicProfile onToast={onToast} /> : <Identity onToast={onToast} onConfirm={onConfirm} />}
         </div>
       </div>
     </Page>

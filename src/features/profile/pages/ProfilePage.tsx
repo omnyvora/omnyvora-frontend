@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, Star, Folder, GraduationCap, Briefcase, Pencil, X, Camera, Loader2 } from "lucide-react";
+import { Pencil, X, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Page, PageHead, SubNav, Tabs, EmptyState } from "@/shared/workspace/components/ui";
 import { useMyProfile, useUpdateProfile, useUploadAvatar } from "../hooks";
 import { UpdateProfileFormSchema, type UpdateProfileFormValues } from "../types";
 import type { ProfileUI } from "../transformers";
@@ -113,7 +112,7 @@ function ProfileViewCard({ profile, onEdit }: { profile: ProfileUI; onEdit: () =
 
 // ── Public profile section (view + edit) ──────────────────────────────────────
 
-function PublicProfileSection() {
+export function PublicProfileSection() {
   const [isEditing,     setIsEditing]     = useState(false);
   const [avatarHovered, setAvatarHovered] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -345,67 +344,3 @@ function PublicProfileSection() {
   );
 }
 
-// ── Identity panel ────────────────────────────────────────────────────────────
-
-function IdentityPanel() {
-  const [tab, setTab] = useState("projects");
-
-  const tabs = [
-    { id: "projects",   label: "Projects",   icon: Folder,        count: 0 },
-    { id: "education",  label: "Education",  icon: GraduationCap, count: 0 },
-    { id: "experience", label: "Experience", icon: Briefcase,     count: 0 },
-    { id: "skills",     label: "Skills",     icon: Star,          count: 0 },
-  ];
-
-  const emptyProps: Record<string, { icon: typeof Folder; title: string; desc: string }> = {
-    projects:   { icon: Folder,        title: "No projects added yet",   desc: "Add your projects here. Shared across all Omnyvora services." },
-    education:  { icon: GraduationCap, title: "No education added yet",  desc: "Add your education here. Shared across all Omnyvora services." },
-    experience: { icon: Briefcase,     title: "No experience added yet", desc: "Add your experience here. Shared across all Omnyvora services." },
-    skills:     { icon: Star,          title: "No skills added yet",     desc: "Add your skills here. Shared across all Omnyvora services." },
-  };
-
-  const current = emptyProps[tab];
-
-  return (
-    <div className="card" style={{ maxWidth: 820 }}>
-      <div style={{ padding: "6px 20px 0" }}>
-        <Tabs items={tabs} value={tab} onChange={setTab} />
-      </div>
-      <div style={{ padding: 24 }}>
-        {current && (
-          <EmptyState
-            icon={current.icon}
-            title={current.title}
-            desc={current.desc}
-            actionLabel={`Add ${tab}`}
-            onAction={() => toast.info(`Add ${tab}`, { description: "This flow is coming soon." })}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ── ProfilePage ───────────────────────────────────────────────────────────────
-
-const SUB_NAV = [
-  { id: "public",   label: "Public profile", icon: User },
-  { id: "identity", label: "Identity",       icon: Star },
-];
-
-export function ProfilePage() {
-  const [sub, setSub] = useState("public");
-
-  return (
-    <Page>
-      <PageHead title="Profile" subtitle="Manage how you appear across Omnyvora." />
-      <div style={{ display: "flex", gap: 36, alignItems: "flex-start" }}>
-        <SubNav width={200} value={sub} onChange={setSub} items={SUB_NAV} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {sub === "public"   && <PublicProfileSection />}
-          {sub === "identity" && <IdentityPanel />}
-        </div>
-      </div>
-    </Page>
-  );
-}

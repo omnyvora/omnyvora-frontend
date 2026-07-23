@@ -587,6 +587,24 @@ body {
 .empty__title { font: var(--display-sm-weight) var(--display-sm-size)/var(--display-sm-lh) var(--font-sans); letter-spacing: var(--display-sm-tracking); color: var(--text-primary); }
 .empty__desc  { font: var(--body-md-weight) var(--body-md-size)/var(--body-md-lh) var(--font-sans); color: var(--text-secondary); max-width: 320px; }
 
+/* Range slider (proficiency, etc.) — native input, cross-browser thumb/track */
+.om-range {
+  -webkit-appearance: none; appearance: none;
+  height: 4px; background: var(--border-default); border-radius: 999px; outline: none;
+}
+.om-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--accent-primary); border: 2px solid var(--bg-surface-raised);
+  box-shadow: var(--shadow-1); cursor: pointer;
+}
+.om-range::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--bg-surface-raised);
+  background: var(--accent-primary); box-shadow: var(--shadow-1); cursor: pointer;
+}
+.om-range:disabled::-webkit-slider-thumb { background: var(--text-disabled); cursor: not-allowed; }
+.om-range:disabled::-moz-range-thumb { background: var(--text-disabled); cursor: not-allowed; }
+
 /* Skeleton */
 .skel { background: linear-gradient(90deg, var(--bg-surface) 25%, var(--border-default) 50%, var(--bg-surface) 75%); background-size: 200% 100%; animation: skel 1.4s var(--ease) infinite; border-radius: 6px; }
 @keyframes skel { to { background-position: -200% 0; } }

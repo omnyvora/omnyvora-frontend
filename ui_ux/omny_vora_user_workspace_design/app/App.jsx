@@ -38,6 +38,7 @@ function App() {
   const runConfirm = () => {
     const cfg = confirm; setConfirm(null);
     if (!cfg) return;
+    if (cfg.onConfirm) { cfg.onConfirm(); return; }
     if (cfg.tone === 'danger') pushToast({ tone: 'error', title: 'Account deleted', msg: 'Your account and data were removed.' });
     else pushToast({ tone: 'warning', title: 'Account deactivated', msg: 'Log back in any time to reactivate.' });
   };
@@ -55,7 +56,7 @@ function App() {
       <main style={{ flex: 1, minWidth: 0, overflowY: 'auto' }}>
         {nav === 'dashboard' && <Dashboard dash={t.dashLayout.toLowerCase()} unread={unread} notifications={notifications} onNav={setNav} onOpenApp={openApp} onOpenNotifs={() => setDrawer(true)} />}
         {nav === 'applications' && <Applications onOpenApp={openApp} />}
-        {nav === 'profile' && <Profile onToast={pushToast} />}
+        {nav === 'profile' && <Profile onToast={pushToast} onConfirm={setConfirm} />}
         {nav === 'account' && <Account onToast={pushToast} onConfirm={setConfirm} />}
       </main>
 
