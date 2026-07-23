@@ -11,7 +11,7 @@ const SUB_NAV = [
   { id: "identity", label: "Identity",       icon: Star },
 ];
 
-export default function Page() {
+export default function ProfilePage() {
   const [sub, setSub] = useState("public");
 
   return (
