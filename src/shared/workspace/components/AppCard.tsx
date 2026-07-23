@@ -9,6 +9,8 @@ export interface AppCardService {
   description: string;
   icon:        string;
   category:    string;
+  userPath:    string;
+  adminPath:   string;
   bg:          string;
   fg:          string;
 }

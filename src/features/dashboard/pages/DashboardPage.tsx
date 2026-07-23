@@ -7,6 +7,7 @@ import { useNotificationsDrawer } from "@/shared/notifications/store";
 import { Page, SectionRow } from "@/shared/workspace/components/ui";
 import { RingStat } from "@/shared/workspace/components/StatCard";
 import { AppCard } from "@/shared/workspace/components/AppCard";
+import { getServiceOpenPath } from "@/features/catalog/utils";
 import { NotifItem } from "@/shared/notifications/NotifItem";
 import type { Notification } from "@/shared/notifications/types";
 import { ActivityItem } from "@/shared/workspace/components/ActivityItem";
@@ -174,7 +175,7 @@ export function DashboardPage() {
                 <AppCard
                   key={s.id}
                   service={s}
-                  onOpen={(svc) => router.push(`/${svc.slug}`)}
+                  onOpen={(svc) => router.push(getServiceOpenPath(svc, user?.role))}
                 />
               ))}
             </div>

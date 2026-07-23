@@ -7,6 +7,8 @@ export const PlatformServiceSchema = z.object({
   description:       z.string(),
   icon:              z.string(),
   category:          z.string(),
+  user_path:         z.string(),
+  admin_path:        z.string(),
   accent_primary:    z.string(),
   accent_subtle:     z.string(),
   accent_subtle_dark: z.string(),
@@ -28,6 +30,8 @@ export interface PlatformServiceUI {
   description: string;
   icon:     string;
   category: string;
+  userPath: string;
+  adminPath: string;
   bg:       string;
   fg:       string;
 }

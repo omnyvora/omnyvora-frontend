@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/shared/auth/context";
 import { Page, PageHead } from "@/shared/workspace/components/ui";
 import { AppCard } from "@/shared/workspace/components/AppCard";
 import { usePlatformServices } from "../hooks";
 import { uniqueCategories } from "../transformers";
+import { getServiceOpenPath } from "../utils";
 import type { PlatformServiceUI } from "../types";
+import type { UserRole } from "@/shared/auth/types";
 
 function CategoryFilter({
   categories,
@@ -46,7 +49,7 @@ function CategoryFilter({
   );
 }
 
-function ServiceGrid({ services }: { services: PlatformServiceUI[] }) {
+function ServiceGrid({ services, role }: { services: PlatformServiceUI[]; role: UserRole | undefined }) {
   const router = useRouter();
   if (services.length === 0) {
     return (
@@ -62,7 +65,7 @@ function ServiceGrid({ services }: { services: PlatformServiceUI[] }) {
           key={s.id}
           service={s}
           showCategory
-          onOpen={(svc) => router.push(`/${svc.slug}`)}
+          onOpen={(svc) => router.push(getServiceOpenPath(svc, role))}
         />
       ))}
     </div>
@@ -71,6 +74,7 @@ function ServiceGrid({ services }: { services: PlatformServiceUI[] }) {
 
 export function ApplicationsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const { user } = useAuth();
   const { data: services = [], isLoading, isError } = usePlatformServices();
 
   const categories = uniqueCategories(services);
@@ -110,7 +114,7 @@ export function ApplicationsPage() {
           Failed to load applications. Please refresh.
         </div>
       ) : (
-        <ServiceGrid services={filtered} />
+        <ServiceGrid services={filtered} role={user?.role} />
       )}
     </Page>
   );

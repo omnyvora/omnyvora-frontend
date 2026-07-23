@@ -8,6 +8,8 @@ export function toServiceUI(s: PlatformService): PlatformServiceUI {
     description: s.description,
     icon:        s.icon,
     category:    s.category,
+    userPath:    s.user_path,
+    adminPath:   s.admin_path,
     bg:          s.accent_subtle,
     fg:          s.accent_text,
   };
