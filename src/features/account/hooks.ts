@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/shared/auth/context";
 import { tokenStore } from "@/core/api/axios";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import { requestEmailChangeOtp, changeEmail } from "./api";
 
 export function useRequestEmailChangeOtp() {
@@ -18,7 +18,7 @@ export function useChangeEmail() {
   return useMutation({
     mutationFn: async (payload: { new_email: string; otp: string }) => {
       const res = await changeEmail(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return payload.new_email;
     },
     onSuccess: (newEmail) => {

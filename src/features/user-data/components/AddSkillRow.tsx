@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import { Check, Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { useDebounce } from "@/core/hooks/useDebounce";
 import { useCreateSkill, useTechnologySearch } from "../hooks";
 import { TECHNOLOGY_CATEGORIES, TECHNOLOGY_CATEGORY_LABELS, type Technology, type TechnologyCategory } from "../types";
+
+function onCreateSkillError(err: unknown) {
+  toast.error("Couldn't add skill", { description: err instanceof Error ? err.message : "Unknown error" });
+}
 
 // Proficiency is no longer collected here — every new skill starts at a neutral
 // default and is fine-tuned afterward via the slider already on each SkillRow.
@@ -35,13 +40,19 @@ export function AddSkillRow({ existingNames, inputRef }: AddSkillRowProps) {
   // several skills can be added back-to-back without re-focusing the input each time.
   function addExisting(tech: Technology) {
     if (existingNames.has(tech.name.toLowerCase()) || createSkill.isPending) return;
-    createSkill.mutate({ technology_name: tech.name, category: tech.category, proficiency: DEFAULT_PROFICIENCY });
+    createSkill.mutate(
+      { technology_name: tech.name, category: tech.category, proficiency: DEFAULT_PROFICIENCY },
+      { onError: onCreateSkillError },
+    );
     setQuery("");
   }
 
   function addNew() {
     if (!canSubmitNew) return;
-    createSkill.mutate({ technology_name: trimmed, category: newCategory, proficiency: DEFAULT_PROFICIENCY });
+    createSkill.mutate(
+      { technology_name: trimmed, category: newCategory, proficiency: DEFAULT_PROFICIENCY },
+      { onError: onCreateSkillError },
+    );
     setQuery("");
     setNewCategory("other");
   }

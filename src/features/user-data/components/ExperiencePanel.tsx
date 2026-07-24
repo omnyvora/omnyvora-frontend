@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { applyServerErrors } from "@/core/utils/applyServerErrors";
+import { FieldError } from "@/shared/components/FieldError";
 import { ExperienceFormSchema, type ExperienceFormValues } from "../types";
 import type { ExperienceUI } from "../transformers";
 import { SidePanel } from "./SidePanel";
@@ -15,6 +17,7 @@ interface ExperiencePanelProps {
   onClose:    () => void;
   onSave:     (values: ExperienceFormValues, isCurrent: boolean) => void;
   isSaving:   boolean;
+  saveError?: unknown;
 }
 
 const BLANK: ExperienceFormValues = {
@@ -35,7 +38,7 @@ function toFormValues(experience: ExperienceUI): ExperienceFormValues {
   };
 }
 
-export function ExperiencePanel({ open, experience, onClose, onSave, isSaving }: ExperiencePanelProps) {
+export function ExperiencePanel({ open, experience, onClose, onSave, isSaving, saveError }: ExperiencePanelProps) {
   const form = useForm<ExperienceFormValues>({ resolver: zodResolver(ExperienceFormSchema), defaultValues: BLANK });
   const [isCurrent, setIsCurrent] = useState(false);
 
@@ -43,6 +46,10 @@ export function ExperiencePanel({ open, experience, onClose, onSave, isSaving }:
     form.reset(experience ? toFormValues(experience) : BLANK);
     setIsCurrent(experience ? experience.isCurrent : false);
   }, [experience, open, form]);
+
+  useEffect(() => {
+    if (saveError) applyServerErrors(form, saveError);
+  }, [saveError, form]);
 
   return (
     <SidePanel
@@ -74,12 +81,14 @@ export function ExperiencePanel({ open, experience, onClose, onSave, isSaving }:
         <div className="field">
           <label className="label">Company URL</label>
           <input className="input" placeholder="https://..." {...form.register("company_url")} />
+          <FieldError error={form.formState.errors.company_url} />
         </div>
       </div>
 
       <div className="field">
         <label className="label">Location</label>
         <input className="input" placeholder="City, Country / Remote" {...form.register("location")} />
+        <FieldError error={form.formState.errors.location} />
       </div>
 
       <div className="field">
@@ -104,6 +113,7 @@ export function ExperiencePanel({ open, experience, onClose, onSave, isSaving }:
         <div className="field">
           <label className="label">End date</label>
           <input className="input" type="date" disabled={isCurrent} {...form.register("end_date")} value={form.watch("end_date") ?? ""} />
+          <FieldError error={form.formState.errors.end_date} />
         </div>
       </div>
 

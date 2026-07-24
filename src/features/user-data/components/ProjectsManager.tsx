@@ -109,6 +109,7 @@ export function ProjectsManager() {
         onClose={() => setPanelProject(null)}
         onSave={handleSave}
         isSaving={isSaving}
+        saveError={createProject.error ?? updateProject.error}
       />
 
       <ConfirmModal
@@ -125,7 +126,7 @@ export function ProjectsManager() {
         onClose={() => setPendingDelete(null)}
         onConfirm={() => {
           if (pendingDelete) {
-            deleteProject.mutate(pendingDelete.id, { onSuccess: () => toast.error("Project removed") });
+            deleteProject.mutate(pendingDelete.id, { onSuccess: () => toast.success("Project removed") });
           }
           setPendingDelete(null);
         }}

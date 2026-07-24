@@ -4,7 +4,7 @@ import { flushSync } from "react-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { tokenStore, refreshTokenStore } from "@/core/api/axios";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import { useAuth } from "@/shared/auth/context";
 import { UserSchema } from "@/shared/auth/types";
 import { verifyResponseToUser } from "./transformers";
@@ -35,7 +35,7 @@ async function hydrateSession(access: string, refresh: string) {
   refreshTokenStore.set(refresh);
 
   const verifyRes = await verifyToken();
-  if (!isApiSuccess(verifyRes)) throw new Error(verifyRes.message);
+  if (!isApiSuccess(verifyRes)) throw new ApiRequestError(verifyRes);
 
   const parsed = VerifyUserResponseSchema.safeParse(verifyRes.data);
   if (!parsed.success) throw new Error("Unexpected user data from server");
@@ -74,7 +74,7 @@ export function useRegister(explicitRedirectTo?: string) {
   return useMutation({
     mutationFn: async (payload: RegisterRequest) => {
       const res = await registerUser(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return hydrateSession(res.data.access, res.data.refresh);
     },
     onSuccess: ({ access, user }) => {
@@ -100,7 +100,7 @@ export function useLogin(explicitRedirectTo?: string) {
   return useMutation({
     mutationFn: async (payload: LoginRequest) => {
       const res = await loginUser(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return hydrateSession(res.data.access, res.data.refresh);
     },
     onSuccess: ({ access, user }) => {
@@ -129,7 +129,7 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: async (payload: PasswordResetRequest) => {
       const res = await resetPassword(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
   });
 }
@@ -140,7 +140,7 @@ export function useChangePassword() {
   return useMutation({
     mutationFn: async (payload: PasswordChangeRequest) => {
       const res = await changePassword(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
   });
 }

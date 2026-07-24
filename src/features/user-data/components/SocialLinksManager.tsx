@@ -94,6 +94,7 @@ export function SocialLinksManager() {
         onClose={() => setPanelItem(null)}
         onSave={handleSave}
         isSaving={isSaving}
+        saveError={createLink.error ?? updateLink.error}
       />
 
       <ConfirmModal
@@ -109,7 +110,7 @@ export function SocialLinksManager() {
         }
         onClose={() => setPendingDelete(null)}
         onConfirm={() => {
-          if (pendingDelete) deleteLink.mutate(pendingDelete.id, { onSuccess: () => toast.error("Link removed") });
+          if (pendingDelete) deleteLink.mutate(pendingDelete.id, { onSuccess: () => toast.success("Link removed") });
           setPendingDelete(null);
         }}
       />

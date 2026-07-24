@@ -110,6 +110,7 @@ export function CertificationsManager() {
         onClose={() => setPanelItem(null)}
         onSave={handleSave}
         isSaving={isSaving}
+        saveError={createCertification.error ?? updateCertification.error}
       />
 
       <ConfirmModal
@@ -125,7 +126,7 @@ export function CertificationsManager() {
         }
         onClose={() => setPendingDelete(null)}
         onConfirm={() => {
-          if (pendingDelete) deleteCertification.mutate(pendingDelete.id, { onSuccess: () => toast.error("Certification removed") });
+          if (pendingDelete) deleteCertification.mutate(pendingDelete.id, { onSuccess: () => toast.success("Certification removed") });
           setPendingDelete(null);
         }}
       />

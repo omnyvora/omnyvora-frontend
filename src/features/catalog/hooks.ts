@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import { fetchServices } from "./api";
 import { toServicesUI } from "./transformers";
 import type { PlatformServiceUI } from "./types";
@@ -13,7 +13,7 @@ export function usePlatformServices() {
     queryKey: CATALOG_QUERY_KEY,
     queryFn:  async (): Promise<PlatformServiceUI[]> => {
       const res = await fetchServices();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toServicesUI(res.data);
     },
     staleTime: Infinity,

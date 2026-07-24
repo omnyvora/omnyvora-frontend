@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { applyServerErrors } from "@/core/utils/applyServerErrors";
+import { FieldError } from "@/shared/components/FieldError";
 import { SOCIAL_PLATFORM_LABELS, SOCIAL_PLATFORMS, SocialLinkFormSchema, type SocialLinkFormValues } from "../types";
 import type { SocialLinkUI } from "../transformers";
 import { SidePanel } from "./SidePanel";
@@ -14,16 +16,21 @@ interface SocialLinkPanelProps {
   onClose:    () => void;
   onSave:     (values: SocialLinkFormValues) => void;
   isSaving:   boolean;
+  saveError?: unknown;
 }
 
 const BLANK: SocialLinkFormValues = { platform: "github", label: "", url: "" };
 
-export function SocialLinkPanel({ open, socialLink, onClose, onSave, isSaving }: SocialLinkPanelProps) {
+export function SocialLinkPanel({ open, socialLink, onClose, onSave, isSaving, saveError }: SocialLinkPanelProps) {
   const form = useForm<SocialLinkFormValues>({ resolver: zodResolver(SocialLinkFormSchema), defaultValues: BLANK });
 
   useEffect(() => {
     form.reset(socialLink ? { platform: socialLink.platform, label: socialLink.label, url: socialLink.url } : BLANK);
   }, [socialLink, open, form]);
+
+  useEffect(() => {
+    if (saveError) applyServerErrors(form, saveError);
+  }, [saveError, form]);
 
   return (
     <SidePanel
@@ -57,6 +64,7 @@ export function SocialLinkPanel({ open, socialLink, onClose, onSave, isSaving }:
       <div className="field">
         <label className="label">Label</label>
         <input className="input" placeholder="Optional display name" {...form.register("label")} />
+        <FieldError error={form.formState.errors.label} />
       </div>
 
       <div className="field">

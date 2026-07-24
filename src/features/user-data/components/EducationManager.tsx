@@ -101,6 +101,7 @@ export function EducationManager() {
         onClose={() => setPanelItem(null)}
         onSave={handleSave}
         isSaving={isSaving}
+        saveError={createEducation.error ?? updateEducation.error}
       />
 
       <ConfirmModal
@@ -116,7 +117,7 @@ export function EducationManager() {
         }
         onClose={() => setPendingDelete(null)}
         onConfirm={() => {
-          if (pendingDelete) deleteEducation.mutate(pendingDelete.id, { onSuccess: () => toast.error("Education removed") });
+          if (pendingDelete) deleteEducation.mutate(pendingDelete.id, { onSuccess: () => toast.success("Education removed") });
           setPendingDelete(null);
         }}
       />

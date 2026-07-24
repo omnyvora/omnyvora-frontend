@@ -7,7 +7,7 @@
 // via matching query keys.
 
 import { useQuery } from "@tanstack/react-query";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import apiClient from "@/core/api/axios";
 import { resolveServiceUrl } from "@/core/api/services";
 import { toServicesUI } from "@/features/catalog/transformers";
@@ -29,7 +29,7 @@ export function useDashboardServices() {
     queryFn: async () => {
       const res = await apiClient.get(`${CATALOG_URL}/catalog/services/`);
       const data = res.data;
-      if (!isApiSuccess(data)) throw new Error(data.message);
+      if (!isApiSuccess(data)) throw new ApiRequestError(data);
       return toServicesUI(data.data as PlatformService[]);
     },
     staleTime: Infinity,
@@ -43,7 +43,7 @@ export function useDashboardNotifications() {
     queryFn: async (): Promise<Notification[]> => {
       const res = await apiClient.get("/v1/notifications/");
       const data = res.data;
-      if (!isApiSuccess(data)) throw new Error(data.message);
+      if (!isApiSuccess(data)) throw new ApiRequestError(data);
       return (data.data as NotificationPage).results;
     },
     staleTime: 60_000,
@@ -57,7 +57,7 @@ export function useDashboardUnreadCount() {
     queryFn: async (): Promise<number> => {
       const res = await apiClient.get("/v1/notifications/unread-count/");
       const data = res.data;
-      if (!isApiSuccess(data)) throw new Error(data.message);
+      if (!isApiSuccess(data)) throw new ApiRequestError(data);
       return (data.data as { count: number }).count;
     },
     staleTime: 30_000,
@@ -72,7 +72,7 @@ export function useDashboardProfile() {
     queryFn: async () => {
       const res = await apiClient.get(`${PROFILES_URL}/profiles/me/`);
       const data = res.data;
-      if (!isApiSuccess(data)) throw new Error(data.message);
+      if (!isApiSuccess(data)) throw new ApiRequestError(data);
       return toProfileUI(data.data as Profile);
     },
     staleTime: 60_000,
@@ -86,7 +86,7 @@ export function useDashboardActivity() {
     queryFn: async () => {
       const res = await apiClient.get(`${ACTIVITY_URL}/activity/`);
       const data = res.data;
-      if (!isApiSuccess(data)) throw new Error(data.message);
+      if (!isApiSuccess(data)) throw new ApiRequestError(data);
       return toActivityListUI((data.data as UserActivityPage).results);
     },
     staleTime: 60_000,

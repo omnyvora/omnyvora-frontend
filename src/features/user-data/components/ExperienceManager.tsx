@@ -105,6 +105,7 @@ export function ExperienceManager() {
         onClose={() => setPanelItem(null)}
         onSave={handleSave}
         isSaving={isSaving}
+        saveError={createExperience.error ?? updateExperience.error}
       />
 
       <ConfirmModal
@@ -120,7 +121,7 @@ export function ExperienceManager() {
         }
         onClose={() => setPendingDelete(null)}
         onConfirm={() => {
-          if (pendingDelete) deleteExperience.mutate(pendingDelete.id, { onSuccess: () => toast.error("Experience removed") });
+          if (pendingDelete) deleteExperience.mutate(pendingDelete.id, { onSuccess: () => toast.success("Experience removed") });
           setPendingDelete(null);
         }}
       />

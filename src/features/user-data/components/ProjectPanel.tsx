@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
+import { applyServerErrors } from "@/core/utils/applyServerErrors";
+import { FieldError } from "@/shared/components/FieldError";
 import { ProjectFormSchema, type ProjectFormValues } from "../types";
 import type { ProjectUI } from "../transformers";
 import { SidePanel } from "./SidePanel";
@@ -17,6 +19,7 @@ interface ProjectPanelProps {
   onClose:  () => void;
   onSave:   (values: ProjectFormValues) => void;
   isSaving: boolean;
+  saveError?: unknown; // last failed create/update mutation — mapped onto form fields below
 }
 
 const BLANK: ProjectFormValues = {
@@ -38,12 +41,18 @@ function toFormValues(project: ProjectUI): ProjectFormValues {
   };
 }
 
-export function ProjectPanel({ open, project, onClose, onSave, isSaving }: ProjectPanelProps) {
+export function ProjectPanel({ open, project, onClose, onSave, isSaving, saveError }: ProjectPanelProps) {
   const form = useForm<ProjectFormValues>({ resolver: zodResolver(ProjectFormSchema), defaultValues: BLANK });
 
   useEffect(() => {
     form.reset(project ? toFormValues(project) : BLANK);
   }, [project, open, form]);
+
+  // Backend validation the Zod schema can't replicate (e.g. malformed URLs) still
+  // needs to land on the right field, not just a generic toast.
+  useEffect(() => {
+    if (saveError) applyServerErrors(form, saveError);
+  }, [saveError, form]);
 
   const shortDescription = form.watch("short_description") ?? "";
 
@@ -147,10 +156,12 @@ export function ProjectPanel({ open, project, onClose, onSave, isSaving }: Proje
         <div className="field">
           <label className="label">GitHub URL</label>
           <input className="input" placeholder="https://github.com/..." {...form.register("github_url")} />
+          <FieldError error={form.formState.errors.github_url} />
         </div>
         <div className="field">
           <label className="label">Live URL</label>
           <input className="input" placeholder="https://..." {...form.register("live_url")} />
+          <FieldError error={form.formState.errors.live_url} />
         </div>
       </div>
 

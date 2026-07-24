@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import {
   fetchLogs,
   fetchAdminUsers,
@@ -35,7 +35,7 @@ export function useAdminLogs(level: LogLevelFilter) {
     queryKey: ["admin", "logs", level],
     queryFn: async () => {
       const res = await fetchLogs(level);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toLogRowsUI(res.data.results);
     },
     staleTime: 30_000,
@@ -47,7 +47,7 @@ export function useAdminUsers(q: string) {
     queryKey: ["admin", "users", q],
     queryFn: async () => {
       const res = await fetchAdminUsers(q);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminUserListUI(res.data.results);
     },
     staleTime: 30_000,
@@ -59,7 +59,7 @@ export function useAdminUserDetail(id: number | null) {
     queryKey: ["admin", "users", "detail", id],
     queryFn: async () => {
       const res = await fetchAdminUserDetail(id as number);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminUserDetailUI(res.data);
     },
     enabled: id !== null,
@@ -71,7 +71,7 @@ export function useAdminServices() {
     queryKey: ADMIN_SERVICES_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchAdminServices();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminServiceListUI(res.data);
     },
     staleTime: 30_000,
@@ -83,7 +83,7 @@ export function useAdminDashboard() {
     queryKey: ["admin", "dashboard"],
     queryFn: async () => {
       const res = await fetchAdminDashboard();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminDashboardUI(res.data);
     },
     staleTime: 30_000,
@@ -95,7 +95,7 @@ export function useAdminSettings() {
     queryKey: ADMIN_SETTINGS_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchAdminSettings();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminSettingsFormValues(res.data);
     },
   });
@@ -106,7 +106,7 @@ export function useUpdateAdminSettings() {
   return useMutation({
     mutationFn: async (payload: Partial<AdminSettingsFormValues>) => {
       const res = await updateAdminSettings(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toAdminSettingsFormValues(res.data);
     },
     onSuccess: (updated) => {
@@ -120,7 +120,7 @@ export function useToggleService() {
   return useMutation({
     mutationFn: async ({ slug, isActive }: { slug: string; isActive: boolean }) => {
       const res = await toggleServiceActive(slug, isActive);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });
@@ -135,7 +135,7 @@ export function usePlatformServiceDetail(slug: string | null) {
     queryKey: ["admin", "services", "detail", slug],
     queryFn: async () => {
       const res = await fetchPlatformServiceDetail(slug as string);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
     enabled: slug !== null,
@@ -147,7 +147,7 @@ export function useCreatePlatformService() {
   return useMutation({
     mutationFn: async (payload: PlatformServiceFormValues) => {
       const res = await createPlatformService(payload);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
     onSuccess: () => {
@@ -162,7 +162,7 @@ export function useUpdatePlatformService() {
   return useMutation({
     mutationFn: async ({ slug, data }: { slug: string; data: Omit<PlatformServiceFormValues, "slug"> }) => {
       const res = await updatePlatformService(slug, data);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
     onSuccess: () => {
@@ -177,7 +177,7 @@ export function useDeletePlatformService() {
   return useMutation({
     mutationFn: async (slug: string) => {
       const res = await deletePlatformService(slug);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ADMIN_SERVICES_QUERY_KEY });

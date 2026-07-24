@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import {
   fetchNotifications,
   fetchUnreadCount,
@@ -18,7 +18,7 @@ export function useNotifications() {
     queryKey: NOTIFICATIONS_QUERY_KEY,
     queryFn: async (): Promise<Notification[]> => {
       const res = await fetchNotifications();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.results;
     },
     staleTime: 60_000,
@@ -30,7 +30,7 @@ export function useUnreadCount() {
     queryKey: UNREAD_COUNT_QUERY_KEY,
     queryFn: async (): Promise<number> => {
       const res = await fetchUnreadCount();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.count;
     },
     staleTime: 30_000,
@@ -43,7 +43,7 @@ export function useMarkAllRead() {
   return useMutation({
     mutationFn: async () => {
       const res = await markAllRead();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
     onSuccess: () => {
       qc.setQueryData(UNREAD_COUNT_QUERY_KEY, 0);
@@ -57,7 +57,7 @@ export function useMarkOneRead() {
   return useMutation({
     mutationFn: async (id: number) => {
       const res = await markOneRead(id);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return id;
     },
     onSuccess: () => {

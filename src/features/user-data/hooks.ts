@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isApiSuccess } from "@/core/api/response";
+import { ApiRequestError, isApiSuccess } from "@/core/api/response";
 import {
   addProjectImage,
   createCertification,
@@ -72,7 +72,7 @@ export function useSkills() {
     queryKey: SKILLS_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchSkills();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toSkillUI);
     },
   });
@@ -87,7 +87,7 @@ export function useTechnologySearch(query: string, category?: TechnologyCategory
     queryKey: ["user-data", "technologies", query, category] as const,
     queryFn: async () => {
       const res = await searchTechnologies(query, category);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
     enabled: query.trim().length > 0,
@@ -100,7 +100,7 @@ export function useCreateSkill() {
   return useMutation({
     mutationFn: async (values: CreateSkillFormValues) => {
       const res = await createSkill(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toSkillUI(res.data);
     },
     onSuccess: (skill) => {
@@ -114,7 +114,7 @@ export function useUpdateSkillProficiency() {
   return useMutation({
     mutationFn: async ({ skillId, proficiency }: { skillId: number; proficiency: number }) => {
       const res = await updateSkillProficiency(skillId, proficiency);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toSkillUI(res.data);
     },
     onSuccess: (updated) => {
@@ -130,7 +130,7 @@ export function useDeleteSkill() {
   return useMutation({
     mutationFn: async (skillId: number) => {
       const res = await deleteSkill(skillId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return skillId;
     },
     onSuccess: (skillId) => {
@@ -152,7 +152,7 @@ export function useReorderSkills() {
       );
 
       const res = await reorderSkills(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toSkillUI);
     },
     onSuccess: (skills) => {
@@ -173,7 +173,7 @@ export function useProjects() {
     queryKey: PROJECTS_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchProjects();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toProjectUI);
     },
   });
@@ -184,7 +184,7 @@ export function useCreateProject() {
   return useMutation({
     mutationFn: async (values: ProjectFormValues) => {
       const res = await createProject(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toProjectUI(res.data);
     },
     onSuccess: (project) => {
@@ -198,7 +198,7 @@ export function useUpdateProject() {
   return useMutation({
     mutationFn: async ({ projectId, values }: { projectId: number; values: Partial<ProjectFormValues> }) => {
       const res = await updateProject(projectId, values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toProjectUI(res.data);
     },
     onSuccess: (updated) => {
@@ -212,7 +212,7 @@ export function useDeleteProject() {
   return useMutation({
     mutationFn: async (projectId: number) => {
       const res = await deleteProject(projectId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return projectId;
     },
     onSuccess: (projectId) => {
@@ -230,7 +230,7 @@ export function useReorderProjects() {
       qc.setQueryData<ProjectUI[]>(PROJECTS_QUERY_KEY, orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })));
 
       const res = await reorderProjects(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toProjectUI);
     },
     onSuccess: (projects) => qc.setQueryData(PROJECTS_QUERY_KEY, projects),
@@ -246,7 +246,7 @@ export function useAddProjectImage() {
   return useMutation({
     mutationFn: async ({ projectId, file, caption }: { projectId: number; file: File; caption?: string }) => {
       const res = await addProjectImage(projectId, file, caption);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toProjectImageUI(res.data);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: PROJECTS_QUERY_KEY }),
@@ -258,7 +258,7 @@ export function useUpdateProjectImageCaption() {
   return useMutation({
     mutationFn: async ({ projectId, imageId, caption }: { projectId: number; imageId: number; caption: string }) => {
       const res = await updateProjectImage(projectId, imageId, { caption });
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toProjectImageUI(res.data);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: PROJECTS_QUERY_KEY }),
@@ -270,7 +270,7 @@ export function useSetProjectCoverImage() {
   return useMutation({
     mutationFn: async ({ projectId, imageId }: { projectId: number; imageId: number }) => {
       const res = await updateProjectImage(projectId, imageId, { is_cover: true });
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toProjectImageUI(res.data);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: PROJECTS_QUERY_KEY }),
@@ -282,7 +282,7 @@ export function useRemoveProjectImage() {
   return useMutation({
     mutationFn: async ({ projectId, imageId }: { projectId: number; imageId: number }) => {
       const res = await removeProjectImage(projectId, imageId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: PROJECTS_QUERY_KEY }),
   });
@@ -293,7 +293,7 @@ export function useReorderProjectImages() {
   return useMutation({
     mutationFn: async ({ projectId, orderedIds }: { projectId: number; orderedIds: number[] }) => {
       const res = await reorderProjectImages(projectId, orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: PROJECTS_QUERY_KEY }),
   });
@@ -308,7 +308,7 @@ export function useExperiences() {
     queryKey: EXPERIENCE_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchExperiences();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toExperienceUI);
     },
   });
@@ -319,7 +319,7 @@ export function useCreateExperience() {
   return useMutation({
     mutationFn: async (values: ExperienceFormValues) => {
       const res = await createExperience(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toExperienceUI(res.data);
     },
     onSuccess: (experience) => {
@@ -333,7 +333,7 @@ export function useUpdateExperience() {
   return useMutation({
     mutationFn: async ({ experienceId, values }: { experienceId: number; values: Partial<ExperienceFormValues> }) => {
       const res = await updateExperience(experienceId, values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toExperienceUI(res.data);
     },
     onSuccess: (updated) => {
@@ -347,7 +347,7 @@ export function useDeleteExperience() {
   return useMutation({
     mutationFn: async (experienceId: number) => {
       const res = await deleteExperience(experienceId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return experienceId;
     },
     onSuccess: (experienceId) => {
@@ -365,7 +365,7 @@ export function useReorderExperiences() {
       qc.setQueryData<ExperienceUI[]>(EXPERIENCE_QUERY_KEY, orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })));
 
       const res = await reorderExperiences(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toExperienceUI);
     },
     onSuccess: (experiences) => qc.setQueryData(EXPERIENCE_QUERY_KEY, experiences),
@@ -382,7 +382,7 @@ export function useCertifications() {
     queryKey: CERTIFICATIONS_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchCertifications();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toCertificationUI);
     },
   });
@@ -393,7 +393,7 @@ export function useCertificationOptions() {
     queryKey: ["user-data", "certification-options"] as const,
     queryFn: async () => {
       const res = await fetchCertificationOptions();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
   });
@@ -404,7 +404,7 @@ export function useCreateCertification() {
   return useMutation({
     mutationFn: async (values: CertificationFormValues & { image?: File | null }) => {
       const res = await createCertification(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toCertificationUI(res.data);
     },
     onSuccess: (certification) => {
@@ -420,7 +420,7 @@ export function useUpdateCertification() {
       { certificationId, values }: { certificationId: number; values: Partial<CertificationFormValues> & { image?: File | null } },
     ) => {
       const res = await updateCertification(certificationId, values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toCertificationUI(res.data);
     },
     onSuccess: (updated) => {
@@ -434,7 +434,7 @@ export function useDeleteCertification() {
   return useMutation({
     mutationFn: async (certificationId: number) => {
       const res = await deleteCertification(certificationId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return certificationId;
     },
     onSuccess: (certificationId) => {
@@ -452,7 +452,7 @@ export function useReorderCertifications() {
       qc.setQueryData<CertificationUI[]>(CERTIFICATIONS_QUERY_KEY, orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })));
 
       const res = await reorderCertifications(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toCertificationUI);
     },
     onSuccess: (certifications) => qc.setQueryData(CERTIFICATIONS_QUERY_KEY, certifications),
@@ -469,7 +469,7 @@ export function useEducations() {
     queryKey: EDUCATION_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchEducations();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toEducationUI);
     },
   });
@@ -480,7 +480,7 @@ export function useCreateEducation() {
   return useMutation({
     mutationFn: async (values: EducationFormValues) => {
       const res = await createEducation(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toEducationUI(res.data);
     },
     onSuccess: (education) => {
@@ -494,7 +494,7 @@ export function useUpdateEducation() {
   return useMutation({
     mutationFn: async ({ educationId, values }: { educationId: number; values: Partial<EducationFormValues> }) => {
       const res = await updateEducation(educationId, values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toEducationUI(res.data);
     },
     onSuccess: (updated) => {
@@ -508,7 +508,7 @@ export function useDeleteEducation() {
   return useMutation({
     mutationFn: async (educationId: number) => {
       const res = await deleteEducation(educationId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return educationId;
     },
     onSuccess: (educationId) => {
@@ -526,7 +526,7 @@ export function useReorderEducations() {
       qc.setQueryData<EducationUI[]>(EDUCATION_QUERY_KEY, orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })));
 
       const res = await reorderEducations(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toEducationUI);
     },
     onSuccess: (educations) => qc.setQueryData(EDUCATION_QUERY_KEY, educations),
@@ -543,7 +543,7 @@ export function useSocialLinks() {
     queryKey: SOCIAL_LINKS_QUERY_KEY,
     queryFn: async () => {
       const res = await fetchSocialLinks();
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toSocialLinkUI);
     },
   });
@@ -554,7 +554,7 @@ export function useCreateSocialLink() {
   return useMutation({
     mutationFn: async (values: SocialLinkFormValues) => {
       const res = await createSocialLink(values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toSocialLinkUI(res.data);
     },
     onSuccess: (link) => {
@@ -568,7 +568,7 @@ export function useUpdateSocialLink() {
   return useMutation({
     mutationFn: async ({ socialLinkId, values }: { socialLinkId: number; values: Partial<SocialLinkFormValues> }) => {
       const res = await updateSocialLink(socialLinkId, values);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return toSocialLinkUI(res.data);
     },
     onSuccess: (updated) => {
@@ -582,7 +582,7 @@ export function useDeleteSocialLink() {
   return useMutation({
     mutationFn: async (socialLinkId: number) => {
       const res = await deleteSocialLink(socialLinkId);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return socialLinkId;
     },
     onSuccess: (socialLinkId) => {
@@ -600,7 +600,7 @@ export function useReorderSocialLinks() {
       qc.setQueryData<SocialLinkUI[]>(SOCIAL_LINKS_QUERY_KEY, orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })));
 
       const res = await reorderSocialLinks(orderedIds);
-      if (!isApiSuccess(res)) throw new Error(res.message);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data.map(toSocialLinkUI);
     },
     onSuccess: (links) => qc.setQueryData(SOCIAL_LINKS_QUERY_KEY, links),

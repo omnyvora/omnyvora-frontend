@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { applyServerErrors } from "@/core/utils/applyServerErrors";
+import { FieldError } from "@/shared/components/FieldError";
 import { EducationFormSchema, type EducationFormValues } from "../types";
 import type { EducationUI } from "../transformers";
 import { useCertificationOptions } from "../hooks";
@@ -15,6 +17,7 @@ interface EducationPanelProps {
   onClose:   () => void;
   onSave:    (values: EducationFormValues) => void;
   isSaving:  boolean;
+  saveError?: unknown;
 }
 
 const BLANK: EducationFormValues = {
@@ -35,13 +38,17 @@ function toFormValues(education: EducationUI): EducationFormValues {
   };
 }
 
-export function EducationPanel({ open, education, onClose, onSave, isSaving }: EducationPanelProps) {
+export function EducationPanel({ open, education, onClose, onSave, isSaving, saveError }: EducationPanelProps) {
   const form = useForm<EducationFormValues>({ resolver: zodResolver(EducationFormSchema), defaultValues: BLANK });
   const { data: certificationOptions } = useCertificationOptions();
 
   useEffect(() => {
     form.reset(education ? toFormValues(education) : BLANK);
   }, [education, open, form]);
+
+  useEffect(() => {
+    if (saveError) applyServerErrors(form, saveError);
+  }, [saveError, form]);
 
   return (
     <SidePanel
@@ -73,6 +80,7 @@ export function EducationPanel({ open, education, onClose, onSave, isSaving }: E
       <div className="field">
         <label className="label">Department</label>
         <input className="input" placeholder="Optional" {...form.register("department")} />
+        <FieldError error={form.formState.errors.department} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
@@ -84,6 +92,7 @@ export function EducationPanel({ open, education, onClose, onSave, isSaving }: E
         <div className="field">
           <label className="label">End date</label>
           <input className="input" type="date" {...form.register("end_date")} value={form.watch("end_date") ?? ""} />
+          <FieldError error={form.formState.errors.end_date} />
         </div>
       </div>
 
@@ -91,10 +100,12 @@ export function EducationPanel({ open, education, onClose, onSave, isSaving }: E
         <div className="field">
           <label className="label">GPA</label>
           <input className="input" placeholder="3.59" {...form.register("gpa")} value={form.watch("gpa") ?? ""} />
+          <FieldError error={form.formState.errors.gpa} />
         </div>
         <div className="field">
           <label className="label">GPA scale</label>
           <input className="input" placeholder="4.00" {...form.register("gpa_scale")} value={form.watch("gpa_scale") ?? ""} />
+          <FieldError error={form.formState.errors.gpa_scale} />
         </div>
       </div>
 
@@ -112,6 +123,7 @@ export function EducationPanel({ open, education, onClose, onSave, isSaving }: E
           />
         )}
       />
+      <FieldError error={form.formState.errors.certification_id} />
     </SidePanel>
   );
 }

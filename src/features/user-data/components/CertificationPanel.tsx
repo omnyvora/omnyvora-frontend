@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Award } from "lucide-react";
+import { applyServerErrors } from "@/core/utils/applyServerErrors";
+import { FieldError } from "@/shared/components/FieldError";
 import { CertificationFormSchema, type CertificationFormValues } from "../types";
 import type { CertificationUI } from "../transformers";
 import { SidePanel } from "./SidePanel";
@@ -14,11 +16,12 @@ interface CertificationPanelProps {
   onClose:        () => void;
   onSave:         (values: CertificationFormValues, image: File | null) => void;
   isSaving:       boolean;
+  saveError?:     unknown;
 }
 
 const BLANK: CertificationFormValues = { title: "", issuer: "", issue_date: "", credential_url: "" };
 
-export function CertificationPanel({ open, certification, onClose, onSave, isSaving }: CertificationPanelProps) {
+export function CertificationPanel({ open, certification, onClose, onSave, isSaving, saveError }: CertificationPanelProps) {
   const form = useForm<CertificationFormValues>({ resolver: zodResolver(CertificationFormSchema), defaultValues: BLANK });
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -31,6 +34,10 @@ export function CertificationPanel({ open, certification, onClose, onSave, isSav
     setImage(null);
     setPreview(certification?.image ?? null);
   }, [certification, open, form]);
+
+  useEffect(() => {
+    if (saveError) applyServerErrors(form, saveError);
+  }, [saveError, form]);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -93,6 +100,7 @@ export function CertificationPanel({ open, certification, onClose, onSave, isSav
       <div className="field">
         <label className="label">Credential URL</label>
         <input className="input" placeholder="https://..." {...form.register("credential_url")} />
+        <FieldError error={form.formState.errors.credential_url} />
       </div>
     </SidePanel>
   );
