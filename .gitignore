@@ -41,6 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Developers file 
+# Developers file
 .claude
 developers_files/
+docs-internal/
+
+# Graphify
+graphify-out/cache/
