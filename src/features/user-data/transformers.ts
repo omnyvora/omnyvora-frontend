@@ -57,6 +57,7 @@ export interface ProjectUI {
   description:      string;
   achievements:     string[];
   technologies:     string[];
+  skills:           string[];
   githubUrl:        string;
   liveUrl:          string;
   isFeatured:       boolean;
@@ -76,6 +77,7 @@ export function toProjectUI(p: Project): ProjectUI {
     description:      p.description,
     achievements:     p.achievements,
     technologies:     p.technologies,
+    skills:           p.skills,
     githubUrl:        p.github_url,
     liveUrl:          p.live_url,
     isFeatured:       p.is_featured,

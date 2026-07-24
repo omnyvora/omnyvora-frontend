@@ -21,7 +21,7 @@ interface ProjectPanelProps {
 
 const BLANK: ProjectFormValues = {
   title: "", short_description: "", description: "", achievements: [],
-  technology_names: [], github_url: "", live_url: "", is_featured: false,
+  technology_names: [], skill_names: [], github_url: "", live_url: "", is_featured: false,
 };
 
 function toFormValues(project: ProjectUI): ProjectFormValues {
@@ -31,6 +31,7 @@ function toFormValues(project: ProjectUI): ProjectFormValues {
     description: project.description,
     achievements: project.achievements,
     technology_names: project.technologies,
+    skill_names: project.skills,
     github_url: project.githubUrl,
     live_url: project.liveUrl,
     is_featured: project.isFeatured,
@@ -123,6 +124,14 @@ export function ProjectPanel({ open, project, onClose, onSave, isSaving }: Proje
               </button>
             </div>
           </div>
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name="skill_names"
+        render={({ field }) => (
+          <TagInput label="Skills" value={field.value ?? []} onChange={field.onChange} placeholder="Add a skill and press Enter" />
         )}
       />
 

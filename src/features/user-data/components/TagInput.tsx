@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useDebounce } from "@/core/hooks/useDebounce";
 import { useTechnologySearch } from "../hooks";
 
@@ -19,17 +19,16 @@ export function TagInput({ label, value, onChange, placeholder = "Add and press 
 
   const debouncedText = useDebounce(text, 250);
   const { data: results } = useTechnologySearch(debouncedText);
-  const suggestions = (results ?? [])
-    .map((t) => t.name)
-    .filter((name) => !value.includes(name))
-    .slice(0, 6);
+  const suggestions = (results ?? []).map((t) => t.name).slice(0, 6);
 
+  // The dropdown stays open across picks (only the text clears) so several tags
+  // can be added back-to-back without re-opening it — already-added suggestions
+  // stay visible with a checkmark instead of disappearing from the list.
   function add(raw: string) {
     const name = raw.trim();
     if (!name || value.includes(name)) return;
     onChange([...value, name]);
     setText("");
-    setOpen(false);
   }
 
   return (
@@ -77,21 +76,29 @@ export function TagInput({ label, value, onChange, placeholder = "Add and press 
           }}
         />
       </div>
-      {open && text && suggestions.length > 0 && (
+      {open && debouncedText && suggestions.length > 0 && (
         <div
           className="card card--raised"
           style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 4, zIndex: 20, overflow: "hidden" }}
         >
-          {suggestions.map((s) => (
-            <div
-              key={s}
-              onMouseDown={() => add(s)}
-              className="row-hover"
-              style={{ padding: "9px 12px", cursor: "pointer", font: "400 13px var(--font-sans)", color: "var(--text-primary)" }}
-            >
-              {s}
-            </div>
-          ))}
+          {suggestions.map((s) => {
+            const added = value.includes(s);
+            return (
+              <div
+                key={s}
+                onMouseDown={() => (added ? onChange(value.filter((v) => v !== s)) : add(s))}
+                className="row-hover"
+                style={{
+                  padding: "9px 12px", cursor: "pointer", font: "400 13px var(--font-sans)",
+                  color: added ? "var(--accent-text)" : "var(--text-primary)",
+                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
+                }}
+              >
+                {s}
+                {added && <Check size={14} />}
+              </div>
+            );
+          })}
         </div>
       )}
       {hint && <div className="ds-caption" style={{ color: "var(--text-tertiary)" }}>{hint}</div>}

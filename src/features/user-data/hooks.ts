@@ -78,6 +78,10 @@ export function useSkills() {
   });
 }
 
+// Matches the backend's 60s search cache — repeated/backtracked keystrokes for the
+// same query resolve from React Query's cache instead of round-tripping again.
+const TECHNOLOGY_SEARCH_STALE_TIME_MS = 60_000;
+
 export function useTechnologySearch(query: string, category?: TechnologyCategory) {
   return useQuery({
     queryKey: ["user-data", "technologies", query, category] as const,
@@ -87,6 +91,7 @@ export function useTechnologySearch(query: string, category?: TechnologyCategory
       return res.data;
     },
     enabled: query.trim().length > 0,
+    staleTime: TECHNOLOGY_SEARCH_STALE_TIME_MS,
   });
 }
 
