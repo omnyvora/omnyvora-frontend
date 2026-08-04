@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { Plus, Star, X } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import {
   useAddProjectImage,
   useRemoveProjectImage,
@@ -52,7 +53,7 @@ export function GalleryField({ projectId, images }: GalleryFieldProps) {
     if (!file || !projectId) return;
     addImage.mutate(
       { projectId, file },
-      { onError: (err) => toast.error("Upload failed", { description: err instanceof Error ? err.message : "Unknown error" }) },
+      { onError: (err) => toast.error("Upload failed", { description: describeApiError(err) }) },
     );
   }
 

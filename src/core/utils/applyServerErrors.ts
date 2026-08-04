@@ -16,3 +16,17 @@ export function applyServerErrors<T extends FieldValues>(form: UseFormReturn<T>,
     }
   }
 }
+
+// Toast description for a failed mutation. When the backend sent field-level
+// errors, the generic top-level message ("Invalid project data") is useless on
+// its own — applyServerErrors() already put the real reason under each field, so
+// the toast just needs to point the user there instead of repeating it.
+export function describeApiError(error: unknown): string {
+  if (error instanceof ApiRequestError) {
+    if (error.errors && Object.keys(error.errors).length > 0) {
+      return "Check the highlighted fields below.";
+    }
+    return error.message;
+  }
+  return error instanceof Error ? error.message : "Something went wrong.";
+}

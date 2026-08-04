@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldCheck, Lock, AlertTriangle, Eye, EyeOff, Mail, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { useAuth } from "@/shared/auth/context";
 import { useChangePassword } from "@/features/auth/hooks";
 import { PasswordChangeFormSchema, type PasswordChangeFormValues } from "@/features/auth/types";
@@ -94,7 +95,7 @@ function AccountSecurity() {
       form.reset();
       toast.success("Password updated", { description: "Use your new password next time you sign in." });
     } catch (err) {
-      toast.error("Failed to update", { description: err instanceof Error ? err.message : "Unknown error" });
+      toast.error("Failed to update", { description: describeApiError(err) });
     }
   }
 

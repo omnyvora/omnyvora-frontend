@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Folder, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useCreateProject, useDeleteProject, useProjects, useReorderProjects, useUpdateProject } from "../hooks";
@@ -43,12 +44,12 @@ export function ProjectsManager() {
     if (panelProject && panelProject !== "new") {
       updateProject.mutate({ projectId: panelProject.id, values }, {
         onSuccess: () => { toast.success("Project updated"); setPanelProject(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     } else {
       createProject.mutate(values, {
         onSuccess: () => { toast.success("Project added"); setPanelProject(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     }
   }

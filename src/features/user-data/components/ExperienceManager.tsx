@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Briefcase, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useCreateExperience, useDeleteExperience, useExperiences, useReorderExperiences, useUpdateExperience } from "../hooks";
@@ -46,12 +47,12 @@ export function ExperienceManager() {
     if (panelItem && panelItem !== "new") {
       updateExperience.mutate({ experienceId: panelItem.id, values: request }, {
         onSuccess: () => { toast.success("Experience updated"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     } else {
       createExperience.mutate(request, {
         onSuccess: () => { toast.success("Experience added"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     }
   }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { Plus, Server } from "lucide-react";
 import { Page, PageHead, EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
@@ -39,7 +40,7 @@ export function AdminServicesPage() {
       {
         onError: (err) => {
           toast.error("Failed to update service", {
-            description: err instanceof Error ? err.message : "Unknown error",
+            description: describeApiError(err),
           });
         },
       },
@@ -69,7 +70,7 @@ export function AdminServicesPage() {
         {
           onSuccess: () => { toast.success("Service updated"); closeForm(); },
           onError: (err) => toast.error("Failed to update service", {
-            description: err instanceof Error ? err.message : "Unknown error",
+            description: describeApiError(err),
           }),
         },
       );
@@ -77,7 +78,7 @@ export function AdminServicesPage() {
       createService.mutate(values, {
         onSuccess: () => { toast.success("Service created"); closeForm(); },
         onError: (err) => toast.error("Failed to create service", {
-          description: err instanceof Error ? err.message : "Unknown error",
+          description: describeApiError(err),
         }),
       });
     }
@@ -143,7 +144,7 @@ export function AdminServicesPage() {
             deleteService.mutate(pendingDelete.slug, {
               onSuccess: () => toast.success("Service deleted"),
               onError: (err) => toast.error("Failed to delete service", {
-                description: err instanceof Error ? err.message : "Unknown error",
+                description: describeApiError(err),
               }),
             });
           }

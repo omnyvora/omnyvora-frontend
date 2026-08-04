@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Award, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useCertifications, useCreateCertification, useDeleteCertification, useReorderCertifications, useUpdateCertification } from "../hooks";
@@ -44,12 +45,12 @@ export function CertificationsManager() {
     if (panelItem && panelItem !== "new") {
       updateCertification.mutate({ certificationId: panelItem.id, values: { ...values, image } }, {
         onSuccess: () => { toast.success("Certification updated"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     } else {
       createCertification.mutate({ ...values, image }, {
         onSuccess: () => { toast.success("Certification added"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     }
   }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Link as LinkIcon, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useCreateSocialLink, useDeleteSocialLink, useReorderSocialLinks, useSocialLinks, useUpdateSocialLink } from "../hooks";
@@ -43,12 +44,12 @@ export function SocialLinksManager() {
     if (panelItem && panelItem !== "new") {
       updateLink.mutate({ socialLinkId: panelItem.id, values }, {
         onSuccess: () => { toast.success("Link updated"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     } else {
       createLink.mutate(values, {
         onSuccess: () => { toast.success("Link added"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     }
   }

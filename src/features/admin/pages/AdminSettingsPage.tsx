@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { Settings, Lock, Server, Bell } from "lucide-react";
 import { Page, PageHead, SubNav } from "@/shared/workspace/components/ui";
 import { useAdminSettings, useUpdateAdminSettings, useAdminServices, useToggleService } from "../hooks";
@@ -52,7 +53,7 @@ export function AdminSettingsPage() {
       toast.success("Settings saved");
     } catch (err) {
       toast.error("Failed to save settings", {
-        description: err instanceof Error ? err.message : "Unknown error",
+        description: describeApiError(err),
       });
     }
   }

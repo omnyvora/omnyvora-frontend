@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Check, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { useDebounce } from "@/core/hooks/useDebounce";
 import { useCreateSkill, useTechnologySearch } from "../hooks";
 import { TECHNOLOGY_CATEGORIES, TECHNOLOGY_CATEGORY_LABELS, type Technology, type TechnologyCategory } from "../types";
 
 function onCreateSkillError(err: unknown) {
-  toast.error("Couldn't add skill", { description: err instanceof Error ? err.message : "Unknown error" });
+  toast.error("Couldn't add skill", { description: describeApiError(err) });
 }
 
 // Proficiency is no longer collected here — every new skill starts at a neutral

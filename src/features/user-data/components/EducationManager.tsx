@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { GraduationCap, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useCreateEducation, useDeleteEducation, useEducations, useReorderEducations, useUpdateEducation } from "../hooks";
@@ -45,12 +46,12 @@ export function EducationManager() {
     if (panelItem && panelItem !== "new") {
       updateEducation.mutate({ educationId: panelItem.id, values: request }, {
         onSuccess: () => { toast.success("Education updated"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     } else {
       createEducation.mutate(request, {
         onSuccess: () => { toast.success("Education added"); setPanelItem(null); },
-        onError: (err) => toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" }),
+        onError: (err) => toast.error("Failed to save", { description: describeApiError(err) }),
       });
     }
   }

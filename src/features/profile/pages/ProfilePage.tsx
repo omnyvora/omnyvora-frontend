@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Pencil, X, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { describeApiError } from "@/core/utils/applyServerErrors";
 import { useMyProfile, useUpdateProfile, useUploadAvatar } from "../hooks";
 import { UpdateProfileFormSchema, type UpdateProfileFormValues } from "../types";
 import type { ProfileUI } from "../transformers";
@@ -159,7 +160,7 @@ export function PublicProfileSection() {
     avatarUpload.mutate(file, {
       onError: (err) => {
         toast.error("Photo upload failed", {
-          description: err instanceof Error ? err.message : "Unknown error",
+          description: describeApiError(err),
         });
       },
     });
@@ -171,7 +172,7 @@ export function PublicProfileSection() {
       toast.success("Profile saved", { description: "Your changes are live." });
       setIsEditing(false);
     } catch (err) {
-      toast.error("Failed to save", { description: err instanceof Error ? err.message : "Unknown error" });
+      toast.error("Failed to save", { description: describeApiError(err) });
     }
   }
 

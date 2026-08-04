@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { ApiRequestError } from "@/core/api/response";
 
 // Access token: JS memory — short-lived (~15 min), intentionally lost on reload.
 // Refresh token: localStorage — survives reload, used only to obtain new access tokens.
@@ -43,12 +44,17 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 let isRefreshing = false;
 let refreshQueue: Array<(token: string) => void> = [];
 
-// Extracts the backend's message field from the error response body.
-// Falls back to the Axios-generated message so callers always get a plain Error.
+// Extracts the backend's error envelope from the response body — Django returns
+// validation failures as real HTTP 4xx statuses, so Axios rejects here on every
+// one of them; this is the one place that sees the raw body before it's lost.
+// Preserving `errors` (not just `message`) is what lets applyServerErrors() map
+// field-level failures onto the right form input instead of only a generic toast.
 function toAppError(err: AxiosError): Error {
-  const data = err.response?.data as Record<string, unknown> | undefined;
-  const backendMessage = typeof data?.message === "string" ? data.message : null;
-  return new Error(backendMessage ?? err.message);
+  const data = err.response?.data as { message?: string; errors?: Record<string, string[]> } | undefined;
+  if (typeof data?.message === "string") {
+    return new ApiRequestError({ success: false, message: data.message, errors: data.errors });
+  }
+  return new Error(err.message);
 }
 
 // On 401: attempt silent token refresh, then replay the original request.
