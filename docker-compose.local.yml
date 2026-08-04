@@ -9,11 +9,8 @@ services:
     command: pnpm dev
     env_file:
       - .env.local
-    environment:
-      # Windows host → Linux VM boundary blocks inotify events.
-      # Polling makes Next.js detect file changes regardless of the OS layer.
-      - WATCHPACK_POLLING=true
-      - CHOKIDAR_USEPOLLING=true
+    mem_limit: 1.5g
+    cpus: 3
     volumes:
       - .:/app:delegated
       - /app/node_modules    # anonymous volume — preserves container's installed node_modules
