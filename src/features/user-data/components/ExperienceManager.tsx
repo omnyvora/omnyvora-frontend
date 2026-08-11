@@ -87,9 +87,10 @@ export function ExperienceManager() {
                     {fmtMonthYear(x.startDate)} — {x.isCurrent ? "Present" : fmtMonthYear(x.endDate)}{x.location ? ` · ${x.location}` : ""}
                   </div>
                   <div className="ds-body-sm" style={{ color: "var(--text-secondary)", marginTop: 8 }}>{x.description}</div>
-                  {x.technologies.length > 0 && (
+                  {(x.skills.length > 0 || x.technologies.length > 0) && (
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                      {x.technologies.map((t) => <span key={t} className="badge badge--neutral">{t}</span>)}
+                      {x.skills.map((s) => <span key={`skill-${s}`} className="badge badge--accent">{s}</span>)}
+                      {x.technologies.map((t) => <span key={`tech-${t}`} className="badge badge--neutral">{t}</span>)}
                     </div>
                   )}
                 </>

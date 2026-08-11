@@ -140,7 +140,7 @@ export function ProjectPanel({ open, project, onClose, onSave, isSaving, saveErr
         control={form.control}
         name="skill_names"
         render={({ field }) => (
-          <TagInput label="Skills" value={field.value ?? []} onChange={field.onChange} placeholder="Add a skill and press Enter" />
+          <TagInput kind="skill" label="Skills" value={field.value ?? []} onChange={field.onChange} placeholder="Add a skill and press Enter" />
         )}
       />
 
@@ -148,7 +148,7 @@ export function ProjectPanel({ open, project, onClose, onSave, isSaving, saveErr
         control={form.control}
         name="technology_names"
         render={({ field }) => (
-          <TagInput label="Technologies" value={field.value ?? []} onChange={field.onChange} placeholder="Add a technology and press Enter" />
+          <TagInput kind="technology" label="Technologies" value={field.value ?? []} onChange={field.onChange} placeholder="Add a technology and press Enter" />
         )}
       />
 

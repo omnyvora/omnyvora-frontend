@@ -30,19 +30,45 @@ export const TechnologySchema = z.object({
 
 export type Technology = z.infer<typeof TechnologySchema>;
 
-export const SkillSchema = z.object({
+export const UserTechnologySchema = z.object({
   id:            z.number(),
   technology:    TechnologySchema,
-  proficiency:   z.number().min(0).max(100),
+  proficiency:   z.number().min(0).max(100).nullable(),
   display_order: z.number(),
 });
 
-export type Skill = z.infer<typeof SkillSchema>;
+export type UserTechnology = z.infer<typeof UserTechnologySchema>;
 
-export const CreateSkillFormSchema = z.object({
+export const CreateTechnologyFormSchema = z.object({
   technology_name: z.string().min(1, "Pick or type a technology"),
   category:        z.enum(TECHNOLOGY_CATEGORIES),
   proficiency:     z.number().min(0).max(100),
+});
+
+export type CreateTechnologyFormValues = z.infer<typeof CreateTechnologyFormSchema>;
+
+// ── Skills (separate from the Technology catalog above — no category) ────────
+
+export const SkillCatalogEntrySchema = z.object({
+  id:   z.number(),
+  name: z.string(),
+  slug: z.string(),
+});
+
+export type SkillCatalogEntry = z.infer<typeof SkillCatalogEntrySchema>;
+
+export const UserSkillSchema = z.object({
+  id:            z.number(),
+  skill:         SkillCatalogEntrySchema,
+  proficiency:   z.number().min(0).max(100).nullable(),
+  display_order: z.number(),
+});
+
+export type UserSkill = z.infer<typeof UserSkillSchema>;
+
+export const CreateSkillFormSchema = z.object({
+  skill_name:  z.string().min(1, "Pick or type a skill"),
+  proficiency: z.number().min(0).max(100),
 });
 
 export type CreateSkillFormValues = z.infer<typeof CreateSkillFormSchema>;
@@ -100,6 +126,8 @@ export const ExperienceSchema = z.object({
   location:         z.string(),
   description:      z.string(),
   technologies:     z.array(z.string()),
+  skills:           z.array(z.string()),
+  certification_id: z.number().nullable(),
   start_date:       z.string(),
   end_date:         z.string().nullable(),
   is_current:       z.boolean(),
@@ -115,6 +143,8 @@ export const ExperienceFormSchema = z.object({
   location:         z.string().optional(),
   description:      z.string().optional(),
   technology_names: z.array(z.string()).optional(),
+  skill_names:      z.array(z.string()).optional(),
+  certification_id: z.number().nullable().optional(),
   start_date:       z.string().min(1, "Start date is required"),
   end_date:         z.string().nullable().optional(),
 });

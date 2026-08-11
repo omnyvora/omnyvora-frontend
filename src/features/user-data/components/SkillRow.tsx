@@ -3,11 +3,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, X } from "lucide-react";
-import type { SkillUI } from "../transformers";
+import type { UserSkillUI } from "../transformers";
 import { ProficiencySlider } from "./ProficiencySlider";
 
 interface SkillRowProps {
-  skill:        SkillUI;
+  skill:        UserSkillUI;
   onCommit:     (proficiency: number) => void;
   onRemove:     () => void;
   isRemoving:   boolean;
@@ -45,7 +45,8 @@ export function SkillRow({ skill, onCommit, onRemove, isRemoving }: SkillRowProp
         {skill.name}
       </span>
 
-      <ProficiencySlider value={skill.proficiency} onCommit={onCommit} disabled={isRemoving} />
+      {/* Auto-synced entries (tagged on a project/experience but never manually rated) start at 0 */}
+      <ProficiencySlider value={skill.proficiency ?? 0} onCommit={onCommit} disabled={isRemoving} />
 
       <button
         type="button"

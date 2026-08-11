@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, X } from "lucide-react";
 import { useDebounce } from "@/core/hooks/useDebounce";
-import { useTechnologySearch } from "../hooks";
+import { useSkillSearch, useTechnologySearch } from "../hooks";
 
 interface TagInputProps {
   label?:       string;
@@ -11,14 +11,18 @@ interface TagInputProps {
   onChange:     (value: string[]) => void;
   placeholder?: string;
   hint?:        string;
+  /** Which catalog to autocomplete against — defaults to "technology" for back-compat. */
+  kind?:        "technology" | "skill";
 }
 
-export function TagInput({ label, value, onChange, placeholder = "Add and press Enter", hint }: TagInputProps) {
+export function TagInput({ label, value, onChange, placeholder = "Add and press Enter", hint, kind = "technology" }: TagInputProps) {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
 
   const debouncedText = useDebounce(text, 250);
-  const { data: results } = useTechnologySearch(debouncedText);
+  const { data: technologyResults } = useTechnologySearch(kind === "technology" ? debouncedText : "");
+  const { data: skillResults } = useSkillSearch(kind === "skill" ? debouncedText : "");
+  const results = kind === "skill" ? skillResults : technologyResults;
   const suggestions = (results ?? []).map((t) => t.name).slice(0, 6);
 
   // The dropdown stays open across picks (only the text clears) so several tags

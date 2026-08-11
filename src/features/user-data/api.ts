@@ -6,6 +6,7 @@ import type {
   CertificationFormValues,
   CertificationOption,
   CreateSkillFormValues,
+  CreateTechnologyFormValues,
   Education,
   EducationFormValues,
   Experience,
@@ -13,11 +14,13 @@ import type {
   Project,
   ProjectFormValues,
   ProjectImage,
-  Skill,
+  SkillCatalogEntry,
   SocialLink,
   SocialLinkFormValues,
   Technology,
   TechnologyCategory,
+  UserSkill,
+  UserTechnology,
 } from "./types";
 
 const USER_DATA_URL = resolveServiceUrl("userData");
@@ -32,32 +35,75 @@ export async function searchTechnologies(
   return res.data;
 }
 
-export async function fetchSkills(): Promise<ApiResponse<Skill[]>> {
+export async function searchSkills(query: string): Promise<ApiResponse<SkillCatalogEntry[]>> {
+  const res = await apiClient.get(`${USER_DATA_URL}/user-data/taxonomy/skills/`, {
+    params: { q: query },
+  });
+  return res.data;
+}
+
+// ── Technologies (proficiency-rated, category-grouped) ────────────────────────
+
+export async function fetchTechnologies(): Promise<ApiResponse<UserTechnology[]>> {
+  const res = await apiClient.get(`${USER_DATA_URL}/user-data/technologies/`);
+  return res.data;
+}
+
+export async function createTechnology(
+  payload: CreateTechnologyFormValues,
+): Promise<ApiResponse<UserTechnology>> {
+  const res = await apiClient.post(`${USER_DATA_URL}/user-data/technologies/`, payload);
+  return res.data;
+}
+
+export async function updateTechnologyProficiency(
+  userTechnologyId: number,
+  proficiency: number,
+): Promise<ApiResponse<UserTechnology>> {
+  const res = await apiClient.patch(`${USER_DATA_URL}/user-data/technologies/${userTechnologyId}/`, { proficiency });
+  return res.data;
+}
+
+export async function deleteTechnology(userTechnologyId: number): Promise<ApiResponse<null>> {
+  const res = await apiClient.delete(`${USER_DATA_URL}/user-data/technologies/${userTechnologyId}/`);
+  return res.data;
+}
+
+export async function reorderTechnologies(orderedIds: number[]): Promise<ApiResponse<UserTechnology[]>> {
+  const res = await apiClient.post(`${USER_DATA_URL}/user-data/technologies/reorder/`, {
+    ordered_ids: orderedIds,
+  });
+  return res.data;
+}
+
+// ── Skills (flat, no category) ─────────────────────────────────────────────
+
+export async function fetchSkills(): Promise<ApiResponse<UserSkill[]>> {
   const res = await apiClient.get(`${USER_DATA_URL}/user-data/skills/`);
   return res.data;
 }
 
 export async function createSkill(
   payload: CreateSkillFormValues,
-): Promise<ApiResponse<Skill>> {
+): Promise<ApiResponse<UserSkill>> {
   const res = await apiClient.post(`${USER_DATA_URL}/user-data/skills/`, payload);
   return res.data;
 }
 
 export async function updateSkillProficiency(
-  skillId: number,
+  userSkillId: number,
   proficiency: number,
-): Promise<ApiResponse<Skill>> {
-  const res = await apiClient.patch(`${USER_DATA_URL}/user-data/skills/${skillId}/`, { proficiency });
+): Promise<ApiResponse<UserSkill>> {
+  const res = await apiClient.patch(`${USER_DATA_URL}/user-data/skills/${userSkillId}/`, { proficiency });
   return res.data;
 }
 
-export async function deleteSkill(skillId: number): Promise<ApiResponse<null>> {
-  const res = await apiClient.delete(`${USER_DATA_URL}/user-data/skills/${skillId}/`);
+export async function deleteSkill(userSkillId: number): Promise<ApiResponse<null>> {
+  const res = await apiClient.delete(`${USER_DATA_URL}/user-data/skills/${userSkillId}/`);
   return res.data;
 }
 
-export async function reorderSkills(orderedIds: number[]): Promise<ApiResponse<Skill[]>> {
+export async function reorderSkills(orderedIds: number[]): Promise<ApiResponse<UserSkill[]>> {
   const res = await apiClient.post(`${USER_DATA_URL}/user-data/skills/reorder/`, {
     ordered_ids: orderedIds,
   });

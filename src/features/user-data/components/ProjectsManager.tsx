@@ -86,9 +86,10 @@ export function ProjectsManager() {
               extra={
                 <>
                   <div className="ds-body-sm" style={{ color: "var(--text-secondary)", marginTop: 4 }}>{p.shortDescription}</div>
-                  {p.technologies.length > 0 && (
+                  {(p.skills.length > 0 || p.technologies.length > 0) && (
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                      {p.technologies.map((t) => <span key={t} className="badge badge--neutral">{t}</span>)}
+                      {p.skills.map((s) => <span key={`skill-${s}`} className="badge badge--accent">{s}</span>)}
+                      {p.technologies.map((t) => <span key={`tech-${t}`} className="badge badge--neutral">{t}</span>)}
                     </div>
                   )}
                 </>

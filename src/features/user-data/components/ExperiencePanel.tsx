@@ -7,9 +7,11 @@ import { applyServerErrors } from "@/core/utils/applyServerErrors";
 import { FieldError } from "@/shared/components/FieldError";
 import { ExperienceFormSchema, type ExperienceFormValues } from "../types";
 import type { ExperienceUI } from "../transformers";
+import { useCertificationOptions } from "../hooks";
 import { SidePanel } from "./SidePanel";
 import { TagInput } from "./TagInput";
 import { FormCheckbox } from "./FormCheckbox";
+import { FormSelect } from "./FormSelect";
 
 interface ExperiencePanelProps {
   open:       boolean;
@@ -22,7 +24,7 @@ interface ExperiencePanelProps {
 
 const BLANK: ExperienceFormValues = {
   job_title: "", company_name: "", company_url: "", location: "", description: "",
-  technology_names: [], start_date: "", end_date: null,
+  technology_names: [], skill_names: [], certification_id: null, start_date: "", end_date: null,
 };
 
 function toFormValues(experience: ExperienceUI): ExperienceFormValues {
@@ -33,6 +35,8 @@ function toFormValues(experience: ExperienceUI): ExperienceFormValues {
     location: experience.location,
     description: experience.description,
     technology_names: experience.technologies,
+    skill_names: experience.skills,
+    certification_id: experience.certificationId,
     start_date: experience.startDate,
     end_date: experience.endDate,
   };
@@ -41,6 +45,7 @@ function toFormValues(experience: ExperienceUI): ExperienceFormValues {
 export function ExperiencePanel({ open, experience, onClose, onSave, isSaving, saveError }: ExperiencePanelProps) {
   const form = useForm<ExperienceFormValues>({ resolver: zodResolver(ExperienceFormSchema), defaultValues: BLANK });
   const [isCurrent, setIsCurrent] = useState(false);
+  const { data: certificationOptions } = useCertificationOptions();
 
   useEffect(() => {
     form.reset(experience ? toFormValues(experience) : BLANK);
@@ -98,11 +103,35 @@ export function ExperiencePanel({ open, experience, onClose, onSave, isSaving, s
 
       <Controller
         control={form.control}
-        name="technology_names"
+        name="skill_names"
         render={({ field }) => (
-          <TagInput label="Technologies" value={field.value ?? []} onChange={field.onChange} placeholder="Add a technology and press Enter" />
+          <TagInput kind="skill" label="Skills" value={field.value ?? []} onChange={field.onChange} placeholder="Add a skill and press Enter" />
         )}
       />
+
+      <Controller
+        control={form.control}
+        name="technology_names"
+        render={({ field }) => (
+          <TagInput kind="technology" label="Technologies" value={field.value ?? []} onChange={field.onChange} placeholder="Add a technology and press Enter" />
+        )}
+      />
+
+      <Controller
+        control={form.control}
+        name="certification_id"
+        render={({ field }) => (
+          <FormSelect
+            label="Linked certification"
+            placeholder="None"
+            value={field.value ? String(field.value) : ""}
+            onChange={(v) => field.onChange(v ? Number(v) : null)}
+            options={(certificationOptions ?? []).map((c) => ({ value: String(c.id), label: c.title }))}
+            hint="Optional — link a certification earned through this role."
+          />
+        )}
+      />
+      <FieldError error={form.formState.errors.certification_id} />
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
         <div className="field">

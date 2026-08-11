@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, Briefcase, Folder, GraduationCap, Share2, Star } from "lucide-react";
+import { Award, Briefcase, Cpu, Folder, GraduationCap, Share2, Star } from "lucide-react";
 import {
   useCertifications,
   useEducations,
@@ -8,6 +8,7 @@ import {
   useProjects,
   useSkills,
   useSocialLinks,
+  useTechnologies,
 } from "../hooks";
 import { CategoryCard } from "./CategoryCard";
 
@@ -21,6 +22,7 @@ export function IdentityOverview({ onNavigate }: IdentityOverviewProps) {
   const { data: educations }    = useEducations();
   const { data: certifications } = useCertifications();
   const { data: skills }        = useSkills();
+  const { data: technologies }  = useTechnologies();
   const { data: socialLinks }   = useSocialLinks();
 
   const cats = [
@@ -29,6 +31,7 @@ export function IdentityOverview({ onNavigate }: IdentityOverviewProps) {
     { id: "education",      icon: GraduationCap, label: "Education",      count: educations?.length ?? 0 },
     { id: "certifications", icon: Award,          label: "Certifications", count: certifications?.length ?? 0 },
     { id: "skills",         icon: Star,           label: "Skills",         count: skills?.length ?? 0 },
+    { id: "technologies",   icon: Cpu,            label: "Technologies",   count: technologies?.length ?? 0 },
     { id: "social",         icon: Share2,        label: "Social links",   count: socialLinks?.length ?? 0 },
   ];
   const filled = cats.filter((c) => c.count > 0).length;
@@ -42,7 +45,7 @@ export function IdentityOverview({ onNavigate }: IdentityOverviewProps) {
         </div>
         <span className="badge badge--neutral badge--md">{filled} of {cats.length} started</span>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
         {cats.map((c) => (
           <CategoryCard key={c.id} icon={c.icon} label={c.label} count={c.count} complete={c.count > 0} onManage={() => onNavigate(c.id)} />
         ))}

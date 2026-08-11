@@ -10,8 +10,7 @@ import { toast } from "sonner";
 import { EmptyState } from "@/shared/workspace/components/ui";
 import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmModal";
 import { useDeleteSkill, useReorderSkills, useSkills, useUpdateSkillProficiency } from "../hooks";
-import { groupSkillsByCategory, type SkillUI } from "../transformers";
-import { TECHNOLOGY_CATEGORY_LABELS } from "../types";
+import type { UserSkillUI } from "../transformers";
 import { AddSkillRow } from "./AddSkillRow";
 import { SkillRow } from "./SkillRow";
 
@@ -21,7 +20,7 @@ export function SkillsManager() {
   const removeSkill        = useDeleteSkill();
   const reorder            = useReorderSkills();
 
-  const [pendingRemoval, setPendingRemoval] = useState<SkillUI | null>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<UserSkillUI | null>(null);
   const addInputRef = useRef<HTMLInputElement>(null);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
@@ -36,28 +35,19 @@ export function SkillsManager() {
 
   const list = skills ?? [];
   const existingNames = new Set(list.map((s) => s.name.toLowerCase()));
-  const grouped = groupSkillsByCategory(list);
+  const listIds = list.map((s) => s.id);
 
-  function handleDragEnd(categoryIds: number[]) {
-    return (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (!over || active.id === over.id) return;
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-      const oldIndex = categoryIds.indexOf(Number(active.id));
-      const newIndex = categoryIds.indexOf(Number(over.id));
-      const reorderedCategoryIds = arrayMove(categoryIds, oldIndex, newIndex);
+    const oldIndex = listIds.indexOf(Number(active.id));
+    const newIndex = listIds.indexOf(Number(over.id));
+    const nextIds = arrayMove(listIds, oldIndex, newIndex);
 
-      // Splice the reordered category slice back into the full display_order,
-      // leaving every other category's relative order untouched.
-      const categorySet = new Set(categoryIds);
-      const fullIds = list.map((s) => s.id);
-      let cursor = 0;
-      const nextFullIds = fullIds.map((id) => (categorySet.has(id) ? reorderedCategoryIds[cursor++] : id));
-
-      reorder.mutate(nextFullIds, {
-        onError: () => toast.error("Couldn't save the new order", { description: "Reverted — try again." }),
-      });
-    };
+    reorder.mutate(nextIds, {
+      onError: () => toast.error("Couldn't save the new order", { description: "Reverted — try again." }),
+    });
   }
 
   return (
@@ -73,29 +63,21 @@ export function SkillsManager() {
           onAction={() => addInputRef.current?.focus()}
         />
       ) : (
-        grouped.map(([category, items]) => {
-          const categoryIds = items.map((s) => s.id);
-          return (
-            <div key={category} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div className="label">{TECHNOLOGY_CATEGORY_LABELS[category]}</div>
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd(categoryIds)}>
-                <SortableContext items={categoryIds} strategy={verticalListSortingStrategy}>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {items.map((skill) => (
-                      <SkillRow
-                        key={skill.id}
-                        skill={skill}
-                        isRemoving={removeSkill.isPending && removeSkill.variables === skill.id}
-                        onCommit={(proficiency) => updateProficiency.mutate({ skillId: skill.id, proficiency })}
-                        onRemove={() => setPendingRemoval(skill)}
-                      />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={listIds} strategy={verticalListSortingStrategy}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {list.map((skill) => (
+                <SkillRow
+                  key={skill.id}
+                  skill={skill}
+                  isRemoving={removeSkill.isPending && removeSkill.variables === skill.id}
+                  onCommit={(proficiency) => updateProficiency.mutate({ userSkillId: skill.id, proficiency })}
+                  onRemove={() => setPendingRemoval(skill)}
+                />
+              ))}
             </div>
-          );
-        })
+          </SortableContext>
+        </DndContext>
       )}
 
       <ConfirmModal

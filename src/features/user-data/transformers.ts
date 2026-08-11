@@ -7,37 +7,62 @@ import {
   type ExperienceFormValues,
   type Project,
   type ProjectImage,
-  type Skill,
   type SocialLink,
   type TechnologyCategory,
+  type UserSkill,
+  type UserTechnology,
 } from "./types";
 
-export interface SkillUI {
+// ── Technologies ─────────────────────────────────────────────────────────────
+
+export interface UserTechnologyUI {
   id:            number;
   technologyId:  number;
   name:          string;
   category:      TechnologyCategory;
-  proficiency:   number;
+  proficiency:   number | null;
   displayOrder:  number;
 }
 
-export function toSkillUI(s: Skill): SkillUI {
+export function toUserTechnologyUI(t: UserTechnology): UserTechnologyUI {
   return {
-    id:           s.id,
-    technologyId: s.technology.id,
-    name:         s.technology.name,
-    category:     s.technology.category,
-    proficiency:  s.proficiency,
-    displayOrder: s.display_order,
+    id:           t.id,
+    technologyId: t.technology.id,
+    name:         t.technology.name,
+    category:     t.technology.category,
+    proficiency:  t.proficiency,
+    displayOrder: t.display_order,
   };
 }
 
-// Groups already-ordered skills by category, preserving display_order within each group,
-// and drops empty categories so the UI never renders a heading with nothing under it.
-export function groupSkillsByCategory(skills: SkillUI[]): Array<[TechnologyCategory, SkillUI[]]> {
+// Groups already-ordered technologies by category, preserving display_order within each
+// group, and drops empty categories so the UI never renders a heading with nothing under it.
+export function groupTechnologiesByCategory(
+  technologies: UserTechnologyUI[],
+): Array<[TechnologyCategory, UserTechnologyUI[]]> {
   return TECHNOLOGY_CATEGORIES
-    .map((category) => [category, skills.filter((s) => s.category === category)] as [TechnologyCategory, SkillUI[]])
+    .map((category) => [category, technologies.filter((t) => t.category === category)] as [TechnologyCategory, UserTechnologyUI[]])
     .filter(([, items]) => items.length > 0);
+}
+
+// ── Skills ───────────────────────────────────────────────────────────────────
+
+export interface UserSkillUI {
+  id:           number;
+  skillId:      number;
+  name:         string;
+  proficiency:  number | null;
+  displayOrder: number;
+}
+
+export function toUserSkillUI(s: UserSkill): UserSkillUI {
+  return {
+    id:           s.id,
+    skillId:      s.skill.id,
+    name:         s.skill.name,
+    proficiency:  s.proficiency,
+    displayOrder: s.display_order,
+  };
 }
 
 // ── Projects ─────────────────────────────────────────────────────────────────
@@ -89,32 +114,36 @@ export function toProjectUI(p: Project): ProjectUI {
 // ── Experience ───────────────────────────────────────────────────────────────
 
 export interface ExperienceUI {
-  id:            number;
-  jobTitle:      string;
-  companyName:   string;
-  companyUrl:    string;
-  location:      string;
-  description:   string;
-  technologies:  string[];
-  startDate:     string;
-  endDate:       string | null;
-  isCurrent:     boolean;
-  displayOrder:  number;
+  id:               number;
+  jobTitle:         string;
+  companyName:      string;
+  companyUrl:       string;
+  location:         string;
+  description:      string;
+  technologies:     string[];
+  skills:           string[];
+  certificationId:  number | null;
+  startDate:        string;
+  endDate:          string | null;
+  isCurrent:        boolean;
+  displayOrder:     number;
 }
 
 export function toExperienceUI(e: Experience): ExperienceUI {
   return {
-    id:           e.id,
-    jobTitle:     e.job_title,
-    companyName:  e.company_name,
-    companyUrl:   e.company_url,
-    location:     e.location,
-    description:  e.description,
-    technologies: e.technologies,
-    startDate:    e.start_date,
-    endDate:      e.end_date,
-    isCurrent:    e.is_current,
-    displayOrder: e.display_order,
+    id:              e.id,
+    jobTitle:        e.job_title,
+    companyName:     e.company_name,
+    companyUrl:      e.company_url,
+    location:        e.location,
+    description:     e.description,
+    technologies:    e.technologies,
+    skills:          e.skills,
+    certificationId: e.certification_id,
+    startDate:       e.start_date,
+    endDate:         e.end_date,
+    isCurrent:       e.is_current,
+    displayOrder:    e.display_order,
   };
 }
 

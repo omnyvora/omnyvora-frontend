@@ -10,12 +10,14 @@ import {
   createProject,
   createSkill,
   createSocialLink,
+  createTechnology,
   deleteCertification,
   deleteEducation,
   deleteExperience,
   deleteProject,
   deleteSkill,
   deleteSocialLink,
+  deleteTechnology,
   fetchCertificationOptions,
   fetchCertifications,
   fetchEducations,
@@ -23,6 +25,7 @@ import {
   fetchProjects,
   fetchSkills,
   fetchSocialLinks,
+  fetchTechnologies,
   removeProjectImage,
   reorderCertifications,
   reorderEducations,
@@ -31,6 +34,8 @@ import {
   reorderProjects,
   reorderSkills,
   reorderSocialLinks,
+  reorderTechnologies,
+  searchSkills,
   searchTechnologies,
   updateCertification,
   updateEducation,
@@ -39,6 +44,7 @@ import {
   updateProjectImage,
   updateSkillProficiency,
   updateSocialLink,
+  updateTechnologyProficiency,
 } from "./api";
 import {
   toCertificationUI,
@@ -46,24 +52,130 @@ import {
   toExperienceUI,
   toProjectImageUI,
   toProjectUI,
-  toSkillUI,
   toSocialLinkUI,
+  toUserSkillUI,
+  toUserTechnologyUI,
   type CertificationUI,
   type EducationUI,
   type ExperienceUI,
   type ProjectUI,
-  type SkillUI,
   type SocialLinkUI,
+  type UserSkillUI,
+  type UserTechnologyUI,
 } from "./transformers";
 import type {
   CertificationFormValues,
   CreateSkillFormValues,
+  CreateTechnologyFormValues,
   EducationFormValues,
   ExperienceFormValues,
   ProjectFormValues,
   SocialLinkFormValues,
   TechnologyCategory,
 } from "./types";
+
+// ── Technologies (proficiency-rated, category-grouped) ────────────────────────
+
+const TECHNOLOGIES_QUERY_KEY = ["user-data", "technologies"] as const;
+
+export function useTechnologies() {
+  return useQuery({
+    queryKey: TECHNOLOGIES_QUERY_KEY,
+    queryFn: async () => {
+      const res = await fetchTechnologies();
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return res.data.map(toUserTechnologyUI);
+    },
+  });
+}
+
+// Matches the backend's 60s search cache — repeated/backtracked keystrokes for the
+// same query resolve from React Query's cache instead of round-tripping again.
+const CATALOG_SEARCH_STALE_TIME_MS = 60_000;
+
+export function useTechnologySearch(query: string, category?: TechnologyCategory) {
+  return useQuery({
+    queryKey: ["user-data", "technology-search", query, category] as const,
+    queryFn: async () => {
+      const res = await searchTechnologies(query, category);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return res.data;
+    },
+    enabled: query.trim().length > 0,
+    staleTime: CATALOG_SEARCH_STALE_TIME_MS,
+  });
+}
+
+export function useCreateTechnology() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (values: CreateTechnologyFormValues) => {
+      const res = await createTechnology(values);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return toUserTechnologyUI(res.data);
+    },
+    onSuccess: (technology) => {
+      qc.setQueryData<UserTechnologyUI[]>(TECHNOLOGIES_QUERY_KEY, (prev) => [...(prev ?? []), technology]);
+    },
+  });
+}
+
+export function useUpdateTechnologyProficiency() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userTechnologyId, proficiency }: { userTechnologyId: number; proficiency: number }) => {
+      const res = await updateTechnologyProficiency(userTechnologyId, proficiency);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return toUserTechnologyUI(res.data);
+    },
+    onSuccess: (updated) => {
+      qc.setQueryData<UserTechnologyUI[]>(TECHNOLOGIES_QUERY_KEY, (prev) =>
+        (prev ?? []).map((t) => (t.id === updated.id ? updated : t)),
+      );
+    },
+  });
+}
+
+export function useDeleteTechnology() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userTechnologyId: number) => {
+      const res = await deleteTechnology(userTechnologyId);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return userTechnologyId;
+    },
+    onSuccess: (userTechnologyId) => {
+      qc.setQueryData<UserTechnologyUI[]>(TECHNOLOGIES_QUERY_KEY, (prev) => (prev ?? []).filter((t) => t.id !== userTechnologyId));
+    },
+  });
+}
+
+export function useReorderTechnologies() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (orderedIds: number[]) => {
+      // Optimistic: drag-reorder must feel instant, not wait on a round trip
+      const previous = qc.getQueryData<UserTechnologyUI[]>(TECHNOLOGIES_QUERY_KEY);
+      const byId = new Map((previous ?? []).map((t) => [t.id, t]));
+      qc.setQueryData<UserTechnologyUI[]>(
+        TECHNOLOGIES_QUERY_KEY,
+        orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })),
+      );
+
+      const res = await reorderTechnologies(orderedIds);
+      if (!isApiSuccess(res)) throw new ApiRequestError(res);
+      return res.data.map(toUserTechnologyUI);
+    },
+    onSuccess: (technologies) => {
+      qc.setQueryData(TECHNOLOGIES_QUERY_KEY, technologies);
+    },
+    onError: () => {
+      qc.invalidateQueries({ queryKey: TECHNOLOGIES_QUERY_KEY });
+    },
+  });
+}
+
+// ── Skills (flat, no category) ─────────────────────────────────────────────
 
 const SKILLS_QUERY_KEY = ["user-data", "skills"] as const;
 
@@ -73,25 +185,21 @@ export function useSkills() {
     queryFn: async () => {
       const res = await fetchSkills();
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
-      return res.data.map(toSkillUI);
+      return res.data.map(toUserSkillUI);
     },
   });
 }
 
-// Matches the backend's 60s search cache — repeated/backtracked keystrokes for the
-// same query resolve from React Query's cache instead of round-tripping again.
-const TECHNOLOGY_SEARCH_STALE_TIME_MS = 60_000;
-
-export function useTechnologySearch(query: string, category?: TechnologyCategory) {
+export function useSkillSearch(query: string) {
   return useQuery({
-    queryKey: ["user-data", "technologies", query, category] as const,
+    queryKey: ["user-data", "skill-search", query] as const,
     queryFn: async () => {
-      const res = await searchTechnologies(query, category);
+      const res = await searchSkills(query);
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
       return res.data;
     },
     enabled: query.trim().length > 0,
-    staleTime: TECHNOLOGY_SEARCH_STALE_TIME_MS,
+    staleTime: CATALOG_SEARCH_STALE_TIME_MS,
   });
 }
 
@@ -101,10 +209,10 @@ export function useCreateSkill() {
     mutationFn: async (values: CreateSkillFormValues) => {
       const res = await createSkill(values);
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
-      return toSkillUI(res.data);
+      return toUserSkillUI(res.data);
     },
     onSuccess: (skill) => {
-      qc.setQueryData<SkillUI[]>(SKILLS_QUERY_KEY, (prev) => [...(prev ?? []), skill]);
+      qc.setQueryData<UserSkillUI[]>(SKILLS_QUERY_KEY, (prev) => [...(prev ?? []), skill]);
     },
   });
 }
@@ -112,13 +220,13 @@ export function useCreateSkill() {
 export function useUpdateSkillProficiency() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ skillId, proficiency }: { skillId: number; proficiency: number }) => {
-      const res = await updateSkillProficiency(skillId, proficiency);
+    mutationFn: async ({ userSkillId, proficiency }: { userSkillId: number; proficiency: number }) => {
+      const res = await updateSkillProficiency(userSkillId, proficiency);
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
-      return toSkillUI(res.data);
+      return toUserSkillUI(res.data);
     },
     onSuccess: (updated) => {
-      qc.setQueryData<SkillUI[]>(SKILLS_QUERY_KEY, (prev) =>
+      qc.setQueryData<UserSkillUI[]>(SKILLS_QUERY_KEY, (prev) =>
         (prev ?? []).map((s) => (s.id === updated.id ? updated : s)),
       );
     },
@@ -128,13 +236,13 @@ export function useUpdateSkillProficiency() {
 export function useDeleteSkill() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (skillId: number) => {
-      const res = await deleteSkill(skillId);
+    mutationFn: async (userSkillId: number) => {
+      const res = await deleteSkill(userSkillId);
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
-      return skillId;
+      return userSkillId;
     },
-    onSuccess: (skillId) => {
-      qc.setQueryData<SkillUI[]>(SKILLS_QUERY_KEY, (prev) => (prev ?? []).filter((s) => s.id !== skillId));
+    onSuccess: (userSkillId) => {
+      qc.setQueryData<UserSkillUI[]>(SKILLS_QUERY_KEY, (prev) => (prev ?? []).filter((s) => s.id !== userSkillId));
     },
   });
 }
@@ -144,16 +252,16 @@ export function useReorderSkills() {
   return useMutation({
     mutationFn: async (orderedIds: number[]) => {
       // Optimistic: drag-reorder must feel instant, not wait on a round trip
-      const previous = qc.getQueryData<SkillUI[]>(SKILLS_QUERY_KEY);
+      const previous = qc.getQueryData<UserSkillUI[]>(SKILLS_QUERY_KEY);
       const byId = new Map((previous ?? []).map((s) => [s.id, s]));
-      qc.setQueryData<SkillUI[]>(
+      qc.setQueryData<UserSkillUI[]>(
         SKILLS_QUERY_KEY,
         orderedIds.map((id, i) => ({ ...byId.get(id)!, displayOrder: i })),
       );
 
       const res = await reorderSkills(orderedIds);
       if (!isApiSuccess(res)) throw new ApiRequestError(res);
-      return res.data.map(toSkillUI);
+      return res.data.map(toUserSkillUI);
     },
     onSuccess: (skills) => {
       qc.setQueryData(SKILLS_QUERY_KEY, skills);
@@ -179,6 +287,13 @@ export function useProjects() {
   });
 }
 
+// Project skill_names/technology_names writes auto-sync the Skills/Technologies
+// rollup on the backend — their caches must be invalidated alongside the project's.
+function invalidateSkillAndTechnologyRollups(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: SKILLS_QUERY_KEY });
+  qc.invalidateQueries({ queryKey: TECHNOLOGIES_QUERY_KEY });
+}
+
 export function useCreateProject() {
   const qc = useQueryClient();
   return useMutation({
@@ -189,6 +304,7 @@ export function useCreateProject() {
     },
     onSuccess: (project) => {
       qc.setQueryData<ProjectUI[]>(PROJECTS_QUERY_KEY, (prev) => [...(prev ?? []), project]);
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }
@@ -203,6 +319,7 @@ export function useUpdateProject() {
     },
     onSuccess: (updated) => {
       qc.setQueryData<ProjectUI[]>(PROJECTS_QUERY_KEY, (prev) => (prev ?? []).map((p) => (p.id === updated.id ? updated : p)));
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }
@@ -217,6 +334,7 @@ export function useDeleteProject() {
     },
     onSuccess: (projectId) => {
       qc.setQueryData<ProjectUI[]>(PROJECTS_QUERY_KEY, (prev) => (prev ?? []).filter((p) => p.id !== projectId));
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }
@@ -324,6 +442,7 @@ export function useCreateExperience() {
     },
     onSuccess: (experience) => {
       qc.setQueryData<ExperienceUI[]>(EXPERIENCE_QUERY_KEY, (prev) => [...(prev ?? []), experience]);
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }
@@ -338,6 +457,7 @@ export function useUpdateExperience() {
     },
     onSuccess: (updated) => {
       qc.setQueryData<ExperienceUI[]>(EXPERIENCE_QUERY_KEY, (prev) => (prev ?? []).map((e) => (e.id === updated.id ? updated : e)));
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }
@@ -352,6 +472,7 @@ export function useDeleteExperience() {
     },
     onSuccess: (experienceId) => {
       qc.setQueryData<ExperienceUI[]>(EXPERIENCE_QUERY_KEY, (prev) => (prev ?? []).filter((e) => e.id !== experienceId));
+      invalidateSkillAndTechnologyRollups(qc);
     },
   });
 }

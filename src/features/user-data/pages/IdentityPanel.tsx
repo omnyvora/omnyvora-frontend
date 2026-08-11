@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Award, Briefcase, Folder, GraduationCap, LayoutGrid, Share2, Star } from "lucide-react";
+import { Award, Briefcase, Cpu, Folder, GraduationCap, LayoutGrid, Share2, Star } from "lucide-react";
 import { Tabs } from "@/shared/workspace/components/ui";
-import { useCertifications, useEducations, useExperiences, useProjects, useSkills, useSocialLinks } from "../hooks";
+import {
+  useCertifications,
+  useEducations,
+  useExperiences,
+  useProjects,
+  useSkills,
+  useSocialLinks,
+  useTechnologies,
+} from "../hooks";
 import { CertificationsManager } from "../components/CertificationsManager";
 import { EducationManager } from "../components/EducationManager";
 import { ExperienceManager } from "../components/ExperienceManager";
@@ -11,8 +19,11 @@ import { IdentityOverview } from "../components/IdentityOverview";
 import { ProjectsManager } from "../components/ProjectsManager";
 import { SkillsManager } from "../components/SkillsManager";
 import { SocialLinksManager } from "../components/SocialLinksManager";
+import { TechnologiesManager } from "../components/TechnologiesManager";
 
-type IdentityTab = "overview" | "projects" | "experience" | "education" | "certifications" | "skills" | "social";
+type IdentityTab =
+  | "overview" | "projects" | "experience" | "education" | "certifications"
+  | "skills" | "technologies" | "social";
 
 export function IdentityPanel() {
   const [tab, setTab] = useState<IdentityTab>("overview");
@@ -22,6 +33,7 @@ export function IdentityPanel() {
   const { data: educations }     = useEducations();
   const { data: certifications } = useCertifications();
   const { data: skills }         = useSkills();
+  const { data: technologies }   = useTechnologies();
   const { data: socialLinks }    = useSocialLinks();
 
   const tabs = [
@@ -31,6 +43,7 @@ export function IdentityPanel() {
     { id: "education",      label: "Education",      icon: GraduationCap, count: educations?.length ?? 0 },
     { id: "certifications", label: "Certifications", icon: Award,          count: certifications?.length ?? 0 },
     { id: "skills",         label: "Skills",         icon: Star,           count: skills?.length ?? 0 },
+    { id: "technologies",   label: "Technologies",   icon: Cpu,            count: technologies?.length ?? 0 },
     { id: "social",         label: "Social links",   icon: Share2,        count: socialLinks?.length ?? 0 },
   ];
 
@@ -46,6 +59,7 @@ export function IdentityPanel() {
         {tab === "education" && <EducationManager />}
         {tab === "certifications" && <CertificationsManager />}
         {tab === "skills" && <SkillsManager />}
+        {tab === "technologies" && <TechnologiesManager />}
         {tab === "social" && <SocialLinksManager />}
       </div>
     </div>
