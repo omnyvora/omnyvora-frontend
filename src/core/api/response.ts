@@ -9,7 +9,10 @@ export interface ApiSuccess<T> {
 export interface ApiError {
   success: false;
   message: string;
-  errors?: Record<string, string[]>;
+  // exactOptionalPropertyTypes needs "| undefined" explicitly — the backend
+  // envelope always sends this key, sometimes with value null/absent, which
+  // callers pass through as an explicit `undefined`, not just an absent key.
+  errors?: Record<string, string[]> | undefined;
 }
 
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
@@ -23,7 +26,7 @@ export function isApiSuccess<T>(res: ApiResponse<T>): res is ApiSuccess<T> {
 // map it onto a form (see core/utils/applyServerErrors) instead of only being able
 // to show the generic top-level message.
 export class ApiRequestError extends Error {
-  errors?: Record<string, string[]>;
+  errors?: Record<string, string[]> | undefined;
 
   constructor(res: ApiError) {
     super(res.message);

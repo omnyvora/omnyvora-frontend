@@ -7,8 +7,8 @@ import { applyServerErrors } from "@/core/utils/applyServerErrors";
 import { FieldError } from "@/shared/components/FieldError";
 import { SOCIAL_PLATFORM_LABELS, SOCIAL_PLATFORMS, SocialLinkFormSchema, type SocialLinkFormValues } from "../types";
 import type { SocialLinkUI } from "../transformers";
-import { SidePanel } from "./SidePanel";
-import { FormSelect } from "./FormSelect";
+import { SidePanel } from "@/shared/components/SidePanel";
+import { FormSelect } from "@/shared/components/FormSelect";
 
 interface SocialLinkPanelProps {
   open:       boolean;

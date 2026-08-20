@@ -19,6 +19,9 @@ export function useDragReorder(orderedIds: number[], onReorder: (orderedIds: num
 
       const next = [...orderedIds];
       const [moved] = next.splice(from, 1);
+      // from is a valid index into the pre-splice array, so moved always
+      // exists — this guard only satisfies strict array-destructure typing.
+      if (moved === undefined) return;
       next.splice(i, 0, moved);
       onReorder(next);
     },

@@ -8,9 +8,9 @@ import { applyServerErrors } from "@/core/utils/applyServerErrors";
 import { FieldError } from "@/shared/components/FieldError";
 import { ProjectFormSchema, type ProjectFormValues } from "../types";
 import type { ProjectUI } from "../transformers";
-import { SidePanel } from "./SidePanel";
+import { SidePanel } from "@/shared/components/SidePanel";
 import { TagInput } from "./TagInput";
-import { FormCheckbox } from "./FormCheckbox";
+import { FormCheckbox } from "@/shared/components/FormCheckbox";
 import { GalleryField } from "./GalleryField";
 
 interface ProjectPanelProps {

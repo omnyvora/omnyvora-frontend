@@ -142,7 +142,7 @@ export async function addProjectImage(projectId: number, file: File, caption = "
   form.append("image", file);
   form.append("caption", caption);
   const res = await apiClient.post(`${USER_DATA_URL}/user-data/projects/${projectId}/images/`, form, {
-    headers: { "Content-Type": undefined },
+    headers: { "Content-Type": null },
   });
   return res.data;
 }
@@ -213,7 +213,7 @@ export async function createCertification(
   if (payload.credential_url) form.append("credential_url", payload.credential_url);
   if (payload.image) form.append("image", payload.image);
   const res = await apiClient.post(`${USER_DATA_URL}/user-data/certifications/`, form, {
-    headers: { "Content-Type": undefined },
+    headers: { "Content-Type": null },
   });
   return res.data;
 }
@@ -228,7 +228,7 @@ export async function updateCertification(
   if (payload.credential_url !== undefined) form.append("credential_url", payload.credential_url);
   if (payload.image) form.append("image", payload.image);
   const res = await apiClient.patch(`${USER_DATA_URL}/user-data/certifications/${certificationId}/`, form, {
-    headers: { "Content-Type": undefined },
+    headers: { "Content-Type": null },
   });
   return res.data;
 }

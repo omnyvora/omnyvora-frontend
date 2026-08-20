@@ -9,9 +9,9 @@ import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmMod
 import { useCreateSocialLink, useDeleteSocialLink, useReorderSocialLinks, useSocialLinks, useUpdateSocialLink } from "../hooks";
 import { SOCIAL_PLATFORM_LABELS, type SocialLinkFormValues } from "../types";
 import type { SocialLinkUI } from "../transformers";
-import { useDragReorder } from "../useDragReorder";
-import { RowActions } from "./RowActions";
-import { RowShell } from "./RowShell";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
+import { RowActions } from "@/shared/components/RowActions";
+import { RowShell } from "@/shared/components/RowShell";
 import { SocialLinkPanel } from "./SocialLinkPanel";
 
 export function SocialLinksManager() {
@@ -72,7 +72,7 @@ export function SocialLinksManager() {
         />
       ) : (
         list.map((x, i) => (
-          <div key={x.id} onDragOver={drag.onDragOver(i)} onDrop={drag.onDrop(i)}>
+          <div key={x.id} onDragOver={drag.onDragOver()} onDrop={drag.onDrop(i)}>
             <RowShell
               dragProps={{ onDragStart: drag.onDragStart(i) }}
               icon={LinkIcon}

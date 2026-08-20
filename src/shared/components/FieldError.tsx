@@ -1,7 +1,10 @@
 import type { FieldError as RHFFieldError } from "react-hook-form";
 
 interface FieldErrorProps {
-  error?: RHFFieldError;
+  // exactOptionalPropertyTypes needs "| undefined" explicitly — every caller
+  // passes RHFFormState.errors.<field>, which is typed as FieldError | undefined,
+  // not just "possibly absent".
+  error?: RHFFieldError | undefined;
 }
 
 // Renders both Zod (client) and applyServerErrors (backend) field errors the same

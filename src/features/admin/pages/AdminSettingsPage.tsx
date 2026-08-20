@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { describeApiError } from "@/core/utils/applyServerErrors";
 import { Settings, Lock, Server, Bell } from "lucide-react";
 import { Page, PageHead, SubNav } from "@/shared/workspace/components/ui";
@@ -39,7 +40,11 @@ export function AdminSettingsPage() {
   const { data: settings, isLoading } = useAdminSettings();
   const update = useUpdateAdminSettings();
 
-  const form = useForm<AdminSettingsFormValues>({
+  // z.coerce.number() fields (session_timeout_minutes, otp_code_lifetime_minutes)
+  // have a permissive pre-coercion input type — useForm must be typed with the
+  // schema's input shape, not AdminSettingsFormValues (the post-coercion output),
+  // or zodResolver's inferred Resolver type won't match.
+  const form = useForm<z.input<typeof AdminSettingsFormSchema>, unknown, AdminSettingsFormValues>({
     resolver: zodResolver(AdminSettingsFormSchema),
   });
 

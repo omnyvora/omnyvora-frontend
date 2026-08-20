@@ -10,11 +10,11 @@ import { useCreateExperience, useDeleteExperience, useExperiences, useReorderExp
 import { toExperienceRequest } from "../transformers";
 import type { ExperienceFormValues } from "../types";
 import type { ExperienceUI } from "../transformers";
-import { useDragReorder } from "../useDragReorder";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
 import { fmtMonthYear } from "../utils";
 import { ExperiencePanel } from "./ExperiencePanel";
-import { RowActions } from "./RowActions";
-import { RowShell } from "./RowShell";
+import { RowActions } from "@/shared/components/RowActions";
+import { RowShell } from "@/shared/components/RowShell";
 
 export function ExperienceManager() {
   const { data: experiences, isLoading } = useExperiences();
@@ -75,7 +75,7 @@ export function ExperienceManager() {
         />
       ) : (
         list.map((x, i) => (
-          <div key={x.id} onDragOver={drag.onDragOver(i)} onDrop={drag.onDrop(i)}>
+          <div key={x.id} onDragOver={drag.onDragOver()} onDrop={drag.onDrop(i)}>
             <RowShell
               dragProps={{ onDragStart: drag.onDragStart(i) }}
               icon={Briefcase}

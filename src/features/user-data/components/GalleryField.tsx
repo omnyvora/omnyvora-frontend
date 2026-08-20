@@ -11,7 +11,7 @@ import {
   useSetProjectCoverImage,
   useUpdateProjectImageCaption,
 } from "../hooks";
-import { useDragReorder } from "../useDragReorder";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
 import type { ProjectImageUI } from "../transformers";
 
 interface GalleryFieldProps {
@@ -66,7 +66,7 @@ export function GalleryField({ projectId, images }: GalleryFieldProps) {
             key={im.id}
             draggable
             onDragStart={drag.onDragStart(i)}
-            onDragOver={drag.onDragOver(i)}
+            onDragOver={drag.onDragOver()}
             onDrop={drag.onDrop(i)}
             style={{ display: "flex", flexDirection: "column", gap: 6 }}
           >

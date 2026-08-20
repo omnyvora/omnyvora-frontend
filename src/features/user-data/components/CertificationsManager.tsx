@@ -9,11 +9,11 @@ import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmMod
 import { useCertifications, useCreateCertification, useDeleteCertification, useReorderCertifications, useUpdateCertification } from "../hooks";
 import type { CertificationFormValues } from "../types";
 import type { CertificationUI } from "../transformers";
-import { useDragReorder } from "../useDragReorder";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
 import { fmtMonthYear } from "../utils";
 import { CertificationPanel } from "./CertificationPanel";
-import { RowActions } from "./RowActions";
-import { RowShell } from "./RowShell";
+import { RowActions } from "@/shared/components/RowActions";
+import { RowShell } from "@/shared/components/RowShell";
 
 export function CertificationsManager() {
   const { data: certifications, isLoading } = useCertifications();
@@ -73,7 +73,7 @@ export function CertificationsManager() {
         />
       ) : (
         list.map((x, i) => (
-          <div key={x.id} onDragOver={drag.onDragOver(i)} onDrop={drag.onDrop(i)}>
+          <div key={x.id} onDragOver={drag.onDragOver()} onDrop={drag.onDrop(i)}>
             <RowShell
               dragProps={{ onDragStart: drag.onDragStart(i) }}
               icon={Award}

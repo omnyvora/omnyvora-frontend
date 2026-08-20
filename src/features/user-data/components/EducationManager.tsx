@@ -9,11 +9,11 @@ import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmMod
 import { useCreateEducation, useDeleteEducation, useEducations, useReorderEducations, useUpdateEducation } from "../hooks";
 import type { EducationFormValues } from "../types";
 import { toEducationRequest, type EducationUI } from "../transformers";
-import { useDragReorder } from "../useDragReorder";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
 import { fmtMonthYear } from "../utils";
 import { EducationPanel } from "./EducationPanel";
-import { RowActions } from "./RowActions";
-import { RowShell } from "./RowShell";
+import { RowActions } from "@/shared/components/RowActions";
+import { RowShell } from "@/shared/components/RowShell";
 
 export function EducationManager() {
   const { data: educations, isLoading } = useEducations();
@@ -74,7 +74,7 @@ export function EducationManager() {
         />
       ) : (
         list.map((x, i) => (
-          <div key={x.id} onDragOver={drag.onDragOver(i)} onDrop={drag.onDrop(i)}>
+          <div key={x.id} onDragOver={drag.onDragOver()} onDrop={drag.onDrop(i)}>
             <RowShell
               dragProps={{ onDragStart: drag.onDragStart(i) }}
               icon={GraduationCap}

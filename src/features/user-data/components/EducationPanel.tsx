@@ -8,8 +8,8 @@ import { FieldError } from "@/shared/components/FieldError";
 import { EducationFormSchema, type EducationFormValues } from "../types";
 import type { EducationUI } from "../transformers";
 import { useCertificationOptions } from "../hooks";
-import { SidePanel } from "./SidePanel";
-import { FormSelect } from "./FormSelect";
+import { SidePanel } from "@/shared/components/SidePanel";
+import { FormSelect } from "@/shared/components/FormSelect";
 
 interface EducationPanelProps {
   open:      boolean;

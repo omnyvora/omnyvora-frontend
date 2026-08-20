@@ -9,10 +9,10 @@ import { ConfirmModal, type ConfirmConfig } from "@/shared/components/ConfirmMod
 import { useCreateProject, useDeleteProject, useProjects, useReorderProjects, useUpdateProject } from "../hooks";
 import type { ProjectFormValues } from "../types";
 import type { ProjectUI } from "../transformers";
-import { useDragReorder } from "../useDragReorder";
+import { useDragReorder } from "@/core/hooks/useDragReorder";
 import { ProjectPanel } from "./ProjectPanel";
-import { RowActions } from "./RowActions";
-import { RowShell } from "./RowShell";
+import { RowActions } from "@/shared/components/RowActions";
+import { RowShell } from "@/shared/components/RowShell";
 
 export function ProjectsManager() {
   const { data: projects, isLoading } = useProjects();
@@ -72,7 +72,7 @@ export function ProjectsManager() {
         />
       ) : (
         list.map((p, i) => (
-          <div key={p.id} onDragOver={drag.onDragOver(i)} onDrop={drag.onDrop(i)}>
+          <div key={p.id} onDragOver={drag.onDragOver()} onDrop={drag.onDrop(i)}>
             <RowShell
               dragProps={{ onDragStart: drag.onDragStart(i) }}
               icon={Folder}

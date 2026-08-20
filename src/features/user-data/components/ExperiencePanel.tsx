@@ -8,10 +8,10 @@ import { FieldError } from "@/shared/components/FieldError";
 import { ExperienceFormSchema, type ExperienceFormValues } from "../types";
 import type { ExperienceUI } from "../transformers";
 import { useCertificationOptions } from "../hooks";
-import { SidePanel } from "./SidePanel";
+import { SidePanel } from "@/shared/components/SidePanel";
 import { TagInput } from "./TagInput";
-import { FormCheckbox } from "./FormCheckbox";
-import { FormSelect } from "./FormSelect";
+import { FormCheckbox } from "@/shared/components/FormCheckbox";
+import { FormSelect } from "@/shared/components/FormSelect";
 
 interface ExperiencePanelProps {
   open:       boolean;

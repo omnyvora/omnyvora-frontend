@@ -22,9 +22,11 @@ export async function uploadAvatar(file: File): Promise<ApiResponse<Profile>> {
   // Derive extension from MIME type — browser-image-compression can strip it when converting formats via WebWorker
   const ext = file.type.split("/")[1] ?? "jpeg";
   form.append("avatar", file, `avatar.${ext}`);
-  // Unset Content-Type so the browser sets multipart/form-data with the correct boundary
+  // null (not undefined) unsets Content-Type — AxiosHeaderValue doesn't include
+  // undefined, so this is both correctly typed and how axios drops a header —
+  // the browser then sets multipart/form-data with the correct boundary.
   const res = await apiClient.patch(`${PROFILES_URL}/profiles/me/`, form, {
-    headers: { "Content-Type": undefined },
+    headers: { "Content-Type": null },
   });
   return res.data;
 }

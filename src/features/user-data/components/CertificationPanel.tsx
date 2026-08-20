@@ -8,7 +8,7 @@ import { applyServerErrors } from "@/core/utils/applyServerErrors";
 import { FieldError } from "@/shared/components/FieldError";
 import { CertificationFormSchema, type CertificationFormValues } from "../types";
 import type { CertificationUI } from "../transformers";
-import { SidePanel } from "./SidePanel";
+import { SidePanel } from "@/shared/components/SidePanel";
 
 interface CertificationPanelProps {
   open:           boolean;
