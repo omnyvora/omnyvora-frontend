@@ -1,13 +1,18 @@
-# Graph Report - .  (2026-07-24)
+# Graph Report - omnyvora-frontend  (2026-08-20)
 
 ## Corpus Check
-- 62 files · ~207,794 words
+- 279 files · ~245,336 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1523 nodes · 2872 edges · 179 communities (110 shown, 69 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 297 edges (avg confidence: 0.61)
-- Token cost: 67,465 input · 0 output
+- 1673 nodes · 3452 edges · 179 communities (109 shown, 70 thin omitted)
+- Extraction: 91% EXTRACTED · 9% INFERRED · 0% AMBIGUOUS · INFERRED: 324 edges (avg confidence: 0.6)
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `419234c7`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Shared Notifications
@@ -101,6 +106,7 @@
 - Package.json
 - Package.json
 - Postcss.config.mjs
+- Core Hooks
 - Tailwind.config.ts
 - Public File.svg
 - Public Globe.svg
@@ -143,16 +149,16 @@
 - Ui Ux Omnyvora Design System
 
 ## God Nodes (most connected - your core abstractions)
-1. `react` - 108 edges
-2. `isApiSuccess()` - 29 edges
+1. `react` - 124 edges
+2. `isApiSuccess()` - 86 edges
 3. `Omnyvora Workspace HTML Entry Point (design prototype)` - 26 edges
 4. `cn()` - 23 edges
-5. `ImageSlot` - 21 edges
-6. `useAuth()` - 19 edges
+5. `useAuth()` - 23 edges
+6. `ImageSlot` - 21 edges
 7. `compilerOptions` - 18 edges
 8. `Backend Project Context (CONTEXT.md)` - 18 edges
 9. `colors_and_type.css — design tokens (color + typography variables)` - 17 edges
-10. `Semantic Color Tokens — Light Theme` - 15 edges
+10. `describeApiError()` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `useRequestOtp()` --references--> `POST /v1/otp/get-otp/`  [EXTRACTED]
@@ -161,9 +167,9 @@
   src/features/auth/hooks.ts → documentation/routes.md
 - `useLogin()` --references--> `POST /v1/auth/login/`  [EXTRACTED]
   src/features/auth/hooks.ts → documentation/routes.md
-- `useChangePassword()` --references--> `POST /v1/auth/password/change/`  [EXTRACTED]
-  src/features/auth/hooks.ts → documentation/routes.md
 - `useResetPassword()` --references--> `POST /v1/auth/password/reset/`  [EXTRACTED]
+  src/features/auth/hooks.ts → documentation/routes.md
+- `useChangePassword()` --references--> `POST /v1/auth/password/change/`  [EXTRACTED]
   src/features/auth/hooks.ts → documentation/routes.md
 
 ## Import Cycles
@@ -183,7 +189,7 @@
 - **Theming & semantic color token mechanism (light/dark tokens driving per-tool theme swap)** — ui_ux_omnyvora_design_system_preview_semantic_light_semantic_tokens_light, ui_ux_omnyvora_design_system_preview_semantic_dark_semantic_tokens_dark, ui_ux_omnyvora_design_system_preview_theming_per_tool_theming [INFERRED 0.85]
 - **Typography scale preview group (display / body / labels)** — ui_ux_omnyvora_design_system_preview_type_display_display_type_scale, ui_ux_omnyvora_design_system_preview_type_body_body_type_scale, ui_ux_omnyvora_design_system_preview_type_labels_label_caption_code_scale [EXTRACTED 1.00]
 
-## Communities (179 total, 69 thin omitted)
+## Communities (179 total, 70 thin omitted)
 
 ### Community 0 - "Shared Notifications"
 Cohesion: 0.06
@@ -191,147 +197,147 @@ Nodes (39): Next.js App Router, Frontend Route Reference, Frontend README (Next.
 
 ### Community 1 - "Ui Ux Omnivora  Super Sdmin Workspace"
 Cohesion: 0.08
-Nodes (42): boot(), collectProps(), compileAttr(), compileTemplate(), createComponentFactory(), createExternalModules(), createHelmetManager(), createPseudoSheet() (+34 more)
+Nodes (41): boot(), collectProps(), compileAttr(), compileTemplate(), createComponentFactory(), createHelmetManager(), createPseudoSheet(), createRegistry() (+33 more)
 
 ### Community 2 - "Ui Ux Omny Vora User Workspace Design"
-Cohesion: 0.05
-Nodes (35): @babel/standalone 7.29.0 (in-browser JSX transpiler, CDN), React 18.3.1 (UMD, CDN), ReactDOM 18.3.1 (UMD, CDN), Static HTML + Babel-Standalone UI Prototype Pattern (diverges from Next.js/TS build), App(), TWEAK_DEFAULTS, Applications(), app/Cards.jsx — Cards component module (+27 more)
+Cohesion: 0.07
+Nodes (24): @babel/standalone 7.29.0 (in-browser JSX transpiler, CDN), React 18.3.1 (UMD, CDN), ReactDOM 18.3.1 (UMD, CDN), Static HTML + Babel-Standalone UI Prototype Pattern (diverges from Next.js/TS build), app/Cards.jsx — Cards component module, app/data.jsx — mock/app data module, Icon(), ICONS (+16 more)
 
 ### Community 3 - "Features User Data"
-Cohesion: 0.07
-Nodes (43): BLANK, ExperiencePanel(), ExperiencePanelProps, toFormValues(), RowActions(), RowActionsProps, RowShell(), RowShellProps (+35 more)
+Cohesion: 0.05
+Nodes (52): createCertification(), createExperience(), createSocialLink(), deleteCertification(), deleteSkill(), deleteTechnology(), fetchCertifications(), fetchEducations() (+44 more)
 
 ### Community 4 - "Features User Data"
-Cohesion: 0.09
-Nodes (43): createCertification(), createExperience(), createProject(), createSocialLink(), deleteExperience(), deleteProject(), deleteSocialLink(), fetchCertifications() (+35 more)
+Cohesion: 0.08
+Nodes (47): addProjectImage(), createEducation(), createProject(), deleteEducation(), deleteExperience(), deleteProject(), deleteSocialLink(), removeProjectImage() (+39 more)
 
 ### Community 5 - "Package.json"
 Cohesion: 0.05
 Nodes (41): eslint, eslint-config-next, jsdom, devDependencies, eslint, eslint-config-next, jsdom, tailwindcss (+33 more)
 
 ### Community 6 - "Ui Ux Omnyvora Design System"
-Cohesion: 0.06
-Nodes (31): Admin Console Domain (admin.console), Avatar Component (sm/md/lg/xl, initials + image), Isometric Cube Cluster Logo Mark, Lucide Icon Set (Flagged Substitution), Photo / Image Enhancer Tool (Teal Accent #0D9488), Portfolio Tool (Purple Accent #534AB7), Productivity / CV Builder Tool (Blue Accent #2563EB), Two-Token Tool Theming (accent-primary + accent-subtle) (+23 more)
+Cohesion: 0.20
+Nodes (11): Avatar Component (sm/md/lg/xl, initials + image), Isometric Cube Cluster Logo Mark, Lucide Icon Set (Flagged Substitution), Two-Token Tool Theming (accent-primary + accent-subtle), Design System README (copy - User Workspace Design), Avatar Component Preview (HTML), Omnyvora Design System README (canonical), Omnyvora Design Skill Definition (+3 more)
 
 ### Community 7 - "Features Admin"
-Cohesion: 0.10
-Nodes (31): createPlatformService(), deletePlatformService(), fetchAdminDashboard(), fetchAdminServices(), fetchAdminSettings(), fetchPlatformServiceDetail(), toggleServiceActive(), updateAdminSettings() (+23 more)
+Cohesion: 0.14
+Nodes (27): ADMIN_URL, CATALOG_URL, createPlatformService(), deletePlatformService(), fetchAdminServices(), fetchAdminSettings(), fetchPlatformServiceDetail(), LOGS_URL (+19 more)
 
 ### Community 8 - "Shared Workspace"
-Cohesion: 0.08
-Nodes (26): ActivityPage(), fetchAdminUserDetail(), fetchAdminUsers(), fmtDate(), UserDetailPanel(), useAdminUserDetail(), useAdminUsers(), AdminUsersPage() (+18 more)
+Cohesion: 0.09
+Nodes (20): SUB_NAV, SettingsRow(), SettingsRowProps, SettingsTabPanel(), SettingsTabPanelProps, SUB_NAV, AdminSettingsFormSchema, AdminSettingsFormValues (+12 more)
 
 ### Community 9 - "Features Admin"
-Cohesion: 0.07
-Nodes (31): ADMIN_URL, CATALOG_URL, LOGS_URL, BLANK, ServiceFormDialog(), ServiceFormDialogProps, toFormValues(), AdminDashboardSummary (+23 more)
+Cohesion: 0.10
+Nodes (22): LogFilterBar(), LogFilterBarProps, AdminStore, AdminDashboardSummarySchema, AdminGrowthPointSchema, AdminRecentRegistrationSchema, AdminServiceListSchema, AdminServiceSchema (+14 more)
 
 ### Community 10 - "Shared Components"
-Cohesion: 0.09
-Nodes (25): cn(), Avatar, AvatarFallback, AvatarImage, Badge(), BadgeProps, badgeVariants, DialogContent (+17 more)
+Cohesion: 0.08
+Nodes (26): cn(), OtpInput(), OtpInputProps, Avatar, AvatarFallback, AvatarImage, Badge(), BadgeProps (+18 more)
 
 ### Community 11 - "Features Auth"
-Cohesion: 0.08
-Nodes (29): AUTH_URL, OTP_URL, requestOtp(), GetOtpRequest, GetOtpRequestSchema, LoginRequest, LoginRequestSchema, LoginResponse (+21 more)
+Cohesion: 0.07
+Nodes (40): AUTH_URL, loginUser(), OTP_URL, registerUser(), resetPassword(), verifyToken(), defaultRouteFor(), hydrateSession() (+32 more)
 
 ### Community 12 - "Features Profile"
-Cohesion: 0.11
-Nodes (23): GET/PATCH /v1/profiles/me/, AVATAR_COMPRESSION_CONFIG, compressImage(), FIELD_LABELS, fetchMyProfile(), updateMyProfile(), uploadAvatar(), PROFILE_QUERY_KEY (+15 more)
+Cohesion: 0.16
+Nodes (21): GET/PATCH /v1/profiles/me/, AVATAR_COMPRESSION_CONFIG, compressImage(), fetchMyProfile(), updateMyProfile(), uploadAvatar(), PROFILE_QUERY_KEY, useMyProfile() (+13 more)
 
 ### Community 13 - "Tsconfig.json"
 Cohesion: 0.06
 Nodes (30): dom, dom.iterable, esnext, **/*.mts, .next/dev/types/**/*.ts, next-env.d.ts, .next/types/**/*.ts, node_modules (+22 more)
 
 ### Community 14 - "Core Api"
-Cohesion: 0.13
-Nodes (15): apiClient, refreshQueue, refreshTokenStore, ApiError, ApiResponse, ApiSuccess, resolveServiceUrl(), serviceEntries (+7 more)
+Cohesion: 0.14
+Nodes (15): apiClient, refreshQueue, ApiError, ApiResponse, ApiSuccess, resolveServiceUrl(), serviceEntries, ServiceName (+7 more)
 
 ### Community 15 - "Features Auth"
-Cohesion: 0.18
-Nodes (18): OtpInput(), OtpInputProps, STEP_LABELS, STRENGTH_META, STRENGTH_META, AUTH_ROUTES, OTP_CHANNEL, OTP_PURPOSE (+10 more)
+Cohesion: 0.12
+Nodes (30): AuthHeader(), AuthLayout(), AuthLayoutProps, FooterLink(), GoogleButton(), OrDivider(), STEP_LABELS, STRENGTH_META (+22 more)
 
 ### Community 16 - "Ui Ux Omny Vora User Workspace Design"
-Cohesion: 0.18
-Nodes (6): getSlot(), ImageSlot, load(), save(), setSlot(), toDataUrl()
+Cohesion: 0.16
+Nodes (8): createExternalModules(), getSlot(), ImageSlot, load(), save(), setSlot(), toDataUrl(), createExternalModules()
 
 ### Community 17 - "Features Auth"
 Cohesion: 0.10
-Nodes (16): PasswordResetForm(), scorePassword(), useCountdown(), RegisterForm(), scorePassword(), useCountdown(), useRequestOtp(), ForgotPasswordPage() (+8 more)
+Nodes (17): requestOtp(), PasswordResetForm(), scorePassword(), useCountdown(), RegisterForm(), scorePassword(), useCountdown(), useRequestOtp() (+9 more)
 
 ### Community 18 - "Features User Data"
-Cohesion: 0.15
-Nodes (19): createSkill(), deleteSkill(), updateSkillProficiency(), AddSkillRow(), AddSkillRowProps, ProficiencySlider(), ProficiencySliderProps, SkillRow() (+11 more)
+Cohesion: 0.13
+Nodes (20): useDebounce(), createSkill(), createTechnology(), searchSkills(), searchTechnologies(), AddSkillRow(), AddSkillRowProps, onCreateSkillError() (+12 more)
 
 ### Community 19 - "Ui Ux Omnyvora Design System"
 Cohesion: 0.19
 Nodes (22): logo-darkmode-original.png asset, logo-mark-black.png asset, logo-mark-white.png asset, colors_and_type.css — design tokens (color + typography variables), components.css — shared component styles (btn, badge, card, input, menu, etc.), Badge / pill component (6 tones, sm+md), Button — dark mode preview (photo theme), Button — sizes & states preview (sm/md/lg, hover, disabled) (+14 more)
 
 ### Community 20 - "Features Admin"
-Cohesion: 0.16
-Nodes (15): fetchLogs(), LogFilterBar(), LogFilterBarProps, formatTimestamp(), LEVEL_BADGE, LogRow(), LogRowProps, useAdminLogs() (+7 more)
+Cohesion: 0.23
+Nodes (9): fetchLogs(), formatTimestamp(), LEVEL_BADGE, LogRow(), LogRowProps, useAdminLogs(), AdminLogsPage(), useAdminStore (+1 more)
 
 ### Community 21 - "Features Admin"
-Cohesion: 0.14
-Nodes (13): AlertCard(), AlertCardProps, buildPaths(), formatAxisDate(), GrowthChart(), GrowthChartProps, ServiceUsageBars(), AdminDashboardPage() (+5 more)
+Cohesion: 0.13
+Nodes (15): fetchAdminDashboard(), AlertCard(), AlertCardProps, buildPaths(), formatAxisDate(), GrowthChart(), GrowthChartProps, ServiceAdminCard() (+7 more)
 
 ### Community 22 - "Features User Data"
-Cohesion: 0.21
-Nodes (16): SUB_NAV, CategoryCard(), CategoryCardProps, ExperienceManager(), IdentityOverview(), IdentityOverviewProps, ProjectsManager(), SocialLinksManager() (+8 more)
+Cohesion: 0.14
+Nodes (34): isApiSuccess(), CategoryCard(), CategoryCardProps, ExperienceManager(), IdentityOverview(), IdentityOverviewProps, SkillsManager(), SocialLinksManager() (+26 more)
 
 ### Community 23 - "Ui Ux Omnyvora Design System"
 Cohesion: 0.13
 Nodes (21): Modal Dialog, Motion Duration & Easing Tokens, Border Radius Scale, --radius-modal Token (16px), Semantic Color Tokens — Dark Theme, Semantic Color Tokens — Light Theme, Sidebar Navigation, Skeleton Loader (+13 more)
 
 ### Community 24 - "Ui Ux Omnyvora Design System"
-Cohesion: 0.31
-Nodes (19): react, react, useFormField(), AuthScreen(), Avatar(), Badge(), Button(), Dashboard() (+11 more)
+Cohesion: 0.30
+Nodes (16): AuthScreen(), Avatar(), Badge(), Button(), Dashboard(), _extends(), Field(), Icon() (+8 more)
 
 ### Community 25 - "Features Activity"
-Cohesion: 0.17
-Nodes (16): isApiSuccess(), fetchActivity(), ACTIVITY_QUERY_KEY, useRecentActivity(), ActivityItemUI, toActivityItemUI(), toActivityListUI(), UserActivity (+8 more)
+Cohesion: 0.21
+Nodes (11): ActivityItemUI, toActivityItemUI(), toActivityListUI(), UserActivity, UserActivityPage, UserActivityPageSchema, UserActivitySchema, ACTIVITY_URL (+3 more)
 
 ### Community 26 - "Ui Ux Omny Vora Auth Design"
 Cohesion: 0.10
 Nodes (4): GoogleG(), OtpInput(), PasswordField(), STRENGTH
 
 ### Community 27 - "Features Admin"
-Cohesion: 0.15
-Nodes (17): UserListRow(), UserListRowProps, AdminDashboardUI, AdminRegistrationUI, AdminUserActivityUI, AdminUserListItemUI, formatLabel(), initialsOf() (+9 more)
+Cohesion: 0.13
+Nodes (21): UserListRow(), UserListRowProps, AdminDashboardUI, AdminRegistrationUI, AdminUserActivityUI, AdminUserListItemUI, formatLabel(), initialsOf() (+13 more)
 
 ### Community 28 - "Components.json"
 Cohesion: 0.11
 Nodes (17): aliases, components, hooks, lib, ui, utils, iconLibrary, rsc (+9 more)
 
 ### Community 29 - "Ui Ux Omnyvora Design System"
-Cohesion: 0.12
-Nodes (18): POST /v1/auth/login/, POST /v1/auth/register/, POST /v1/otp/get-otp/, POST /v1/auth/password/change/, Backend Project Context (CONTEXT.md), View -> Service -> Selector -> DB Flow, POST /v1/auth/login/, POST /v1/auth/logout/ (+10 more)
+Cohesion: 0.11
+Nodes (20): POST /v1/auth/login/, POST /v1/auth/register/, POST /v1/otp/get-otp/, POST /v1/auth/password/change/, POST /v1/auth/password/reset/, Backend Project Context (CONTEXT.md), View -> Service -> Selector -> DB Flow, POST /v1/auth/login/ (+12 more)
 
 ### Community 30 - "Features Auth"
-Cohesion: 0.20
-Nodes (10): safeRedirectPath(), AuthHeader(), AuthLayout(), AuthLayoutProps, FooterLink(), GoogleButton(), OrDivider(), LoginForm() (+2 more)
+Cohesion: 0.31
+Nodes (4): safeRedirectPath(), LoginForm(), LoginPage(), GuestGuard()
 
 ### Community 31 - "Features User Data"
-Cohesion: 0.20
-Nodes (15): deleteCertification(), reorderCertifications(), BLANK, CertificationPanel(), CertificationPanelProps, CertificationsManager(), useCreateCertification(), useDeleteCertification() (+7 more)
+Cohesion: 0.22
+Nodes (18): useDragReorder(), describeApiError(), CertificationsManager(), useCreateCertification(), useDeleteCertification(), useReorderCertifications(), useUpdateCertification(), toCertificationUI() (+10 more)
 
 ### Community 32 - "Shared Auth"
-Cohesion: 0.15
-Nodes (9): metadata, Providers(), VerifyUserResponse, AuthContext, AuthProvider(), AuthState, User, UserRole (+1 more)
+Cohesion: 0.18
+Nodes (10): metadata, Providers(), refreshTokenStore, AuthContext, AuthProvider(), AuthState, User, Toaster() (+2 more)
 
 ### Community 33 - "Features Account"
-Cohesion: 0.15
-Nodes (12): AccountGeneral(), AccountPage(), AccountSecurity(), SUB_NAV, changePassword(), PasswordChangeForm(), useChangePassword(), PasswordChangeFormSchema (+4 more)
+Cohesion: 0.18
+Nodes (9): AccountGeneral(), AccountPage(), AccountSecurity(), SUB_NAV, changePassword(), PasswordChangeForm(), useChangePassword(), PasswordChangeFormSchema (+1 more)
 
 ### Community 34 - "Features User Data"
-Cohesion: 0.16
-Nodes (14): fetchCertificationOptions(), BLANK, EducationPanel(), EducationPanelProps, toFormValues(), FormSelect(), FormSelectProps, Option (+6 more)
+Cohesion: 0.07
+Nodes (47): applyServerErrors(), fetchCertificationOptions(), BLANK, CertificationPanel(), CertificationPanelProps, BLANK, EducationPanel(), EducationPanelProps (+39 more)
 
 ### Community 35 - "Features User Data"
-Cohesion: 0.18
-Nodes (13): searchTechnologies(), FormCheckbox(), FormCheckboxProps, BLANK, ProjectPanel(), ProjectPanelProps, toFormValues(), TagInput() (+5 more)
+Cohesion: 0.07
+Nodes (51): boot(), cdnScriptFor(), collectProps(), compileAttr(), compileTemplate(), contentKey(), createComponentFactory(), createHelmetManager() (+43 more)
 
 ### Community 36 - "Ui Ux Omnivora  Super Sdmin Workspace"
-Cohesion: 0.30
-Nodes (16): AuthScreen(), Avatar(), Badge(), Button(), Dashboard(), _extends(), Field(), Icon() (+8 more)
+Cohesion: 0.24
+Nodes (22): react, react, AuthScreen(), Avatar(), Badge(), Button(), Dashboard(), _extends() (+14 more)
 
 ### Community 37 - "Ui Ux Omny Vora Auth Design"
 Cohesion: 0.30
@@ -346,24 +352,24 @@ Cohesion: 0.13
 Nodes (15): axios, browser-image-compression, clsx, @hookform/resolvers, next, dependencies, axios, browser-image-compression (+7 more)
 
 ### Community 40 - "Features Auth"
-Cohesion: 0.24
-Nodes (14): POST /v1/auth/password/reset/, loginUser(), registerUser(), resetPassword(), verifyToken(), defaultRouteFor(), hydrateSession(), useLogin() (+6 more)
+Cohesion: 0.16
+Nodes (11): ApiRequestError, fetchActivity(), ACTIVITY_QUERY_KEY, useRecentActivity(), ActivityPage(), ACTION_STYLE, ActivityCardItem, ActivityItem() (+3 more)
 
 ### Community 41 - "Ui Ux Omny Vora User Workspace Design"
 Cohesion: 0.14
 Nodes (6): TweakColor(), TweakNumber(), TweakRadio(), TweaksPanel(), __twkIsLight(), useTweaks()
 
 ### Community 42 - "Features User Data"
-Cohesion: 0.24
-Nodes (13): addProjectImage(), removeProjectImage(), reorderProjectImages(), updateProjectImage(), GalleryField(), GalleryFieldProps, useAddProjectImage(), useRemoveProjectImage() (+5 more)
+Cohesion: 0.30
+Nodes (16): AuthScreen(), Avatar(), Badge(), Button(), Dashboard(), _extends(), Field(), Icon() (+8 more)
 
 ### Community 43 - "Features User Data"
-Cohesion: 0.23
-Nodes (12): createEducation(), deleteEducation(), reorderEducations(), updateEducation(), EducationManager(), useCreateEducation(), useDeleteEducation(), useReorderEducations() (+4 more)
+Cohesion: 0.13
+Nodes (14): 1. What Omnyvora is, 2.1 Already fully designed — reuse, do not redesign, 2.2 Genuinely undesigned — this is your actual job, 2. Ground truth: what already exists, and what doesn't, 3. Design system — follow exactly, do not invent new values, 4.1 Template catalog (admin-authored, user-selected), 4.2 A user's portfolio (one user can have multiple), 4.3 The content source ("My Data" — already fully designed, you're consuming it, not rebuilding it) (+6 more)
 
 ### Community 44 - "Features Catalog"
-Cohesion: 0.24
-Nodes (7): ApplicationsPage(), ServiceGrid(), uniqueCategories(), PlatformServiceListSchema, PlatformServiceSchema, PlatformServiceUI, getServiceOpenPath()
+Cohesion: 0.19
+Nodes (13): fetchServices(), CATALOG_QUERY_KEY, usePlatformServices(), ApplicationsPage(), ServiceGrid(), toServicesUI(), toServiceUI(), uniqueCategories() (+5 more)
 
 ### Community 45 - "Features Account"
 Cohesion: 0.27
@@ -374,16 +380,16 @@ Cohesion: 0.21
 Nodes (8): DC, DCArtboardFrame(), DCCtx, dcExport(), dcFlatten(), DCSection(), DCViewport(), DesignCanvas()
 
 ### Community 47 - "Features Dashboard"
-Cohesion: 0.20
-Nodes (4): AppsAlertsCardProps, DashboardPage(), RecentActivityProps, RecentNotificationsProps
+Cohesion: 0.08
+Nodes (22): GET /v1/catalog/services/, GET /v1/notifications/, GET /v1/notifications/unread-count/, useDashboardNotifications(), useDashboardProfile(), useDashboardServices(), useDashboardUnreadCount(), AppsAlertsCardProps (+14 more)
 
 ### Community 48 - "Ui Ux Omny Vora User Workspace Design"
 Cohesion: 0.20
 Nodes (4): GalleryField(), ProficiencySlider(), TagInput(), useDragReorder()
 
 ### Community 51 - "Features Catalog"
-Cohesion: 0.36
-Nodes (7): GET /v1/catalog/services/, fetchServices(), CATALOG_QUERY_KEY, usePlatformServices(), toServicesUI(), toServiceUI(), useDashboardServices()
+Cohesion: 0.20
+Nodes (9): fetchAdminUserDetail(), fetchAdminUsers(), fmtDate(), UserDetailPanel(), useAdminUserDetail(), useAdminUsers(), AdminUsersPage(), AdminUserDetailUI (+1 more)
 
 ### Community 52 - "Core Design"
 Cohesion: 0.33
@@ -391,7 +397,7 @@ Nodes (4): GlobalTokens, cvBuilderTokens, imageEnhancerTokens, portfolioTokens
 
 ### Community 53 - "Shared Components"
 Cohesion: 0.25
-Nodes (7): FormDescription, FormFieldContext, FormFieldContextValue, FormItemContext, FormItemContextValue, Label, labelVariants
+Nodes (8): ProficiencySlider(), ProficiencySliderProps, SkillRow(), SkillRowProps, TechnologyRow(), TechnologyRowProps, UserSkillUI, UserTechnologyUI
 
 ### Community 54 - "Ui Ux Omny Vora User Workspace Design"
 Cohesion: 0.22
@@ -402,32 +408,32 @@ Cohesion: 0.25
 Nodes (8): brace-expansion (npm package, pinned >=5.0.7), form-data (npm package, pinned >=4.0.6), js-yaml (npm package, pinned >=4.3.0), postcss (npm package, pinned >=8.5.12), sharp (npm package, allowBuild + version override >=0.35.0), undici (npm package, pinned >=7.28.0), unrs-resolver (npm package, allowBuild), pnpm Workspace Configuration
 
 ### Community 56 - "Ui Ux Omnyvora Design System"
-Cohesion: 0.25
-Nodes (6): TOOLS, Dashboard(), NewProjectModal(), SAMPLE_PROJECTS, SettingsView(), TOOL_META
+Cohesion: 0.18
+Nodes (7): TOOLS, TopBar(), Dashboard(), NewProjectModal(), SAMPLE_PROJECTS, SettingsView(), TOOL_META
 
 ### Community 58 - "Shared Components"
-Cohesion: 0.29
-Nodes (6): Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
+Cohesion: 0.20
+Nodes (9): DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuShortcut(), DropdownMenuSubContent (+1 more)
 
 ### Community 59 - "Ui Ux Omny Vora User Workspace Design"
-Cohesion: 0.33
-Nodes (4): Account(), AccountGeneral(), AccountSecurity(), fmtDate()
+Cohesion: 0.08
+Nodes (12): Account(), AccountGeneral(), AccountSecurity(), fmtDate(), App(), TWEAK_DEFAULTS, Applications(), Dashboard() (+4 more)
+
+### Community 62 - "Ui Ux Omny Vora User Workspace Design"
+Cohesion: 0.25
+Nodes (7): Photo / Image Enhancer Tool (Teal Accent #0D9488), Landing Page Design Prompt, Hero Section Spec, Landing Page SEO Requirements, Image Enhancer (Landing Page Tool Entry), Tools Showcase Section Spec, No-Hype Precise Voice Guideline
+
+### Community 63 - "Features Admin"
+Cohesion: 0.22
+Nodes (8): CONTENT FUNDAMENTALS, ICONOGRAPHY, INDEX — what's in this system, Omnyvora Design System — v1.0, Quick start, Sources used to build this system, VISUAL FOUNDATIONS, What Omnyvora is
 
 ### Community 64 - "Shared Workspace"
-Cohesion: 0.40
-Nodes (3): AppCard(), AppCardProps, AppCardService
+Cohesion: 0.25
+Nodes (8): Admin Console Domain (admin.console), Admin Dashboard View (Prototype), Admin Logs View (Prototype), Admin Services View (Prototype), Admin Settings View (Prototype), Admin Users View (Prototype), Design System README (copy - Super Admin Workspace), Super Admin Workspace Prototype (HTML)
 
 ### Community 66 - "Shared Components"
-Cohesion: 0.67
-Nodes (3): Toaster(), ToasterProps, useDataTheme()
-
-### Community 67 - "Documentation Routes.md"
-Cohesion: 0.67
-Nodes (3): GET /v1/notifications/, useDashboardNotifications(), GET /v1/notifications/
-
-### Community 68 - "Documentation Routes.md"
-Cohesion: 0.67
-Nodes (3): GET /v1/notifications/unread-count/, useDashboardUnreadCount(), GET /v1/notifications/unread-count/
+Cohesion: 0.32
+Nodes (6): BLANK, ServiceFormDialog(), ServiceFormDialogProps, toFormValues(), PlatformServiceFormSchema, PlatformService
 
 ### Community 69 - "Package.json"
 Cohesion: 0.67
@@ -438,24 +444,24 @@ Nodes (3): react-dom, react-dom, DCFocusOverlay()
   ui_ux/omnyvora_design_system/preview/type-labels.html · relation: references
 
 ## Knowledge Gaps
-- **374 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+369 more)
+- **397 isolated node(s):** `$schema`, `style`, `rsc`, `tsx`, `config` (+392 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **69 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **70 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `Label, Caption & Code Type Scale` and `POST /v1/auth/login/ Endpoint (code-sample text)`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **Why does `react` connect `Ui Ux Omnyvora Design System` to `Ui Ux Omnivora  Super Sdmin Workspace`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnivora  Super Sdmin Workspace`, `Package.json`, `Ui Ux Omny Vora Auth Design`, `Package.json`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnyvora Design System`, `Ui Ux Omnyvora Design System`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnyvora Design System`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`?**
-  _High betweenness centrality (0.304) - this node is a cross-community bridge._
-- **Why does `useFormField()` connect `Ui Ux Omnyvora Design System` to `Shared Components`?**
-  _High betweenness centrality (0.190) - this node is a cross-community bridge._
-- **Why does `resolveServiceUrl()` connect `Core Api` to `Features Admin`, `Features Auth`, `Features User Data`, `Features Activity`?**
-  _High betweenness centrality (0.126) - this node is a cross-community bridge._
+- **Why does `react` connect `Ui Ux Omnivora  Super Sdmin Workspace` to `Ui Ux Omnivora  Super Sdmin Workspace`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnyvora Design System`, `Features Auth`, `Ui Ux Omnyvora Design System`, `Ui Ux Omny Vora Auth Design`, `Features User Data`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`, `Package.json`, `Ui Ux Omny Vora User Workspace Design`, `Features User Data`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnyvora Design System`, `Ui Ux Omny Vora User Workspace Design`, `Package.json`, `Ui Ux Omny Vora Auth Design`, `Ui Ux Omny Vora User Workspace Design`, `Ui Ux Omnyvora Design System`?**
+  _High betweenness centrality (0.363) - this node is a cross-community bridge._
+- **Why does `useFormField()` connect `Features Auth` to `Ui Ux Omnivora  Super Sdmin Workspace`?**
+  _High betweenness centrality (0.171) - this node is a cross-community bridge._
+- **Why does `isApiSuccess()` connect `Features User Data` to `Shared Notifications`, `Features User Data`, `Features Admin`, `Features Auth`, `Features Profile`, `Core Api`, `Features User Data`, `Features Admin`, `Features Admin`, `Features Activity`, `Features User Data`, `Shared Auth`, `Features Account`, `Features User Data`, `Features Auth`, `Features Catalog`, `Features Account`, `Features Dashboard`, `Features Catalog`?**
+  _High betweenness centrality (0.166) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `Omnyvora Workspace HTML Entry Point (design prototype)` (e.g. with `Static HTML + Babel-Standalone UI Prototype Pattern (diverges from Next.js/TS build)` and `ImageSlot`) actually correct?**
   _`Omnyvora Workspace HTML Entry Point (design prototype)` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `$schema`, `style`, `rsc` to the rest of the system?**
-  _374 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _397 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Shared Notifications` be split into smaller, more focused modules?**
   _Cohesion score 0.06057692307692308 - nodes in this community are weakly interconnected._
