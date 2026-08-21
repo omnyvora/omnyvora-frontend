@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/omnyvora-design-system-8e4cc764-e90f-44b0-9343-e9563c06daa5/colors_and_type.css">
+<link rel="stylesheet" href="_ds/omnyvora-design-system-8e4cc764-e90f-44b0-9343-e9563c06daa5/components.css">
+<script src="_ds/omnyvora-design-system-8e4cc764-e90f-44b0-9343-e9563c06daa5/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0;height:100%;background:var(--bg-page);color:var(--text-primary);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--accent-text);text-decoration:none}
+a:hover{color:var(--text-primary)}
+button{font-family:inherit}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:999px;border:3px solid var(--bg-page)}
+@keyframes omnyIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes omnySlide{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes omnySpin{to{transform:rotate(360deg)}}
+.omny-screen{animation:omnyIn var(--duration-base) var(--ease) both}
+.omny-panel{animation:omnySlide var(--duration-slow) var(--ease) both}
+.omny-row{transition:background var(--duration-fast) var(--ease)}
+.omny-row:hover{background:var(--bg-surface)}
+.omny-nav{transition:background var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.omny-tcard{transition:border-color var(--duration-fast) var(--ease),background var(--duration-fast) var(--ease)}
+.omny-tcard:hover{border-color:var(--border-strong)}
+.omny-ctl{transition:background var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.badge{white-space:nowrap;flex:none}
+</style>
+</helmet>
+
+<div style="display:flex;flex-direction:column;height:100vh;overflow:hidden;background:var(--bg-page)">
+
+  <div style="flex:none;display:flex;align-items:center;gap:16px;height:46px;padding:0 16px;background:var(--bg-surface);border-bottom:0.5px solid var(--border-default);overflow-x:auto">
+    <span class="ds-label-md" style="color:var(--text-tertiary);flex:none">Mockup</span>
+    <div style="display:flex;align-items:center;gap:6px;flex:none">
+      <span class="ds-label-md" style="color:var(--text-tertiary);margin-right:2px">User</span>
+      <sc-for list="{{userScreens}}" as="s" hint-placeholder-count="5"><button class="omny-ctl" onClick="{{s.go}}" style="height:26px;padding:0 10px;border-radius:999px;border:0.5px solid {{s.bd}};background:{{s.bg}};color:{{s.fg}};font:500 11px/1 var(--font-sans);cursor:pointer">{{s.label}}</button></sc-for>
+    </div>
+    <div style="width:0.5px;height:22px;background:var(--border-strong);flex:none"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex:none">
+      <span class="ds-label-md" style="color:var(--text-tertiary);margin-right:2px">Admin</span>
+      <sc-for list="{{adminScreens}}" as="s" hint-placeholder-count="4"><button class="omny-ctl" onClick="{{s.go}}" style="height:26px;padding:0 10px;border-radius:999px;border:0.5px solid {{s.bd}};background:{{s.bg}};color:{{s.fg}};font:500 11px/1 var(--font-sans);cursor:pointer">{{s.label}}</button></sc-for>
+    </div>
+    <div style="width:0.5px;height:22px;background:var(--border-strong);flex:none"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex:none">
+      <span class="ds-label-md" style="color:var(--text-tertiary);margin-right:2px">State</span>
+      <sc-for list="{{modes}}" as="m" hint-placeholder-count="4"><button class="omny-ctl" onClick="{{m.go}}" style="height:26px;padding:0 10px;border-radius:999px;border:0.5px solid {{m.bd}};background:{{m.bg}};color:{{m.fg}};font:500 11px/1 var(--font-sans);cursor:pointer">{{m.label}}</button></sc-for>
+    </div>
+    <div style="flex:1;min-width:12px"></div>
+    <button class="omny-ctl" onClick="{{toggleTheme}}" style="flex:none;display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border-radius:999px;border:0.5px solid var(--border-strong);background:var(--bg-surface-raised);color:var(--text-secondary);font:500 11px/1 var(--font-sans);cursor:pointer">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="{{themeIcon}}"></path></svg>{{themeLabel}}
+    </button>
+  </div>
+
+  <div style="flex:1;display:flex;min-height:0">
+
+    <aside style="flex:none;width:{{sidebarW}};background:var(--bg-surface);border-right:0.5px solid var(--border-default);display:flex;flex-direction:column;transition:width var(--duration-base) var(--ease);overflow:hidden">
+      <div style="display:flex;align-items:center;gap:10px;height:60px;padding:0 18px;flex:none">
+        <sc-if value="{{isLight}}" hint-placeholder-val="{{true}}"><img src="assets/logo-mark-black.png" alt="Omnyvora" style="width:26px;height:26px;flex:none;object-fit:contain"></sc-if>
+        <sc-if value="{{isDark}}" hint-placeholder-val="{{false}}"><img src="assets/logo-mark-white.png" alt="Omnyvora" style="width:26px;height:26px;flex:none;object-fit:contain"></sc-if>
+        <sc-if value="{{sidebarOpen}}" hint-placeholder-val="{{true}}"><span style="font:500 15px/1 var(--font-sans);letter-spacing:-0.3px;color:var(--text-primary);white-space:nowrap">Omnyvora</span></sc-if>
+      </div>
+      <sc-if value="{{sidebarOpen}}" hint-placeholder-val="{{true}}">
+        <div class="ds-label-md" style="padding:8px 18px 6px;color:var(--text-tertiary);white-space:nowrap">{{navGroup}}</div>
+      </sc-if>
+      <nav style="flex:1;display:flex;flex-direction:column;gap:2px;padding:4px 10px;overflow-y:auto">
+        <sc-for list="{{nav}}" as="n" hint-placeholder-count="8">
+          <div class="omny-nav" onClick="{{n.go}}" title="{{n.label}}" style="display:flex;align-items:center;gap:11px;height:36px;padding:0 10px;border-radius:8px;cursor:pointer;background:{{n.bg}};color:{{n.fg}}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="{{n.d}}"></path></svg>
+            <sc-if value="{{sidebarOpen}}" hint-placeholder-val="{{true}}"><span style="font:400 14px/1 var(--font-sans);white-space:nowrap;overflow:hidden">{{n.label}}</span></sc-if>
+          </div>
+        </sc-for>
+      </nav>
+      <div style="flex:none;padding:10px;border-top:0.5px solid var(--border-default)">
+        <div class="omny-nav" onClick="{{toggleSidebar}}" style="display:flex;align-items:center;gap:11px;height:34px;padding:0 10px;border-radius:8px;cursor:pointer;color:var(--text-tertiary)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="{{collapseIcon}}"></path></svg>
+          <sc-if value="{{sidebarOpen}}" hint-placeholder-val="{{true}}"><span style="font:400 13px/1 var(--font-sans);white-space:nowrap">Collapse</span></sc-if>
+        </div>
+      </div>
+    </aside>
+
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0;min-height:0">
+
+      <header style="flex:none;display:flex;align-items:center;gap:14px;height:60px;padding:0 28px;background:var(--bg-page);border-bottom:0.5px solid var(--border-default)">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0">
+          <span style="font:400 13px/1 var(--font-sans);color:var(--text-tertiary)">{{crumbRoot}}</span>
+          <span style="color:var(--text-disabled)">/</span>
+          <span style="font:500 13px/1 var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{crumbLeaf}}</span>
+        </div>
+        <div style="flex:1"></div>
+        <div class="input-wrap" style="width:240px">
+          <span class="input-icon input-icon--lead"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>
+          <input class="input input--has-lead" style="height:34px" placeholder="{{searchHint}}">
+        </div>
+        <div style="width:0.5px;height:24px;background:var(--border-default)"></div>
+        <div class="avatar avatar--md">{{avatarInitials}}</div>
+      </header>
+
+      <main style="flex:1;overflow-y:auto;min-height:0;background:var(--bg-page)">
+
+        <!-- ============ USER · MY PORTFOLIOS HOME ============ -->
+        <sc-if value="{{isUHome}}" hint-placeholder-val="{{true}}">
+        <section class="omny-screen" data-screen-label="User · My portfolios" style="padding:28px 28px 48px;max-width:1200px">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px">
+            <div style="min-width:0">
+              <div class="ds-label-md" style="color:var(--accent-text)">Portfolio</div>
+              <h1 class="ds-display-md" style="margin:6px 0 4px">My portfolios</h1>
+              <p class="ds-body-md" style="margin:0;color:var(--text-secondary)">Publish a portfolio website from the projects, experience and skills in your data.</p>
+            </div>
+            <div style="flex:1"></div>
+            <button class="btn btn--secondary" onClick="{{goGallery}}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"></path></svg>Browse templates</button>
+            <button class="btn btn--accent" onClick="{{goGallery}}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>New portfolio</button>
+          </div>
+
+          <sc-if value="{{modeIsError}}" hint-placeholder-val="{{false}}">
+            <div class="card" style="padding:20px;display:flex;gap:14px;align-items:flex-start;border-color:var(--status-error)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="1.8" stroke-linecap="round" style="margin-top:2px;flex:none"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+              <div style="flex:1">
+                <div style="font:500 14px/1.4 var(--font-sans);color:var(--text-primary)">Could not load your portfolios</div>
+                <div class="ds-body-sm" style="color:var(--text-secondary);margin-top:2px">The portfolio service did not respond. Your data is unaffected.</div>
+                <div style="display:flex;gap:8px;margin-top:14px">
+                  <button class="btn btn--secondary btn--sm">Try again</button>
+                  <button class="btn btn--ghost btn--sm">Contact support</button>
+                </div>
+              </div>
+              <span class="badge badge--error">503</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{modeIsLoading}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+              <div class="card" style="padding:18px;display:flex;gap:18px"><div class="skel" style="width:200px;height:126px"></div><div style="flex:1;display:flex;flex-direction:column;gap:10px;padding-top:6px"><div class="skel" style="width:180px;height:18px"></div><div class="skel" style="width:120px;height:12px"></div><div class="skel" style="width:260px;height:12px"></div><div style="flex:1"></div><div class="skel" style="width:220px;height:32px"></div></div></div>
+              <div class="card" style="padding:18px;display:flex;gap:18px"><div class="skel" style="width:200px;height:126px"></div><div style="flex:1;display:flex;flex-direction:column;gap:10px;padding-top:6px"><div class="skel" style="width:140px;height:18px"></div><div class="skel" style="width:100px;height:12px"></div><div class="skel" style="width:220px;height:12px"></div></div></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{modeIsEmpty}}" hint-placeholder-val="{{false}}">
+            <div class="card" style="padding:16px">
+              <div class="empty">
+                <div class="empty__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"></path></svg></div>
+                <div class="empty__title">No portfolios yet</div>
+                <div class="empty__desc">Pick a template and Omnyvora builds a portfolio site from the data you have already entered.</div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button class="btn btn--accent" onClick="{{goGallery}}">Create your first portfolio</button>
+                  <button class="btn btn--secondary">Review my data</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{modeIsPopulated}}" hint-placeholder-val="{{true}}">
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div class="card card--raised" style="display:flex;overflow:hidden">
+                <div style="flex:none;width:280px;background:var(--bg-surface);border-right:0.5px solid var(--border-default);padding:18px;display:flex;flex-direction:column;gap:8px">
+                  <div style="height:120px;border-radius:8px;border:0.5px solid var(--border-default);background:var(--bg-surface-raised);padding:10px;display:flex;flex-direction:column;gap:6px">
+                    <div style="height:22px;border-radius:4px;background:var(--border-default)"></div>
+                    <div style="display:flex;gap:6px;flex:1"><div style="flex:1;border-radius:4px;background:var(--border-default);opacity:.7"></div><div style="width:34%;border-radius:4px;background:var(--border-default);opacity:.45"></div></div>
+                    <div style="height:14px;border-radius:4px;background:var(--border-default);opacity:.45"></div>
+                  </div>
+                  <div class="ds-caption" style="color:var(--text-tertiary);text-align:center">Template thumbnail placeholder</div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto">
+                    <span class="ds-label-md" style="color:var(--text-tertiary)">Template</span>
+                    <span class="ds-body-sm" style="color:var(--text-primary)">Monolith</span>
+                  </div>
+                </div>
+                <div style="flex:1;padding:20px 22px;display:flex;flex-direction:column;min-width:0">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <h2 class="ds-display-sm" style="margin:0">Aarav Mehta — Product designer</h2>
+                    <span class="badge badge--success"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>Published</span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
+                    <span class="ds-code" style="color:var(--accent-text)">omnyvora.site/aarav-mehta</span>
+                    <button class="btn btn--ghost btn--sm" style="height:26px;padding:0 8px">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5h10"></path></svg>Copy link</button>
+                  </div>
+                  <div style="display:flex;gap:24px;margin-top:18px">
+                    <div><div class="ds-label-md" style="color:var(--text-tertiary)">Sections on</div><div class="ds-body-md" style="color:var(--text-primary);margin-top:3px">7 of 9</div></div>
+                    <div><div class="ds-label-md" style="color:var(--text-tertiary)">Items shown</div><div class="ds-body-md" style="color:var(--text-primary);margin-top:3px">5 projects · 3 roles</div></div>
+                    <div><div class="ds-label-md" style="color:var(--text-tertiary)">Published at</div><div class="ds-code" style="color:var(--text-primary);margin-top:4px">2026-07-28 14:02</div></div>
+                    <div><div class="ds-label-md" style="color:var(--text-tertiary)">Updated</div><div class="ds-body-md" style="color:var(--text-primary);margin-top:3px">2 hours ago</div></div>
+                  </div>
+                  <div style="flex:1;min-height:18px"></div>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <button class="btn btn--primary" onClick="{{goBuilder}}">Edit portfolio</button>
+                    <button class="btn btn--secondary" onClick="{{goPreview}}">Preview</button>
+                    <button class="btn btn--secondary" onClick="{{goPublish}}">Publish settings</button>
+                    <div style="flex:1"></div>
+                    <button class="btn btn--ghost btn--sm" style="width:32px;padding:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5h.01M12 12h.01M12 19h.01"></path></svg></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ds-label-md" style="color:var(--text-tertiary);margin-top:6px">Other portfolios</div>
+              <sc-for list="{{myOthers}}" as="p" hint-placeholder-count="2">
+                <div class="card omny-row" style="display:flex;align-items:center;gap:16px;padding:14px 18px">
+                  <div style="flex:none;width:74px;height:50px;border-radius:6px;border:0.5px solid var(--border-default);background:var(--bg-surface);padding:6px;display:flex;flex-direction:column;gap:3px">
+                    <div style="height:10px;border-radius:2px;background:var(--border-default)"></div>
+                    <div style="flex:1;border-radius:2px;background:var(--border-default);opacity:.55"></div>
+                  </div>
+                  <div style="min-width:0;flex:1">
+                    <div style="display:flex;align-items:center;gap:8px"><span style="font:500 14px/1.3 var(--font-sans);color:var(--text-primary)">{{p.title}}</span><span class="badge {{p.badge}}">{{p.status}}</span></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-top:5px"><span class="ds-code" style="color:var(--text-secondary);font-size:12px">{{p.slug}}</span><span class="ds-caption" style="color:var(--text-tertiary)">· {{p.template}} · updated {{p.updated}}</span></div>
+                  </div>
+                  <span class="ds-caption" style="color:var(--text-tertiary)">{{p.progress}}</span>
+                  <button class="btn btn--secondary btn--sm" onClick="{{goBuilder}}">{{p.cta}}</button>
+                  <button class="btn btn--ghost btn--sm" style="width:32px;padding:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5h.01M12 12h.01M12 19h.01"></path></svg></button>
+                </div>
+              </sc-for>
+
+              <div class="card" style="display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--bg-surface)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" style="flex:none"><path d="M6 20V10M12 20V4M18 20v-6"></path></svg>
+                <div style="flex:1"><div style="font:500 13px/1.4 var(--font-sans);color:var(--text-primary)">Visitor stats</div><div class="ds-caption" style="color:var(--text-secondary);margin-top:2px">View counts for published portfolios are not tracked yet.</div></div>
+                <span class="badge badge--neutral">Coming soon</span>
+              </div>
+            </div>
+          </sc-if>
+        </section>
+        </sc-if>
+
+        <!-- ============ USER · TEMPLATE GALLERY ============ -->
+        <sc-if value="{{isUGallery}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="User · Template gallery" style="padding:28px 28px 48px;max-width:1200px">
+          <div class="ds-label-md" style="color:var(--accent-text)">Portfolio</div>
+          <h1 class="ds-display-md" style="margin:6px 0 4px">Choose a template</h1>
+          <p class="ds-body-md" style="margin:0 0 20px;color:var(--text-secondary)">Your content stays the same in every template. You can switch later.</p>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+            <sc-for list="{{categories}}" as="c" hint-placeholder-count="5"><button class="omny-ctl" onClick="{{c.go}}" style="height:30px;padding:0 12px;border-radius:999px;border:0.5px solid {{c.bd}};background:{{c.bg}};color:{{c.fg}};font:500 12px/1 var(--font-sans);cursor:pointer">{{c.label}}</button></sc-for>
+            <div style="flex:1"></div>
+            <span class="ds-caption" style="color:var(--text-tertiary)">{{templateCount}}</span>
+          </div>
+
+          <sc-if value="{{modeIsLoading}}" hint-placeholder-val="{{false}}">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+              <div class="card" style="padding:0"><div class="skel" style="height:180px;border-radius:0"></div><div style="padding:16px;display:flex;flex-direction:column;gap:9px"><div class="skel" style="width:120px;height:16px"></div><div class="skel" style="width:180px;height:11px"></div></div></div>
+              <div class="card" style="padding:0"><div class="skel" style="height:180px;border-radius:0"></div><div style="padding:16px;display:flex;flex-direction:column;gap:9px"><div class="skel" style="width:100px;height:16px"></div><div class="skel" style="width:160px;height:11px"></div></div></div>
+              <div class="card" style="padding:0"><div class="skel" style="height:180px;border-radius:0"></div><div style="padding:16px;display:flex;flex-direction:column;gap:9px"><div class="skel" style="width:140px;height:16px"></div><div class="skel" style="width:150px;height:11px"></div></div></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{modeIsEmpty}}" hint-placeholder-val="{{false}}">
+            <div class="card"><div class="empty"><div class="empty__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"></path></svg></div><div class="empty__title">No templates in this category</div><div class="empty__desc">Try another category, or view every published template.</div><button class="btn btn--secondary" style="margin-top:8px">Show all templates</button></div></div>
+          </sc-if>
+          <sc-if value="{{modeIsError}}" hint-placeholder-val="{{false}}">
+            <div class="card" style="border-color:var(--status-error);padding:20px;display:flex;gap:14px;align-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg><div style="flex:1"><div style="font:500 14px/1.4 var(--font-sans)">Template catalog unavailable</div><div class="ds-body-sm" style="color:var(--text-secondary)">Try again in a moment.</div></div><button class="btn btn--secondary btn--sm">Try again</button></div>
+          </sc-if>
+
+          <sc-if value="{{galleryReady}}" hint-placeholder-val="{{false}}">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+            <sc-for list="{{gallery}}" as="t" hint-placeholder-count="6">
+              <div class="card omny-tcard" style="border-color:{{t.bd}};background:{{t.bg}}">
+                <div style="height:190px;background:var(--bg-surface);border-bottom:0.5px solid var(--border-default);padding:16px;display:flex;flex-direction:column;gap:8px;position:relative">
+                  <div style="height:30px;border-radius:4px;background:var(--border-default)"></div>
+                  <div style="display:flex;gap:8px;flex:1"><div style="flex:1;border-radius:4px;background:var(--border-default);opacity:.65"></div><div style="width:30%;border-radius:4px;background:var(--border-default);opacity:.4"></div></div>
+                  <div style="display:flex;gap:8px;height:30%"><div style="flex:1;border-radius:4px;background:var(--border-default);opacity:.4"></div><div style="flex:1;border-radius:4px;background:var(--border-default);opacity:.4"></div></div>
+                  <span class="ds-caption" style="position:absolute;left:16px;bottom:8px;color:var(--text-tertiary)">thumbnail placeholder</span>
+                  <sc-if value="{{t.selected}}" hint-placeholder-val="{{false}}"><span class="badge badge--accent" style="position:absolute;top:12px;right:12px">Selected</span></sc-if>
+                </div>
+                <div style="padding:16px 18px">
+                  <div style="display:flex;align-items:center;gap:8px"><span style="font:500 15px/1.3 var(--font-sans);color:var(--text-primary)">{{t.name}}</span><span class="badge badge--neutral">{{t.category}}</span></div>
+                  <p class="ds-body-sm" style="margin:7px 0 0;color:var(--text-secondary)">{{t.description}}</p>
+                  <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
+                    <button class="btn btn--accent btn--sm" onClick="{{t.use}}">Use this template</button>
+                    <button class="btn btn--secondary btn--sm" onClick="{{goPreview}}">Preview</button>
+                    <div style="flex:1"></div>
+                    <span class="ds-caption" style="color:var(--text-tertiary)">{{t.sections}} sections</span>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+        </section>
+        </sc-if>
+
+        <!-- ============ USER · BUILDER ============ -->
+        <sc-if value="{{isUBuilder}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="User · Builder" style="display:flex;flex-direction:column;min-height:100%">
+          <div style="flex:none;padding:20px 28px 0;display:flex;align-items:center;gap:12px">
+            <div style="min-width:0">
+              <div style="display:flex;align-items:center;gap:9px">
+                <h1 class="ds-display-sm" style="margin:0">Aarav Mehta — Product designer</h1>
+                <span class="badge badge--warning">Draft</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+                <span class="ds-code" style="color:var(--text-secondary);font-size:12px">monolith</span>
+                <span class="ds-caption" style="color:var(--text-tertiary)">· step 3 of 5 · autosaved 12s ago</span>
+              </div>
+            </div>
+            <div style="flex:1"></div>
+            <button class="btn btn--secondary" onClick="{{togglePanel}}">{{panelLabel}}</button>
+            <button class="btn btn--secondary" onClick="{{goPreview}}">Preview</button>
+            <button class="btn btn--accent" onClick="{{goPublish}}">Publish</button>
+          </div>
+
+          <div style="flex:none;display:flex;align-items:center;gap:0;padding:18px 28px 0">
+            <sc-for list="{{steps}}" as="s" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:9px;min-width:0">
+                  <div style="flex:none;width:22px;height:22px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:{{s.bg}};color:{{s.fg}};border:0.5px solid {{s.bd}};font:500 11px/1 var(--font-mono)">{{s.n}}</div>
+                  <span style="font:500 12px/1 var(--font-sans);color:{{s.tc}};white-space:nowrap">{{s.label}}</span>
+                </div>
+                <div style="flex:1;height:0.5px;background:var(--border-default);min-width:14px"></div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="flex:1;display:flex;gap:0;padding:20px 28px 40px;min-height:0;overflow-x:auto">
+            <div style="flex:none;width:250px;display:flex;flex-direction:column;gap:2px">
+              <div class="ds-label-md" style="color:var(--text-tertiary);padding:0 8px 8px">Sections</div>
+              <sc-for list="{{sections}}" as="s" hint-placeholder-count="9">
+                <div class="omny-nav" onClick="{{s.go}}" style="display:flex;align-items:center;gap:10px;padding:0 10px;height:40px;border-radius:8px;cursor:pointer;background:{{s.bg}}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-disabled)" stroke-width="2" stroke-linecap="round" style="flex:none"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"></path></svg>
+                  <span style="flex:1;font:400 13px/1 var(--font-sans);color:{{s.fg}};white-space:nowrap">{{s.label}}</span>
+                  <sc-if value="{{s.required}}" hint-placeholder-val="{{false}}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" style="flex:none"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{s.toggleable}}" hint-placeholder-val="{{false}}">
+                    <label class="switch" style="width:32px;height:18px"><input type="checkbox" checked="{{s.enabled}}" onChange="{{s.toggle}}"><span class="track"></span><span class="thumb" style="width:14px;height:14px;transform:translateX({{s.thumbX}})"></span></label>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="height:0.5px;background:var(--border-default);margin:10px 8px"></div>
+              <div class="ds-caption" style="padding:0 10px;color:var(--text-tertiary)">Locked sections are required by this template and cannot be turned off.</div>
+            </div>
+
+            <div style="flex:1;min-width:420px;padding:0 24px">
+              <div class="card" style="overflow:visible">
+                <div class="card__header" style="display:flex;align-items:center;gap:12px">
+                  <div>
+                    <div style="font:500 15px/1.3 var(--font-sans);color:var(--text-primary)">Projects</div>
+                    <div class="ds-caption" style="color:var(--text-secondary);margin-top:3px">Choose which projects appear on this portfolio. 5 of 8 visible.</div>
+                  </div>
+                  <div style="flex:1"></div>
+                  <button class="btn btn--ghost btn--sm">Show all</button>
+                  <button class="btn btn--secondary btn--sm">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"></path></svg>Manage in My data</button>
+                </div>
+                <div>
+                  <sc-for list="{{projects}}" as="p" hint-placeholder-count="6">
+                    <div class="omny-row" style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:0.5px solid var(--border-default)">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-disabled)" stroke-width="2" stroke-linecap="round" style="flex:none;cursor:grab"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"></path></svg>
+                      <div class="check {{p.checkClass}}" onClick="{{p.toggle}}" style="cursor:pointer;flex:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"></path></svg></div>
+                      <div style="flex:none;width:46px;height:34px;border-radius:5px;border:0.5px solid var(--border-default);background:var(--bg-surface)"></div>
+                      <div style="min-width:0;flex:1">
+                        <div style="display:flex;align-items:center;gap:8px"><span style="font:500 13px/1.3 var(--font-sans);color:{{p.fg}}">{{p.title}}</span><sc-if value="{{p.featured}}" hint-placeholder-val="{{false}}"><span class="badge badge--accent">Featured</span></sc-if></div>
+                        <div class="ds-caption" style="color:var(--text-tertiary);margin-top:3px">{{p.meta}}</div>
+                      </div>
+                      <div style="display:flex;gap:5px;flex:none"><sc-for list="{{p.tags}}" as="t" hint-placeholder-count="2"><span class="badge badge--neutral">{{t}}</span></sc-for></div>
+                      <span class="ds-caption" style="flex:none;width:58px;text-align:right;color:{{p.stateFg}}">{{p.stateLabel}}</span>
+                    </div>
+                  </sc-for>
+                  <div style="display:flex;align-items:center;gap:10px;padding:14px 20px">
+                    <span class="ds-caption" style="color:var(--text-tertiary)">Order here controls the order on your published site.</span>
+                    <div style="flex:1"></div>
+                    <span class="ds-code" style="color:var(--text-tertiary);font-size:11px">PortfolioItemVisibility · item_type=project</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card" style="margin-top:18px">
+                <div class="card__header" style="display:flex;align-items:center;gap:12px">
+                  <div>
+                    <div style="font:500 15px/1.3 var(--font-sans);color:var(--text-primary)">Services</div>
+                    <div class="ds-caption" style="color:var(--text-secondary);margin-top:3px">Written for this portfolio only. Not pulled from My data.</div>
+                  </div>
+                  <div style="flex:1"></div>
+                  <button class="btn btn--secondary btn--sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add service</button>
+                </div>
+                <sc-for list="{{services}}" as="s" hint-placeholder-count="2">
+                  <div class="omny-row" style="display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:0.5px solid var(--border-default)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-disabled)" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:2px;cursor:grab"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"></path></svg>
+                    <div style="flex:1;min-width:0">
+                      <div style="font:500 13px/1.3 var(--font-sans);color:var(--text-primary)">{{s.title}}</div>
+                      <div class="ds-body-sm" style="color:var(--text-secondary);margin-top:4px">{{s.description}}</div>
+                      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px"><sc-for list="{{s.bullets}}" as="b" hint-placeholder-count="3"><span class="badge badge--neutral">{{b}}</span></sc-for></div>
+                    </div>
+                    <button class="btn btn--ghost btn--sm">Edit</button>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div class="card" style="margin-top:18px;background:var(--bg-surface)">
+                <div style="padding:18px 20px">
+                  <div class="ds-label-md" style="color:var(--text-tertiary)">Empty section state</div>
+                  <div style="display:flex;align-items:center;gap:14px;margin-top:12px">
+                    <div class="empty__icon" style="width:38px;height:38px"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5"></path></svg></div>
+                    <div style="flex:1">
+                      <div style="font:500 13px/1.4 var(--font-sans);color:var(--text-primary)">No certifications yet</div>
+                      <div class="ds-caption" style="color:var(--text-secondary);margin-top:2px">Add certifications in My data and they will show up here.</div>
+                    </div>
+                    <button class="btn btn--secondary btn--sm">Go to My data</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <sc-if value="{{panelOpen}}" hint-placeholder-val="{{false}}">
+            <div class="omny-panel" style="flex:none;width:320px">
+              <div class="card card--raised" style="position:sticky;top:0">
+                <div class="card__header" style="display:flex;align-items:center;gap:10px;padding:12px 16px">
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Live preview</span>
+                  <div style="flex:1"></div>
+                  <button class="btn btn--ghost btn--sm" onClick="{{goPreview}}" style="height:26px;padding:0 8px">Open full</button>
+                </div>
+                <div style="padding:14px;background:var(--bg-surface)">
+                  <div style="border-radius:8px;border:0.5px solid var(--border-default);background:var(--bg-page);overflow:hidden">
+                    <div style="height:120px;background:var(--bg-surface);display:flex;flex-direction:column;justify-content:center;gap:8px;padding:16px">
+                      <div style="width:44px;height:44px;border-radius:999px;background:var(--border-default)"></div>
+                      <div style="width:60%;height:12px;border-radius:3px;background:var(--border-default)"></div>
+                      <div style="width:40%;height:8px;border-radius:3px;background:var(--border-default);opacity:.6"></div>
+                    </div>
+                    <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+                      <div style="width:30%;height:8px;border-radius:3px;background:var(--border-default)"></div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="height:52px;border-radius:5px;background:var(--border-default);opacity:.5"></div><div style="height:52px;border-radius:5px;background:var(--border-default);opacity:.5"></div><div style="height:52px;border-radius:5px;background:var(--border-default);opacity:.5"></div><div style="height:52px;border-radius:5px;background:var(--border-default);opacity:.5"></div></div>
+                      <div style="width:24%;height:8px;border-radius:3px;background:var(--border-default)"></div>
+                      <div style="height:8px;border-radius:3px;background:var(--border-default);opacity:.45"></div>
+                      <div style="width:80%;height:8px;border-radius:3px;background:var(--border-default);opacity:.45"></div>
+                    </div>
+                  </div>
+                  <div class="ds-caption" style="color:var(--text-tertiary);text-align:center;margin-top:10px">Rendered template placeholder</div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ USER · PREVIEW ============ -->
+        <sc-if value="{{isUPreview}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="User · Live preview" style="display:flex;flex-direction:column;height:100%;background:var(--bg-surface)">
+          <div style="flex:none;display:flex;align-items:center;gap:12px;padding:14px 24px;background:var(--bg-page);border-bottom:0.5px solid var(--border-default)">
+            <button class="btn btn--ghost btn--sm" onClick="{{goBuilder}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>Back to builder</button>
+            <div style="width:0.5px;height:20px;background:var(--border-default)"></div>
+            <div style="display:flex;align-items:center;gap:2px;padding:3px;background:var(--bg-surface);border-radius:999px;border:0.5px solid var(--border-default)">
+              <sc-for list="{{devices}}" as="d" hint-placeholder-count="2"><button class="omny-ctl" onClick="{{d.go}}" style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 12px;border-radius:999px;border:none;background:{{d.bg}};color:{{d.fg}};font:500 12px/1 var(--font-sans);cursor:pointer"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{d.d}}"></path></svg>{{d.label}}</button></sc-for>
+            </div>
+            <div style="flex:1;display:flex;justify-content:center">
+              <div style="display:flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:var(--bg-surface);border:0.5px solid var(--border-default);max-width:420px">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="1.8" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+                <span class="ds-code" style="font-size:12px;color:var(--text-secondary)">omnyvora.site/aarav-mehta</span>
+              </div>
+            </div>
+            <button class="btn btn--secondary btn--sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5h10"></path></svg>Copy link</button>
+            <button class="btn btn--secondary btn--sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>Open in new tab</button>
+            <button class="btn btn--accent btn--sm" onClick="{{goPublish}}">Publish changes</button>
+          </div>
+          <div style="flex:1;overflow-y:auto;padding:28px;display:flex;justify-content:center">
+            <div class="card card--raised" style="width:{{previewW}};transition:width var(--duration-base) var(--ease);overflow:hidden;background:var(--bg-page)">
+              <div style="padding:44px 40px;background:var(--bg-surface);border-bottom:0.5px solid var(--border-default);display:flex;gap:24px;align-items:center">
+                <div style="width:84px;height:84px;border-radius:999px;background:var(--border-default);flex:none"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+                  <div style="width:52%;height:22px;border-radius:4px;background:var(--border-default)"></div>
+                  <div style="width:34%;height:12px;border-radius:4px;background:var(--border-default);opacity:.6"></div>
+                  <div style="display:flex;gap:8px;margin-top:4px"><div style="width:64px;height:26px;border-radius:999px;background:var(--border-default);opacity:.5"></div><div style="width:64px;height:26px;border-radius:999px;background:var(--border-default);opacity:.5"></div></div>
+                </div>
+              </div>
+              <div style="padding:36px 40px;display:flex;flex-direction:column;gap:34px">
+                <sc-for list="{{previewBlocks}}" as="b" hint-placeholder-count="4">
+                  <div>
+                    <div class="ds-label-md" style="color:var(--text-tertiary)">{{b.label}}</div>
+                    <div style="display:grid;grid-template-columns:{{b.cols}};gap:14px;margin-top:14px">
+                      <sc-for list="{{b.cells}}" as="c" hint-placeholder-count="3"><div style="height:{{b.h}};border-radius:8px;background:var(--bg-surface);border:0.5px solid var(--border-default)"></div></sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+                <div class="ds-caption" style="color:var(--text-tertiary);text-align:center">Template renders server-side from TemplatePage · page_type=main</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ USER · PUBLISH & DOMAIN ============ -->
+        <sc-if value="{{isUPublish}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="User · Publish settings" style="padding:28px 28px 48px;max-width:820px">
+          <div class="ds-label-md" style="color:var(--accent-text)">Portfolio</div>
+          <h1 class="ds-display-md" style="margin:6px 0 4px">Publish and domain</h1>
+          <p class="ds-body-md" style="margin:0 0 24px;color:var(--text-secondary)">Control where this portfolio lives and who can see it.</p>
+
+          <div class="card" style="margin-bottom:18px">
+            <div class="card__header" style="display:flex;align-items:center;gap:12px">
+              <div style="font:500 15px/1.3 var(--font-sans)">Status</div>
+              <div style="flex:1"></div>
+              <span class="badge {{statusBadge}}"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>{{statusLabel}}</span>
+            </div>
+            <div class="card__body">
+              <div style="display:flex;gap:10px">
+                <sc-for list="{{statuses}}" as="s" hint-placeholder-count="3">
+                  <div class="omny-tcard" onClick="{{s.go}}" style="flex:1;padding:14px;border-radius:10px;border:0.5px solid {{s.bd}};background:{{s.bg}};cursor:pointer">
+                    <div style="display:flex;align-items:center;gap:8px"><div class="radio {{s.radio}}"><span class="dot"></span></div><span style="font:500 13px/1 var(--font-sans);color:var(--text-primary)">{{s.label}}</span></div>
+                    <div class="ds-caption" style="color:var(--text-secondary);margin-top:8px">{{s.desc}}</div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:18px">
+                <span class="ds-label-md" style="color:var(--text-tertiary)">Published at</span>
+                <span class="ds-code" style="color:var(--text-primary);font-size:12px">2026-07-28T14:02:11Z</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom:18px">
+            <div class="card__header"><div style="font:500 15px/1.3 var(--font-sans)">Address</div></div>
+            <div class="card__body" style="display:flex;flex-direction:column;gap:20px">
+              <div class="field">
+                <label class="label">Slug</label>
+                <div style="display:flex;align-items:center;gap:0">
+                  <span class="ds-code" style="height:38px;display:flex;align-items:center;padding:0 12px;background:var(--bg-surface);border:0.5px solid var(--input-border);border-right:none;border-radius:6px 0 0 6px;color:var(--text-tertiary);font-size:13px">omnyvora.site/</span>
+                  <input class="input" style="border-radius:0 6px 6px 0;font-family:var(--font-mono);font-size:13px" value="aarav-mehta">
+                </div>
+                <div class="ds-caption" style="color:var(--status-success);display:flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 13l4 4L19 7"></path></svg>Available</div>
+              </div>
+              <div class="field">
+                <label class="label">Custom domain (optional)</label>
+                <div class="input-wrap"><input class="input input--error" style="font-family:var(--font-mono);font-size:13px" value="aarav.design"></div>
+                <div class="field-error">This domain is already connected to another portfolio.</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;background:var(--bg-surface);border:0.5px solid var(--border-default)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" style="flex:none"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>
+                <span class="ds-caption" style="color:var(--text-secondary);flex:1">Point a CNAME record at <span class="ds-code" style="font-size:11px">cname.omnyvora.site</span> before saving a custom domain.</span>
+              </div>
+            </div>
+            <div class="card__footer">
+              <button class="btn btn--ghost">Discard</button>
+              <button class="btn btn--accent">
+                <sc-if value="{{publishing}}" hint-placeholder-val="{{false}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="animation:omnySpin 700ms linear infinite"><path d="M12 3a9 9 0 1 0 9 9"></path></svg></sc-if>
+                {{publishCta}}</button>
+            </div>
+          </div>
+
+          <div class="card" style="border-color:var(--status-error)">
+            <div class="card__header" style="border-color:var(--status-error)"><div style="font:500 15px/1.3 var(--font-sans);color:var(--status-error)">Danger zone</div></div>
+            <div class="card__body" style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="flex:1"><div style="font:500 13px/1.4 var(--font-sans)">Unpublish portfolio</div><div class="ds-caption" style="color:var(--text-secondary);margin-top:2px">The public URL stops resolving. Your content is kept.</div></div>
+                <button class="btn btn--secondary btn--sm">Unpublish</button>
+              </div>
+              <div style="height:0.5px;background:var(--border-default)"></div>
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="flex:1"><div style="font:500 13px/1.4 var(--font-sans)">Delete portfolio</div><div class="ds-caption" style="color:var(--text-secondary);margin-top:2px">Deletes this instance, its section states and services. My data is untouched.</div></div>
+                <button class="btn btn--danger btn--sm">Delete</button>
+              </div>
+            </div>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ ADMIN · OVERVIEW ============ -->
+        <sc-if value="{{isAOverview}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="Admin · Portfolio overview" style="padding:28px 28px 48px;max-width:1200px">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:22px">
+            <div>
+              <div class="ds-label-md" style="color:var(--accent-text)">Services · Portfolio</div>
+              <h1 class="ds-display-md" style="margin:6px 0 4px">Portfolio overview</h1>
+              <p class="ds-body-md" style="margin:0;color:var(--text-secondary)">Template catalog and published instances across the platform.</p>
+            </div>
+            <div style="flex:1"></div>
+            <span class="badge badge--success" style="margin-top:6px"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>Service enabled</span>
+            <button class="btn btn--secondary" onClick="{{goATemplates}}">Manage templates</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px">
+            <sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+              <div class="stat">
+                <div class="stat__label">{{k.label}}</div>
+                <div class="stat__value" style="font-size:26px">{{k.value}}</div>
+                <div class="ds-caption" style="color:var(--text-tertiary);margin-top:6px">{{k.sub}}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 320px;gap:20px">
+            <div class="card">
+              <div class="card__header" style="display:flex;align-items:center;gap:12px">
+                <div style="font:500 15px/1.3 var(--font-sans)">Recent portfolio instances</div>
+                <div style="flex:1"></div>
+                <button class="btn btn--ghost btn--sm" onClick="{{goAPortfolios}}">View all</button>
+              </div>
+              <div style="display:grid;grid-template-columns:1.4fr 1fr 0.8fr 0.8fr;padding:10px 20px;border-bottom:0.5px solid var(--border-default);background:var(--bg-surface)">
+                <span class="ds-label-md" style="color:var(--text-tertiary)">Owner</span>
+                <span class="ds-label-md" style="color:var(--text-tertiary)">Template</span>
+                <span class="ds-label-md" style="color:var(--text-tertiary)">Status</span>
+                <span class="ds-label-md" style="color:var(--text-tertiary);text-align:right">Updated</span>
+              </div>
+              <sc-for list="{{adminRows}}" as="r" hint-placeholder-count="6">
+                <div class="omny-row" onClick="{{goAPortfolioDetail}}" style="display:grid;grid-template-columns:1.4fr 1fr 0.8fr 0.8fr;align-items:center;padding:11px 20px;border-bottom:0.5px solid var(--border-default);cursor:pointer">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                    <div class="avatar avatar--sm">{{r.initials}}</div>
+                    <div style="min-width:0"><div style="font:500 13px/1.3 var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.owner}}</div><div class="ds-code" style="font-size:11px;color:var(--text-tertiary)">{{r.slug}}</div></div>
+                  </div>
+                  <span class="ds-body-sm" style="color:var(--text-secondary)">{{r.template}}</span>
+                  <span><span class="badge {{r.badge}}">{{r.status}}</span></span>
+                  <span class="ds-code" style="font-size:11px;color:var(--text-tertiary);text-align:right">{{r.updated}}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div class="card">
+                <div class="card__header"><div style="font:500 15px/1.3 var(--font-sans)">Instance status</div></div>
+                <div class="card__body" style="display:flex;flex-direction:column;gap:14px">
+                  <sc-for list="{{statusBars}}" as="b" hint-placeholder-count="3">
+                    <div>
+                      <div style="display:flex;align-items:baseline;gap:8px"><span class="ds-body-sm" style="color:var(--text-secondary);flex:1">{{b.label}}</span><span class="ds-code" style="font-size:12px;color:var(--text-primary)">{{b.count}}</span></div>
+                      <div style="height:6px;border-radius:999px;background:var(--bg-surface);margin-top:8px;overflow:hidden"><div style="height:100%;width:{{b.pct}};background:{{b.color}};border-radius:999px;transition:width var(--duration-base) var(--ease)"></div></div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card__header"><div style="font:500 15px/1.3 var(--font-sans)">Most used template</div></div>
+                <div class="card__body">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <div style="width:56px;height:40px;border-radius:6px;border:0.5px solid var(--border-default);background:var(--bg-surface);flex:none"></div>
+                    <div><div style="font:500 14px/1.3 var(--font-sans)">Monolith</div><div class="ds-caption" style="color:var(--text-secondary);margin-top:3px">412 instances · 48% of all</div></div>
+                  </div>
+                  <button class="btn btn--secondary btn--sm" style="width:100%;margin-top:16px" onClick="{{goATemplateDetail}}">Open template</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ ADMIN · TEMPLATES ============ -->
+        <sc-if value="{{isATemplates}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="Admin · Templates" style="padding:28px 28px 48px;max-width:1200px">
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:22px">
+            <div>
+              <div class="ds-label-md" style="color:var(--accent-text)">Services · Portfolio</div>
+              <h1 class="ds-display-md" style="margin:6px 0 4px">Templates</h1>
+              <p class="ds-body-md" style="margin:0;color:var(--text-secondary)">Author, publish and archive the templates users can choose from.</p>
+            </div>
+            <div style="flex:1"></div>
+            <button class="btn btn--primary"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>New template</button>
+          </div>
+
+          <div class="card">
+            <div class="card__header" style="display:flex;align-items:center;gap:10px;padding:12px 16px">
+              <div class="input-wrap" style="width:260px">
+                <span class="input-icon input-icon--lead"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>
+                <input class="input input--has-lead" style="height:32px" placeholder="Search name or slug">
+              </div>
+              <sc-for list="{{adminFilters}}" as="f" hint-placeholder-count="4"><button class="omny-ctl" onClick="{{f.go}}" style="height:28px;padding:0 11px;border-radius:999px;border:0.5px solid {{f.bd}};background:{{f.bg}};color:{{f.fg}};font:500 12px/1 var(--font-sans);cursor:pointer">{{f.label}}</button></sc-for>
+              <div style="flex:1"></div>
+              <span class="ds-caption" style="color:var(--text-tertiary)">6 templates</span>
+            </div>
+            <div style="display:grid;grid-template-columns:60px 1.5fr 0.9fr 0.8fr 1fr 0.7fr 40px;padding:10px 20px;background:var(--bg-surface);border-bottom:0.5px solid var(--border-default)">
+              <span></span>
+              <span class="ds-label-md" style="color:var(--text-tertiary)">Name</span>
+              <span class="ds-label-md" style="color:var(--text-tertiary)">Category</span>
+              <span class="ds-label-md" style="color:var(--text-tertiary)">Status</span>
+              <span class="ds-label-md" style="color:var(--text-tertiary)">Created by</span>
+              <span class="ds-label-md" style="color:var(--text-tertiary);text-align:right">Instances</span>
+              <span></span>
+            </div>
+            <sc-for list="{{adminTemplates}}" as="t" hint-placeholder-count="6">
+              <div class="omny-row" onClick="{{goATemplateDetail}}" style="display:grid;grid-template-columns:60px 1.5fr 0.9fr 0.8fr 1fr 0.7fr 40px;align-items:center;padding:11px 20px;border-bottom:0.5px solid var(--border-default);cursor:pointer">
+                <div style="width:44px;height:32px;border-radius:5px;border:0.5px solid var(--border-default);background:var(--bg-surface)"></div>
+                <div style="min-width:0"><div style="font:500 13px/1.3 var(--font-sans);color:var(--text-primary)">{{t.name}}</div><div class="ds-code" style="font-size:11px;color:var(--text-tertiary);margin-top:2px">{{t.slug}}</div></div>
+                <span class="ds-body-sm" style="color:var(--text-secondary)">{{t.category}}</span>
+                <span><span class="badge {{t.badge}}">{{t.status}}</span></span>
+                <span class="ds-code" style="font-size:11px;color:var(--text-secondary)">{{t.by}}</span>
+                <span class="ds-code" style="font-size:12px;color:var(--text-primary);text-align:right">{{t.instances}}</span>
+                <span style="display:flex;justify-content:flex-end;color:var(--text-tertiary)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5h.01M12 12h.01M12 19h.01"></path></svg></span>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ ADMIN · TEMPLATE EDITOR ============ -->
+        <sc-if value="{{isATemplateDetail}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="Admin · Template editor" style="padding:28px 28px 48px;max-width:1200px">
+          <button class="btn btn--ghost btn--sm" onClick="{{goATemplates}}" style="margin-bottom:14px;padding-left:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 18l-6-6 6-6"></path></svg>All templates</button>
+          <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:24px">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px"><h1 class="ds-display-md" style="margin:0">Monolith</h1><span class="badge badge--success">Published</span></div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:8px"><span class="ds-code" style="font-size:12px;color:var(--text-secondary)">monolith</span><span class="ds-caption" style="color:var(--text-tertiary)">· 412 instances · created by admin@omnyvora.com</span></div>
+            </div>
+            <div style="flex:1"></div>
+            <button class="btn btn--secondary">Archive</button>
+            <button class="btn btn--primary">Save changes</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+            <div class="card">
+              <div class="card__header"><div style="font:500 15px/1.3 var(--font-sans)">Metadata</div></div>
+              <div class="card__body" style="display:flex;flex-direction:column;gap:16px">
+                <div class="field"><label class="label">Name</label><input class="input" value="Monolith"></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                  <div class="field"><label class="label">Slug</label><input class="input" style="font-family:var(--font-mono);font-size:13px" value="monolith"></div>
+                  <div class="field"><label class="label">Category</label><input class="input" value="Minimal"></div>
+                </div>
+                <div class="field"><label class="label">Description</label><textarea class="input textarea">Single-column, type-led layout. Strong for writing-heavy portfolios.</textarea></div>
+                <div class="field">
+                  <label class="label">Thumbnail</label>
+                  <div style="display:flex;align-items:center;gap:14px;padding:14px;border-radius:10px;border:0.5px dashed var(--border-strong);background:var(--bg-surface)">
+                    <div style="width:76px;height:52px;border-radius:6px;border:0.5px solid var(--border-default);background:var(--bg-surface-raised);flex:none"></div>
+                    <div style="flex:1"><div class="ds-body-sm" style="color:var(--text-primary)">monolith-thumb.png</div><div class="ds-caption" style="color:var(--text-tertiary)">1280×800 · 148 KB</div></div>
+                    <button class="btn btn--secondary btn--sm">Replace</button>
+                  </div>
+                </div>
+                <div class="field"><label class="label">Status</label>
+                  <div style="display:flex;gap:8px">
+                    <sc-for list="{{tplStatuses}}" as="s" hint-placeholder-count="3"><button class="omny-ctl" onClick="{{s.go}}" style="height:32px;padding:0 14px;border-radius:8px;border:0.5px solid {{s.bd}};background:{{s.bg}};color:{{s.fg}};font:500 12px/1 var(--font-sans);cursor:pointer">{{s.label}}</button></sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:20px">
+              <div class="card">
+                <div class="card__header" style="display:flex;align-items:center;gap:12px">
+                  <div><div style="font:500 15px/1.3 var(--font-sans)">Sections</div><div class="ds-caption" style="color:var(--text-secondary);margin-top:3px">Drag to set display order. Required sections cannot be disabled by users.</div></div>
+                </div>
+                <sc-for list="{{tplSections}}" as="s" hint-placeholder-count="9">
+                  <div class="omny-row" style="display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:0.5px solid var(--border-default)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-disabled)" stroke-width="2" stroke-linecap="round" style="flex:none;cursor:grab"><path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01"></path></svg>
+                    <span class="ds-code" style="width:20px;font-size:11px;color:var(--text-tertiary)">{{s.order}}</span>
+                    <span class="ds-code" style="flex:1;font-size:12px;color:var(--text-primary)">{{s.key}}</span>
+                    <span class="ds-caption" style="color:var(--text-tertiary)">Required</span>
+                    <label class="switch" style="width:34px;height:19px"><input type="checkbox" checked="{{s.required}}"><span class="track"></span><span class="thumb" style="width:15px;height:15px;transform:translateX({{s.thumbX}})"></span></label>
+                  </div>
+                </sc-for>
+                <div style="padding:12px 20px"><span class="ds-caption" style="color:var(--text-tertiary)">section_key is a fixed set of 9 values. Templates choose which to include.</span></div>
+              </div>
+
+              <div class="card">
+                <div class="card__header"><div style="font:500 15px/1.3 var(--font-sans)">Pages and assets</div></div>
+                <sc-for list="{{tplFiles}}" as="f" hint-placeholder-count="4">
+                  <div class="omny-row" style="display:flex;align-items:center;gap:12px;padding:11px 20px;border-bottom:0.5px solid var(--border-default)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.8" stroke-linecap="round" style="flex:none"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5"></path></svg>
+                    <span class="ds-code" style="flex:1;font-size:12px;color:var(--text-primary)">{{f.name}}</span>
+                    <span class="badge badge--neutral">{{f.kind}}</span>
+                    <span class="ds-caption" style="color:var(--text-tertiary);width:60px;text-align:right">{{f.size}}</span>
+                    <button class="btn btn--ghost btn--sm" style="height:26px;padding:0 8px">Edit</button>
+                  </div>
+                </sc-for>
+                <div style="padding:12px 20px;display:flex;gap:8px">
+                  <button class="btn btn--secondary btn--sm">Upload asset</button>
+                  <button class="btn btn--ghost btn--sm">Add page</button>
+                </div>
+              </div>
+
+              <div class="card" style="background:var(--bg-surface)">
+                <div style="padding:16px 20px;display:flex;gap:12px;align-items:flex-start">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--status-warning)" stroke-width="1.8" stroke-linecap="round" style="flex:none;margin-top:1px"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+                  <div style="flex:1">
+                    <div style="font:500 13px/1.4 var(--font-sans);color:var(--text-primary)">Not live yet</div>
+                    <div class="ds-caption" style="color:var(--text-secondary);margin-top:3px">Template authoring endpoints do not exist yet. <span class="ds-code" style="font-size:11px">portfolio.templates</span> is models-only today, so every mutation on this screen is new backend surface.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        </sc-if>
+
+        <!-- ============ ADMIN · PORTFOLIOS ============ -->
+        <sc-if value="{{isAPortfolios}}" hint-placeholder-val="{{false}}">
+        <section class="omny-screen" data-screen-label="Admin · Portfolios" style="display:flex;min-height:100%">
+          <div style="flex:1;min-width:0;padding:28px">
+            <div class="ds-label-md" style="color:var(--accent-text)">Services · Portfolio</div>
+            <h1 class="ds-display-md" style="margin:6px 0 4px">Portfolios</h1>
+            <p class="ds-body-md" style="margin:0 0 20px;color:var(--text-secondary)">Every portfolio instance across all users.</p>
+
+            <div class="card">
+              <div class="card__header" style="display:flex;align-items:center;gap:10px;padding:12px 16px;flex-wrap:wrap">
+                <div class="input-wrap" style="width:220px">
+                  <span class="input-icon input-icon--lead"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></span>
+                  <input class="input input--has-lead" style="height:32px" placeholder="Owner, slug or domain">
+                </div>
+                <sc-for list="{{adminFilters}}" as="f" hint-placeholder-count="4"><button class="omny-ctl" onClick="{{f.go}}" style="height:28px;padding:0 11px;border-radius:999px;border:0.5px solid {{f.bd}};background:{{f.bg}};color:{{f.fg}};font:500 12px/1 var(--font-sans);cursor:pointer">{{f.label}}</button></sc-for>
+                <div style="flex:1"></div>
+                <span class="ds-caption" style="color:var(--text-tertiary)">{{instanceCount}}</span>
+              </div>
+
+              <sc-if value="{{modeIsLoading}}" hint-placeholder-val="{{false}}">
+                <div style="padding:16px 20px;display:flex;flex-direction:column;gap:14px">
+                  <div class="skel" style="height:14px;width:100%"></div><div class="skel" style="height:14px;width:92%"></div><div class="skel" style="height:14px;width:96%"></div><div class="skel" style="height:14px;width:88%"></div><div class="skel" style="height:14px;width:94%"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{modeIsEmpty}}" hint-placeholder-val="{{false}}">
+                <div class="empty"><div class="empty__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 5h16M4 10h16M4 15h10M4 20h7"></path></svg></div><div class="empty__title">No portfolios match</div><div class="empty__desc">Clear the filters to see every instance on the platform.</div><button class="btn btn--secondary" style="margin-top:8px">Clear filters</button></div>
+              </sc-if>
+              <sc-if value="{{modeIsError}}" hint-placeholder-val="{{false}}">
+                <div style="padding:20px;display:flex;gap:14px;align-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--status-error)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg><div style="flex:1"><div style="font:500 14px/1.4 var(--font-sans)">Query failed</div><div class="ds-body-sm" style="color:var(--text-secondary)">The portfolio service returned an error. Check service logs.</div></div><button class="btn btn--secondary btn--sm">Retry</button><button class="btn btn--ghost btn--sm">Open logs</button></div>
+              </sc-if>
+
+              <sc-if value="{{tableReady}}" hint-placeholder-val="{{false}}">
+              <div>
+                <div style="display:grid;grid-template-columns:1.3fr 0.9fr 0.8fr 1.1fr 0.9fr 0.8fr;padding:10px 20px;background:var(--bg-surface);border-bottom:0.5px solid var(--border-default)">
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Owner</span>
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Template</span>
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Status</span>
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Address</span>
+                  <span class="ds-label-md" style="color:var(--text-tertiary)">Setup</span>
+                  <span class="ds-label-md" style="color:var(--text-tertiary);text-align:right">Published</span>
+                </div>
+                <sc-for list="{{adminRows}}" as="r" hint-placeholder-count="8">
+                  <div class="omny-row" onClick="{{goAPortfolioDetail}}" style="display:grid;grid-template-columns:1.3fr 0.9fr 0.8fr 1.1fr 0.9fr 0.8fr;align-items:center;padding:11px 20px;border-bottom:0.5px solid var(--border-default);cursor:pointer;background:{{r.rowBg}}">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                      <div class="avatar avatar--sm">{{r.initials}}</div>
+                      <div style="min-width:0"><div style="font:500 13px/1.3 var(--font-sans);color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.owner}}</div><div class="ds-caption" style="color:var(--text-tertiary)">{{r.email}}</div></div>
+                    </div>
+                    <span class="ds-body-sm" style="color:var(--text-secondary)">{{r.template}}</span>
+                    <span><span class="badge {{r.badge}}">{{r.status}}</span></span>
+                    <span class="ds-code" style="font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px">{{r.address}}</span>
+                    <span style="display:flex;align-items:center;gap:8px"><span style="flex:1;max-width:52px;height:5px;border-radius:999px;background:var(--bg-surface);overflow:hidden"><span style="display:block;height:100%;width:{{r.setupPct}};background:var(--accent-primary)"></span></span><span class="ds-code" style="font-size:11px;color:var(--text-tertiary)">{{r.setup}}</span></span>
+                    <span class="ds-code" style="font-size:11px;color:var(--text-tertiary);text-align:right">{{r.published}}</span>
+                  </div>
+                </sc-for>
+              </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <sc-if value="{{isAPortfolioDetail}}" hint-placeholder-val="{{false}}">
+          <aside class="omny-panel" style="flex:none;width:400px;border-left:0.5px solid var(--border-default);background:var(--bg-surface);padding:24px;overflow-y:auto">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <div class="avatar avatar--lg">AM</div>
+              <div style="flex:1;min-width:0">
+                <div style="font:500 16px/1.3 var(--font-sans);color:var(--text-primary)">Aarav Mehta</div>
+                <a href="#" class="ds-body-sm">aarav@example.com</a>
+                <div class="ds-caption" style="color:var(--text-tertiary);margin-top:4px">Opens the admin user detail page</div>
+              </div>
+              <button class="btn btn--ghost btn--sm" onClick="{{closeDetail}}" style="width:30px;padding:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0;margin-top:22px;border-top:0.5px solid var(--border-default)">
+              <sc-for list="{{detailFields}}" as="f" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:0.5px solid var(--border-default)">
+                  <span class="ds-label-md" style="color:var(--text-tertiary);width:120px;flex:none">{{f.label}}</span>
+                  <span class="ds-body-sm" style="flex:1;color:var(--text-primary);font-family:{{f.font}}">{{f.value}}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <div class="ds-label-md" style="color:var(--text-tertiary);margin:22px 0 10px">Section states</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <sc-for list="{{detailSections}}" as="s" hint-placeholder-count="9"><span class="badge {{s.badge}}">{{s.key}}</span></sc-for>
+            </div>
+
+            <div class="ds-label-md" style="color:var(--text-tertiary);margin:22px 0 10px">Moderation</div>
+            <div class="card" style="background:var(--bg-surface-raised)">
+              <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                <button class="btn btn--secondary" style="width:100%;justify-content:flex-start"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>View live page</button>
+                <button class="btn btn--secondary" style="width:100%;justify-content:flex-start"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.3 9.4l6.1-.8z"></path></svg>Feature this portfolio</button>
+                <button class="btn btn--danger" style="width:100%;justify-content:flex-start"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M6 6l12 12"></path></svg>Unpublish with reason</button>
+              </div>
+              <div style="padding:12px 16px;border-top:0.5px solid var(--border-default);display:flex;gap:10px;align-items:flex-start">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--status-warning)" stroke-width="1.8" stroke-linecap="round" style="flex:none;margin-top:1px"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17h.01"></path></svg>
+                <span class="ds-caption" style="color:var(--text-secondary)">Feature, takedown and unpublish are new backend surface. No endpoints exist for these today.</span>
+              </div>
+            </div>
+          </aside>
+          </sc-if>
+        </section>
+        </sc-if>
+
+      </main>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;,&quot;section&quot;:&quot;Mockup&quot;},&quot;state&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;populated&quot;,&quot;empty&quot;,&quot;loading&quot;,&quot;error&quot;],&quot;default&quot;:&quot;populated&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Mockup&quot;},&quot;showPreviewPanel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Builder&quot;}}">
+class Component extends DCLogic {
+  state = { screen: 'u-home', theme: null, mode: null, sidebar: true, panel: true, device: 'desktop', section: 'projects', status: 'published', category: 'All', filter: 'All', detail: false, hidden: {}, off: {} };
+
+  get theme() { return this.state.theme ?? this.props.theme ?? 'light'; }
+  get mode() { return this.state.mode ?? this.props.state ?? 'populated'; }
+  get isAdmin() { return this.state.screen.charAt(0) === 'a'; }
+
+  componentDidMount() { this.sync(); }
+  componentDidUpdate() { this.sync(); }
+  sync() {
+    const r = document.documentElement;
+    r.setAttribute('data-theme', this.theme);
+    r.setAttribute('data-tool', this.isAdmin ? 'account' : 'portfolio');
+    r.setAttribute('data-service', this.isAdmin ? 'admin' : 'portfolio');
+  }
+
+  go(screen) { return () => this.setState({ screen: screen, detail: screen === 'a-portfolio-detail' }); }
+  pill(active) {
+    return active
+      ? { bg: 'var(--accent-primary)', fg: 'var(--text-on-accent)', bd: 'var(--accent-primary)' }
+      : { bg: 'transparent', fg: 'var(--text-secondary)', bd: 'var(--border-default)' };
+  }
+  ctlList(items, current, set) {
+    return items.map(it => {
+      const p = this.pill(it.id === current);
+      return { label: it.label, bg: p.bg, fg: p.fg, bd: p.bd, go: () => this.setState(set(it.id)) };
+    });
+  }
+
+  renderVals() {
+    const screen = this.state.screen;
+    const mode = this.mode;
+    const dark = this.theme === 'dark';
+    const sidebarOpen = this.state.sidebar;
+
+    const userScreens = [
+      { id: 'u-home', label: 'Home' }, { id: 'u-gallery', label: 'Templates' },
+      { id: 'u-builder', label: 'Builder' }, { id: 'u-preview', label: 'Preview' },
+      { id: 'u-publish', label: 'Publish' }
+    ].map(s => { const p = this.pill(screen === s.id); return { label: s.label, bg: p.bg, fg: p.fg, bd: p.bd, go: this.go(s.id) }; });
+
+    const adminScreens = [
+      { id: 'a-overview', label: 'Overview' }, { id: 'a-templates', label: 'Templates' },
+      { id: 'a-template-detail', label: 'Template editor' }, { id: 'a-portfolios', label: 'Portfolios' },
+      { id: 'a-portfolio-detail', label: 'Instance detail' }
+    ].map(s => { const p = this.pill(screen === s.id); return { label: s.label, bg: p.bg, fg: p.fg, bd: p.bd, go: this.go(s.id) }; });
+
+    const modes = this.ctlList(
+      [{ id: 'populated', label: 'Populated' }, { id: 'empty', label: 'Empty' }, { id: 'loading', label: 'Loading' }, { id: 'error', label: 'Error' }],
+      mode, id => ({ mode: id })
+    );
+
+    const userNav = [
+      { id: 'dash', label: 'Dashboard', d: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' },
+      { id: 'data', label: 'My data', d: 'M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z' },
+      { id: 'portfolio', label: 'Portfolio', d: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z' },
+      { id: 'cv', label: 'CV builder', d: 'M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5M9 13h6M9 17h4' },
+      { id: 'image', label: 'Image enhancer', d: 'M4 4h16v16H4zM8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM20 15l-5-5-9 9' },
+      { id: 'prod', label: 'Productivity', d: 'M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9' },
+      { id: 'drive', label: 'Drive', d: 'M4 12h16M6 16h.01M10 16h.01M4 12l2.5-7h11L20 12v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z' },
+      { id: 'cal', label: 'Calendar', d: 'M4 6h16v14H4zM8 3v4M16 3v4M4 11h16' },
+      { id: 'an', label: 'Analytics', d: 'M6 20V10M12 20V4M18 20v-6' }
+    ];
+    const adminNav = [
+      { id: 'dash', label: 'Dashboard', d: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' },
+      { id: 'svc', label: 'Services', d: 'M12 3l9 5-9 5-9-5 9-5zM3 13l9 5 9-5' },
+      { id: 'portfolio', label: 'Portfolio', d: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z' },
+      { id: 'users', label: 'Users', d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.9' },
+      { id: 'logs', label: 'Logs', d: 'M4 5h16M4 10h16M4 15h10M4 20h7' },
+      { id: 'set', label: 'Settings', d: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.9 15.3a1.7 1.7 0 0 0 .4 1.9 2 2 0 1 1-2.8 2.8 1.7 1.7 0 0 0-2.9 1.2 2 2 0 1 1-4 0 1.7 1.7 0 0 0-2.9-1.2 2 2 0 1 1-2.8-2.8 1.7 1.7 0 0 0-1.2-2.9 2 2 0 1 1 0-4 1.7 1.7 0 0 0 1.2-2.9 2 2 0 1 1 2.8-2.8 1.7 1.7 0 0 0 2.9-1.2 2 2 0 1 1 4 0 1.7 1.7 0 0 0 2.9 1.2 2 2 0 1 1 2.8 2.8 1.7 1.7 0 0 0 .4 1.9' }
+    ];
+    const nav = (this.isAdmin ? adminNav : userNav).map(n => {
+      const active = n.id === 'portfolio';
+      return {
+        label: n.label, d: n.d,
+        bg: active ? 'var(--accent-subtle)' : 'transparent',
+        fg: active ? 'var(--accent-text)' : 'var(--text-secondary)',
+        go: this.go(this.isAdmin ? 'a-overview' : 'u-home')
+      };
+    });
+
+    const crumbs = {
+      'u-home': ['Portfolio', 'My portfolios'], 'u-gallery': ['Portfolio', 'Templates'],
+      'u-builder': ['Portfolio', 'Aarav Mehta — Product designer'], 'u-preview': ['Portfolio', 'Preview'],
+      'u-publish': ['Portfolio', 'Publish and domain'], 'a-overview': ['Admin · Portfolio', 'Overview'],
+      'a-templates': ['Admin · Portfolio', 'Templates'], 'a-template-detail': ['Admin · Portfolio', 'Templates / Monolith'],
+      'a-portfolios': ['Admin · Portfolio', 'Portfolios'], 'a-portfolio-detail': ['Admin · Portfolio', 'Portfolios / Aarav Mehta']
+    }[screen] || ['Portfolio', ''];
+
+    const myOthers = [
+      { title: 'Photography — side work', status: 'Draft', badge: 'badge--warning', slug: 'aarav-photo', template: 'Gridfolio', updated: '3 days ago', progress: 'Step 2 of 5', cta: 'Continue setup' },
+      { title: 'Freelance landing', status: 'Unpublished', badge: 'badge--neutral', slug: 'aarav-freelance', template: 'Monolith', updated: '6 weeks ago', progress: 'Complete', cta: 'Edit' }
+    ];
+
+    const allTemplates = [
+      { name: 'Monolith', category: 'Minimal', sections: 7, description: 'Single-column, type-led layout. Strong for writing-heavy portfolios.' },
+      { name: 'Gridfolio', category: 'Visual', sections: 9, description: 'Project grid up front, with a project detail page per case study.' },
+      { name: 'Ledger', category: 'Professional', sections: 8, description: 'Experience and certifications first. Reads like a résumé site.' },
+      { name: 'Atlas', category: 'Visual', sections: 9, description: 'Full-bleed cover image with a sticky section index.' },
+      { name: 'Slate', category: 'Minimal', sections: 6, description: 'Compact one-pager. Hero, projects, contact.' },
+      { name: 'Studio', category: 'Professional', sections: 9, description: 'Services-led layout for freelancers taking client work.' }
+    ];
+    const cat = this.state.category;
+    const shown = cat === 'All' ? allTemplates : allTemplates.filter(t => t.category === cat);
+    const gallery = shown.map((t, i) => {
+      const sel = i === 0;
+      return {
+        name: t.name, category: t.category, sections: t.sections, description: t.description, selected: sel,
+        bd: sel ? 'var(--accent-primary)' : 'var(--border-default)',
+        bg: sel ? 'var(--accent-subtle)' : 'var(--bg-surface-raised)',
+        use: this.go('u-builder')
+      };
+    });
+    const categories = this.ctlList(
+      ['All', 'Minimal', 'Visual', 'Professional'].map(c => ({ id: c, label: c })),
+      cat, id => ({ category: id })
+    );
+
+    const steps = ['Template', 'Sections', 'Content', 'Services', 'Publish'].map((label, i) => {
+      const n = i + 1, done = n < 3, cur = n === 3;
+      return {
+        n: n, label: label,
+        bg: cur ? 'var(--accent-primary)' : done ? 'var(--text-primary)' : 'transparent',
+        fg: cur || done ? 'var(--bg-page)' : 'var(--text-tertiary)',
+        bd: cur ? 'var(--accent-primary)' : done ? 'var(--text-primary)' : 'var(--border-strong)',
+        tc: cur ? 'var(--text-primary)' : 'var(--text-secondary)'
+      };
+    });
+
+    const sectionDefs = [
+      { key: 'hero', label: 'Hero', req: true }, { key: 'about', label: 'About', req: true },
+      { key: 'skills', label: 'Skills', req: false }, { key: 'projects', label: 'Projects', req: true },
+      { key: 'experience', label: 'Experience', req: false }, { key: 'services', label: 'Services', req: false },
+      { key: 'certifications', label: 'Certifications', req: false }, { key: 'education', label: 'Education', req: false },
+      { key: 'contact', label: 'Contact', req: true }
+    ];
+    const off = this.state.off;
+    const sections = sectionDefs.map(s => {
+      const enabled = s.req || !off[s.key];
+      const active = s.key === this.state.section;
+      return {
+        label: s.label, required: s.req, toggleable: !s.req, enabled: enabled,
+        thumbX: enabled ? '14px' : '0px',
+        bg: active ? 'var(--accent-subtle)' : 'transparent',
+        fg: active ? 'var(--accent-text)' : enabled ? 'var(--text-primary)' : 'var(--text-tertiary)',
+        go: () => this.setState({ section: s.key }),
+        toggle: () => this.setState(st => { const nx = Object.assign({}, st.off); nx[s.key] = !nx[s.key]; return { off: nx }; })
+      };
+    });
+
+    const projectDefs = [
+      { t: 'Kestrel — design system', m: '2024 · 6 achievements · github.com/aarav/kestrel', tags: ['Figma', 'React'], f: true },
+      { t: 'Northwind analytics dashboard', m: '2024 · 4 achievements · live', tags: ['TypeScript'], f: false },
+      { t: 'Field survey app', m: '2023 · 3 achievements', tags: ['React Native'], f: false },
+      { t: 'Tessellate — type tool', m: '2023 · 5 achievements · github', tags: ['Canvas'], f: true },
+      { t: 'Onboarding refresh', m: '2022 · 2 achievements', tags: ['Figma'], f: false },
+      { t: 'Internal admin console', m: '2022 · 3 achievements', tags: ['Django'], f: false },
+      { t: 'Ferry timetable concept', m: '2021 · 1 achievement', tags: ['Sketch'], f: false },
+      { t: 'Portfolio v1 (archive)', m: '2020 · 1 achievement', tags: ['HTML'], f: false }
+    ];
+    const hidden = this.state.hidden;
+    const projects = projectDefs.map((p, i) => {
+      const vis = i < 5 ? !hidden[i] : !!hidden[i];
+      return {
+        title: p.t, meta: p.m, tags: p.tags, featured: p.f,
+        checkClass: vis ? 'is-checked' : '',
+        fg: vis ? 'var(--text-primary)' : 'var(--text-tertiary)',
+        stateLabel: vis ? 'Visible' : 'Hidden',
+        stateFg: vis ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+        toggle: () => this.setState(st => { const nx = Object.assign({}, st.hidden); nx[i] = !nx[i]; return { hidden: nx }; })
+      };
+    });
+
+    const services = [
+      { title: 'Product design retainer', description: 'Ongoing design partnership for teams shipping weekly.', bullets: ['Weekly design reviews', 'Prototype handoff', 'Design system upkeep'] },
+      { title: 'Design system audit', description: 'A two-week review of tokens, components and adoption.', bullets: ['Token audit', 'Component inventory', 'Adoption plan'] }
+    ];
+
+    const statuses = [
+      { id: 'draft', label: 'Draft', desc: 'Only you can see this portfolio.' },
+      { id: 'published', label: 'Published', desc: 'Live at your public address.' },
+      { id: 'unpublished', label: 'Unpublished', desc: 'Was live. The URL no longer resolves.' }
+    ].map(s => {
+      const on = s.id === this.state.status;
+      return {
+        label: s.label, desc: s.desc, radio: on ? 'is-selected' : '',
+        bd: on ? 'var(--accent-primary)' : 'var(--border-default)',
+        bg: on ? 'var(--accent-subtle)' : 'var(--bg-surface-raised)',
+        go: () => this.setState({ status: s.id })
+      };
+    });
+    const stMap = { draft: ['badge--warning', 'Draft'], published: ['badge--success', 'Published'], unpublished: ['badge--neutral', 'Unpublished'] }[this.state.status];
+
+    const devices = [
+      { id: 'desktop', label: 'Desktop', d: 'M3 5h18v11H3zM9 20h6M12 16v4' },
+      { id: 'mobile', label: 'Mobile', d: 'M8 3h8v18H8zM11 18h2' }
+    ].map(d => {
+      const on = d.id === this.state.device;
+      return { label: d.label, d: d.d, bg: on ? 'var(--bg-surface-raised)' : 'transparent', fg: on ? 'var(--text-primary)' : 'var(--text-secondary)', go: () => this.setState({ device: d.id }) };
+    });
+
+    const previewBlocks = [
+      { label: 'Projects', cols: '1fr 1fr 1fr', h: '150px', cells: [1, 2, 3] },
+      { label: 'Experience', cols: '1fr', h: '74px', cells: [1, 2, 3] },
+      { label: 'Skills', cols: 'repeat(4,1fr)', h: '44px', cells: [1, 2, 3, 4] },
+      { label: 'Contact', cols: '1fr 1fr', h: '92px', cells: [1, 2] }
+    ];
+
+    const kpis = [
+      { label: 'Templates', value: '6', sub: '4 published · 2 draft' },
+      { label: 'Instances', value: '858', sub: 'across 612 users' },
+      { label: 'Published', value: '441', sub: '51% of instances' },
+      { label: 'In setup', value: '287', sub: 'setup_step < 5' },
+      { label: 'Unpublished', value: '130', sub: '18 in last 7 days' }
+    ];
+    const statusBars = [
+      { label: 'Published', count: '441', pct: '51%', color: 'var(--status-success)' },
+      { label: 'Draft', count: '287', pct: '33%', color: 'var(--status-warning)' },
+      { label: 'Unpublished', count: '130', pct: '16%', color: 'var(--text-tertiary)' }
+    ];
+
+    const rowDefs = [
+      { owner: 'Aarav Mehta', email: 'aarav@example.com', initials: 'AM', slug: 'aarav-mehta', template: 'Monolith', status: 'Published', badge: 'badge--success', updated: '2h ago', address: 'aarav.design', setup: '5/5', setupPct: '100%', published: '2026-07-28' },
+      { owner: 'Lena Fischer', email: 'lena@example.com', initials: 'LF', slug: 'lena-fischer', template: 'Gridfolio', status: 'Published', badge: 'badge--success', updated: '5h ago', address: 'omnyvora.site/lena-fischer', setup: '5/5', setupPct: '100%', published: '2026-07-21' },
+      { owner: 'Tomás Ruiz', email: 'tomas@example.com', initials: 'TR', slug: 'tomas-ruiz', template: 'Ledger', status: 'Draft', badge: 'badge--warning', updated: '1d ago', address: 'omnyvora.site/tomas-ruiz', setup: '3/5', setupPct: '60%', published: '—' },
+      { owner: 'Priya Nair', email: 'priya@example.com', initials: 'PN', slug: 'priya-nair', template: 'Atlas', status: 'Published', badge: 'badge--success', updated: '1d ago', address: 'priyanair.co', setup: '5/5', setupPct: '100%', published: '2026-06-30' },
+      { owner: 'Sam Okafor', email: 'sam@example.com', initials: 'SO', slug: 'sam-okafor', template: 'Studio', status: 'Unpublished', badge: 'badge--neutral', updated: '3d ago', address: 'omnyvora.site/sam-okafor', setup: '5/5', setupPct: '100%', published: '2026-05-14' },
+      { owner: 'Mei Chen', email: 'mei@example.com', initials: 'MC', slug: 'mei-chen', template: 'Slate', status: 'Draft', badge: 'badge--warning', updated: '4d ago', address: 'omnyvora.site/mei-chen', setup: '2/5', setupPct: '40%', published: '—' },
+      { owner: 'Jonas Weber', email: 'jonas@example.com', initials: 'JW', slug: 'jonas-weber', template: 'Monolith', status: 'Published', badge: 'badge--success', updated: '6d ago', address: 'omnyvora.site/jonas-weber', setup: '5/5', setupPct: '100%', published: '2026-04-02' },
+      { owner: 'Ada Oyelaran', email: 'ada@example.com', initials: 'AO', slug: 'ada-o', template: 'Gridfolio', status: 'Published', badge: 'badge--success', updated: '1w ago', address: 'ada.works', setup: '5/5', setupPct: '100%', published: '2026-03-19' }
+    ];
+    const adminRows = rowDefs.map((r, i) => Object.assign({}, r, {
+      rowBg: this.state.detail && i === 0 ? 'var(--accent-subtle)' : 'transparent'
+    }));
+
+    const adminFilters = this.ctlList(
+      ['All', 'Published', 'Draft', 'Unpublished'].map(f => ({ id: f, label: f })),
+      this.state.filter, id => ({ filter: id })
+    );
+
+    const adminTemplates = [
+      { name: 'Monolith', slug: 'monolith', category: 'Minimal', status: 'Published', badge: 'badge--success', by: 'admin@omnyvora.com', instances: '412' },
+      { name: 'Gridfolio', slug: 'gridfolio', category: 'Visual', status: 'Published', badge: 'badge--success', by: 'admin@omnyvora.com', instances: '221' },
+      { name: 'Ledger', slug: 'ledger', category: 'Professional', status: 'Published', badge: 'badge--success', by: 'design@omnyvora.com', instances: '134' },
+      { name: 'Atlas', slug: 'atlas', category: 'Visual', status: 'Published', badge: 'badge--success', by: 'design@omnyvora.com', instances: '91' },
+      { name: 'Slate', slug: 'slate', category: 'Minimal', status: 'Draft', badge: 'badge--warning', by: 'design@omnyvora.com', instances: '0' },
+      { name: 'Studio', slug: 'studio', category: 'Professional', status: 'Archived', badge: 'badge--neutral', by: 'admin@omnyvora.com', instances: '0' }
+    ];
+
+    const tplSections = sectionDefs.map((s, i) => ({
+      key: s.key, order: i + 1, required: s.req, thumbX: s.req ? '15px' : '0px'
+    }));
+    const tplFiles = [
+      { name: 'main.html', kind: 'Page · main', size: '18 KB' },
+      { name: 'project_detail.html', kind: 'Page · project_detail', size: '9 KB' },
+      { name: 'styles.css', kind: 'Asset', size: '24 KB' },
+      { name: 'og-default.png', kind: 'Asset', size: '86 KB' }
+    ];
+    const tplStatuses = ['Draft', 'Published', 'Archived'].map(l => {
+      const on = l === 'Published';
+      return { label: l, bd: on ? 'var(--accent-primary)' : 'var(--border-default)', bg: on ? 'var(--accent-subtle)' : 'var(--bg-surface-raised)', fg: on ? 'var(--accent-text)' : 'var(--text-secondary)', go: () => {} };
+    });
+
+    const detailFields = [
+      { label: 'Instance id', value: 'pi_8f4c21', font: 'var(--font-mono)' },
+      { label: 'Template', value: 'Monolith', font: 'var(--font-sans)' },
+      { label: 'Status', value: 'Published', font: 'var(--font-sans)' },
+      { label: 'Slug', value: 'aarav-mehta', font: 'var(--font-mono)' },
+      { label: 'Custom domain', value: 'aarav.design', font: 'var(--font-mono)' },
+      { label: 'Setup step', value: '5 of 5', font: 'var(--font-sans)' },
+      { label: 'Published at', value: '2026-07-28T14:02Z', font: 'var(--font-mono)' }
+    ];
+    const detailSections = sectionDefs.map(s => ({
+      key: s.key, badge: s.key === 'services' || s.key === 'education' ? 'badge--neutral' : 'badge--accent'
+    }));
+
+    return {
+      userScreens, adminScreens, modes, nav, sections, projects, services, statuses, devices, previewBlocks,
+      kpis, statusBars, adminRows, adminFilters, adminTemplates, tplSections, tplFiles, tplStatuses,
+      detailFields, detailSections, gallery, categories, steps, myOthers,
+      isDark: dark, isLight: !dark,
+      navGroup: this.isAdmin ? 'Control panel' : 'Workspace',
+      sidebarOpen: sidebarOpen,
+      sidebarW: sidebarOpen ? '256px' : '76px',
+      toggleSidebar: () => this.setState(s => ({ sidebar: !s.sidebar })),
+      collapseIcon: sidebarOpen ? 'M11 18l-6-6 6-6M19 18l-6-6 6-6' : 'M13 6l6 6-6 6M5 6l6 6-6 6',
+      crumbRoot: crumbs[0], crumbLeaf: crumbs[1],
+      searchHint: this.isAdmin ? 'Search users, templates' : 'Search your data',
+      avatarInitials: this.isAdmin ? 'SA' : 'AM',
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+      themeLabel: dark ? 'Dark' : 'Light',
+      themeIcon: dark ? 'M20 14a8 8 0 1 1-9.9-9.9A7 7 0 0 0 20 14z' : 'M12 4V2M12 22v-2M4 12H2M22 12h-2M6 6L4.5 4.5M19.5 19.5L18 18M6 18l-1.5 1.5M19.5 4.5L18 6M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z',
+      isUHome: screen === 'u-home', isUGallery: screen === 'u-gallery', isUBuilder: screen === 'u-builder',
+      isUPreview: screen === 'u-preview', isUPublish: screen === 'u-publish',
+      isAOverview: screen === 'a-overview', isATemplates: screen === 'a-templates',
+      isATemplateDetail: screen === 'a-template-detail',
+      isAPortfolios: screen === 'a-portfolios' || screen === 'a-portfolio-detail',
+      isAPortfolioDetail: this.state.detail,
+      closeDetail: () => this.setState({ screen: 'a-portfolios', detail: false }),
+      modeIsPopulated: mode === 'populated', modeIsEmpty: mode === 'empty',
+      modeIsLoading: mode === 'loading', modeIsError: mode === 'error',
+      galleryReady: mode === 'populated', tableReady: mode === 'populated',
+      instanceCount: '858 instances',
+      templateCount: shown.length + ' published templates',
+      panelOpen: this.state.panel && (this.props.showPreviewPanel ?? true),
+      panelLabel: this.state.panel ? 'Hide preview' : 'Show preview',
+      togglePanel: () => this.setState(s => ({ panel: !s.panel })),
+      previewW: this.state.device === 'mobile' ? '390px' : '1040px',
+      publishing: false,
+      publishCta: 'Save and publish',
+      statusBadge: stMap[0], statusLabel: stMap[1],
+      goGallery: this.go('u-gallery'), goBuilder: this.go('u-builder'),
+      goPreview: this.go('u-preview'), goPublish: this.go('u-publish'),
+      goATemplates: this.go('a-templates'), goATemplateDetail: this.go('a-template-detail'),
+      goAPortfolios: this.go('a-portfolios'), goAPortfolioDetail: this.go('a-portfolio-detail')
+    };
+  }
+}
+</script>
+</body>
+</html>
