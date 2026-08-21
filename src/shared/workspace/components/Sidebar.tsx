@@ -11,6 +11,7 @@ import {
   Bell,
   LogOut,
   ChevronRight,
+  Layers,
 } from "lucide-react";
 import { useAuth } from "@/shared/auth/context";
 import { useNotificationsDrawer } from "@/shared/notifications/store";
@@ -21,6 +22,7 @@ import { useWorkspaceStore } from "../store";
 const NAV = [
   { id: "dashboard",    label: "Dashboard",    icon: LayoutDashboard, href: "/dashboard" },
   { id: "applications", label: "Applications", icon: Grid2X2,         href: "/applications" },
+  { id: "portfolio",    label: "Portfolio",    icon: Layers,          href: "/services/portfolio" },
   { id: "activity",     label: "Activity",     icon: History,         href: "/activity" },
   { id: "profile",      label: "Profile",      icon: User,            href: "/profile" },
   { id: "account",      label: "Account",      icon: ShieldCheck,     href: "/account" },

@@ -12,6 +12,7 @@ import {
   Bell,
   LogOut,
   ChevronRight,
+  Layers,
 } from "lucide-react";
 import { useAuth } from "@/shared/auth/context";
 import { useNotificationsDrawer } from "@/shared/notifications/store";
@@ -22,6 +23,7 @@ import { useWorkspaceStore } from "../store";
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/admin" },
   { id: "services",  label: "Services",  icon: Server,          href: "/admin/services" },
+  { id: "portfolio", label: "Portfolio", icon: Layers,          href: "/admin/services/portfolio" },
   { id: "users",     label: "Users",     icon: Users,           href: "/admin/users" },
   { id: "logs",      label: "Logs",      icon: Terminal,        href: "/admin/logs" },
   { id: "settings",  label: "Settings",  icon: Settings,        href: "/admin/settings" },
